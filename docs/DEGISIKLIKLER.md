@@ -6,7 +6,7 @@
 |---|---|---|
 | 0 | Altyapı: monorepo, uygulama iskeletleri, Supabase şema + RLS + RBAC, davet kodu, özellik bayrakları, seed, CI | **Tamamlandı** |
 | 1 | Çekirdek soru döngüsü: üretim + doğrulama hattı, havuz, soru ekranı (LaTeX), Elo, tespit sınavı, XP/Altın, çözüm, hata defteri, konu haritası, AI Merkezi temel | **Tamamlandı** |
-| 2 | Oyun katmanı: karakter, seri, görevler, 40 rozet, mağaza, lig, sıralamalar, kart albümü | |
+| 2 | Oyun katmanı: karakter, seri, görevler, 40 rozet, mağaza, lig, sıralamalar, kart albümü | **Tamamlandı** |
 | 3 | Düello ve Canlı Soru Saati (Supabase Realtime) | |
 | 4 | Klanlar, boss, klan savaşı | |
 | 5 | Topluluk soru-cevap, Sokratik asistan, fotoğraftan çöz | |
@@ -148,3 +148,46 @@ Tamamı `.env.example` içinde.
 - **Havuz cron:** yalnızca satılan paketlerin grupları, bir çalıştırmada en fazla 10 soru.
 - **Yükleme:** müfredat artık her "Supabase'e yükle" çalıştırmasında yüklenir/güncellenir (demo verisinden bağımsız).
 - DB testleri: LGS öğrencisi yalnızca 6 LGS dersi; 12-SAY TYT + SAY AYT; 12-EA edebiyat var fizik yok; paket grubu kaldırılınca hiçbir ders yok; öğrenci kendi grubunu değiştiremez.
+
+---
+
+## Faz 2 — Oyun katmanı (2026-11-13)
+
+### Neler var
+
+- **Karakter:** 6 özgün karakter (Bilge Baykuş, Kıvılcım Tilki, Demir Ayı, Rüzgâr Atmacası, Gölge Kedi, Taş Kaplumbağa), eşit güçte. 5 özellik doğru cevaplarla dersinden beslenir. Seviye 10/25/50'de evrim (yıldız + unvan adı), seviye atlama kutlaması (animasyonlu). "Çok Yönlü": beş özellik 50 → rozet + pelerin.
+- **Seri:** günlük hedef 10 soru (öğrenci başına ayarlanabilir alan). Hedef tamamlanınca seri işlenir; boş günleri seri dondurucu (Altınla, en fazla 2) kapatır; seri kırılırsa ertesi hedefte "Seriyi geri kazan" görevi (2 kat soru) eski seriyi geri verir. Cezalandırıcı dil yok.
+- **Görevler:** günde 3 (biri her zaman en zayıf kazanıma yönlendirir), haftada 4. Ödül otomatik (XP + Altın).
+- **Rozetler:** 46 tanım, 40'ı bu fazda kazanılabilir (düello, klan, topluluk rozetleri ilgili fazda açılır). Bazıları unvan verir.
+- **Mağaza:** yalnızca kozmetik (kostüm aksesuarı, çerçeve, arka plan, düello efekti) ve seri dondurucu; fiyat ve seviye koşulu sunucudaki katalogdan. Gerçek para yok, rastgele sandık yok.
+- **Lig:** haftalık XP ligi, dershane içi, aynı kademede en fazla 30 kişilik gruplar (ilk XP'de otomatik katılım). Hafta sonunda (pazartesi 00:10 cron) ilk 5 yükselir, son 5 düşer (10 kişiden küçük grupta yalnızca üst üçte bir yükselir, düşen yok). 6 kademe × 3 alt kademe; 6 haftalık sezon sonunda kademeye göre Altın ve bir kademe geri.
+- **Sıralamalar:** sınıf, şube, dershane, (bayrak açıksa) dershaneler arası; haftalık veya tüm zamanlar. Yalnızca takma ad, karakter, çerçeve.
+- **Kart albümü:** Bronz ve üstü kazanımlar karttır; bir dersin tüm kartları → "Tam set" rozeti ve Koleksiyoncu unvanı.
+- **Teknik:** 0013 (tablolar, `app.odul_ver` tek ödül noktası, `app.seri_isle`, `sistem_gorev_ilerlet`, `sistem_rozet_ver`, `sistem_satin_al`, `sistem_oyun_metrikleri`, `sistem_lig_kapat`, `lig_grubum()`, `siralama()`); katalog `packages/shared/src/oyun-katalogu.ts`; API `/api/oyun/{durum,karakter,satin-al,kusan}`; cevap yanıtında `oyun` alanı (görev, rozet, seri). Oyun katmanında bir hata cevabı bozmaz.
+- **KMYAI hız sınırı (0016):** platform geneli sıra, istekler arası en az 3 sn (`uygulama_ayari.ai_istek_araligi_ms`), örnek başına tek istek, 2 ardışık 5xx/429'da 5 dk bekleme, cron 10 dakikada en fazla 4 soru.
+
+### Canlı test (2026-11-13)
+
+| Kontrol | Sonuç |
+|---|---|
+| İlk açılışta 3 günlük + 4 haftalık görev, biri zayıf konu | ✔ |
+| İlk soru → "İlk adım" rozeti + 20 Altın | ✔ |
+| Karakter seçimi; sahip olunmayan eşyayı kuşanma | ✔ / 403 |
+| Altın yetmeden satın alma | 409 |
+| LGS öğrencisinin YKS dersi istemesi | 403 |
+| Doğru cevap → XP → lig grubuna otomatik katılım, sıralamada görünme | ✔ |
+| Dershaneler arası sıralama (bayrak kapalı) | reddedildi ✔ |
+| Çok hızlı doğru cevap | XP yok, görev ilerlemesi var (bilinçli) |
+
+### Elle test adımları
+
+1. Mobil: `ogrenci12@demo.kmyarena.demo` → Arena → "Karakterini seç" → bir karakter.
+2. Soru çöz → sonuç kartında "İlk adım" rozeti; Arena'da görev ilerlemesi ve günlük hedef çubuğu.
+3. 10 soru → "Günlük hedef tamam", seri 1.
+4. Lig → kendi grubun; Sınıf/Şube/Dershane sekmeleri.
+5. Mağaza → (yeterli Altın varsa) çerçeve al → Kuşan → avatar çerçevesi değişir.
+6. Rozetler ve Kart albümü ekranları.
+
+### Bilinçli kapsam dışı (sonraki fazlar)
+
+- Canlı Soru Saati ve Hızlı Tur → Faz 3; birlikte çalışma odası, "geçen haftaki sen" grafiği, haftalık gelişim kartı, tematik etkinlikler, akıllı geri dönüş bildirimleri, 45 dk mola önerisi → Faz 5-7; dershanenin tanımladığı gerçek sezon ödülleri → Faz 6 (dershane paneli); ekonomi değerlerinin panelden düzenlenmesi → Faz 6.
