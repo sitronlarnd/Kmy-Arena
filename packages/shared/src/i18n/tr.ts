@@ -70,6 +70,8 @@ export const tr = {
     tekrarYok: "Şu an tekrar edilecek soru yok. Harika gidiyorsun!",
     tespitBitti: "Bu dersin seviye tespitini tamamladın.",
     kazanimYok: "Bu konu bulunamadı.",
+    kapsamDisi: "Bu ders senin paketinde ya da alanında yok.",
+    paketYok: "Dershanenin paketinde senin sınav grubun (LGS/YKS) tanımlı değil. Dershanenle iletişime geç.",
     gosterilmedi: "Bu soru sana gösterilmemiş.",
     zatenCevaplandi: "Bu soruyu zaten cevapladın.",
     ipucuYok: "Bu soru için başka ipucu yok.",

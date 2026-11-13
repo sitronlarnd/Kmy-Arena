@@ -1,119 +1,1517 @@
 {
-  "_not": "BAŞLANGIÇ ÖRNEĞİ. Tam MEB kazanım listesi Faz 1'de bu biçimde eklenecek; kodlar MEB öğretim programıyla doğrulanmalı.",
-  "sinav_turu": "LGS",
-  "dersler": [
+ "_not": "Kaynak: scripts/mufredat_veri.py (elle düzenleme; o dosyayı düzenleyip yeniden üret). Faz 0 kodları (M.8.*, F.8.*, T.8.*, İTA.8.*, DKAB.8.*, E8.*, TYT.M.*, TYT.T.*) korunur; diğerleri platform kodudur, resmî MEB kodu değildir.",
+ "sinav_turu": "LGS",
+ "dersler": [
+  {
+   "kod": "lgs_turkce",
+   "ad": "Türkçe",
+   "ozellik": "bilgelik",
+   "uniteler": [
     {
-      "kod": "lgs_matematik",
-      "ad": "Matematik",
-      "ozellik": "zeka",
-      "uniteler": [
-        {
-          "kod": "M.8.1.1",
-          "ad": "Çarpanlar ve Katlar",
-          "sinif_duzeyi": 8,
-          "kazanimlar": [
-            { "kod": "M.8.1.1.1", "aciklama": "Verilen pozitif tam sayıların pozitif tam sayı çarpanlarını bulur ve üslü ifadelerin çarpımı şeklinde yazar.", "on_kosullar": [] },
-            { "kod": "M.8.1.1.2", "aciklama": "İki doğal sayının EBOB ve EKOK'unu hesaplar, ilgili problemleri çözer.", "on_kosullar": ["M.8.1.1.1"] },
-            { "kod": "M.8.1.1.3", "aciklama": "Verilen iki doğal sayının aralarında asal olup olmadığını belirler.", "on_kosullar": ["M.8.1.1.2"] }
-          ]
-        },
-        {
-          "kod": "M.8.1.2",
-          "ad": "Üslü İfadeler",
-          "sinif_duzeyi": 8,
-          "kazanimlar": [
-            { "kod": "M.8.1.2.1", "aciklama": "Tam sayıların, tam sayı kuvvetlerini hesaplar.", "on_kosullar": [] },
-            { "kod": "M.8.1.2.2", "aciklama": "Üslü ifadelerle ilgili temel kuralları anlar, birbirine denk ifadeler oluşturur.", "on_kosullar": ["M.8.1.2.1"] },
-            { "kod": "M.8.1.2.3", "aciklama": "Sayıların ondalık gösterimlerini 10'un tam sayı kuvvetlerini kullanarak çözümler.", "on_kosullar": ["M.8.1.2.2"] }
-          ]
-        },
-        {
-          "kod": "M.8.1.3",
-          "ad": "Kareköklü İfadeler",
-          "sinif_duzeyi": 8,
-          "kazanimlar": [
-            { "kod": "M.8.1.3.1", "aciklama": "Tam kare pozitif tam sayılarla bu sayıların karekökleri arasındaki ilişkiyi belirler.", "on_kosullar": ["M.8.1.2.1"] },
-            { "kod": "M.8.1.3.2", "aciklama": "Tam kare olmayan kareköklü bir ifadenin değerinin hangi iki doğal sayı arasında olduğunu belirler.", "on_kosullar": ["M.8.1.3.1"] }
-          ]
-        }
-      ]
+     "kod": "T.8.3",
+     "ad": "Okuma",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "T.8.3.14",
+       "aciklama": "Metinle ilgili sorular sorar ve cevaplar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "T.8.3.24",
+       "aciklama": "Okuduğu metindeki ana fikri ve yardımcı fikirleri belirler.",
+       "on_kosullar": []
+      }
+     ]
     },
     {
-      "kod": "lgs_fen",
-      "ad": "Fen Bilimleri",
-      "ozellik": "enerji",
-      "uniteler": [
-        {
-          "kod": "F.8.1",
-          "ad": "Mevsimler ve İklim",
-          "sinif_duzeyi": 8,
-          "kazanimlar": [
-            { "kod": "F.8.1.1.1", "aciklama": "Mevsimlerin oluşumuna yönelik tahminlerde bulunur.", "on_kosullar": [] },
-            { "kod": "F.8.1.2.1", "aciklama": "İklim ve hava olayları arasındaki farkı açıklar.", "on_kosullar": [] }
-          ]
-        }
-      ]
+     "kod": "LGS.TR.02",
+     "ad": "Sözcükte Anlam",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.TR.02.01",
+       "aciklama": "Bağlamdan yararlanarak bilinmeyen kelime ve kelime gruplarının anlamını tahmin eder.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.TR.02.02",
+       "aciklama": "Kelimelerin gerçek, mecaz ve terim anlamlarını ayırt eder.",
+       "on_kosullar": [
+        "LGS.TR.02.01"
+       ]
+      },
+      {
+       "kod": "LGS.TR.02.03",
+       "aciklama": "Deyim, atasözü ve özdeyişlerin metne katkısını belirler.",
+       "on_kosullar": [
+        "LGS.TR.02.02"
+       ]
+      },
+      {
+       "kod": "LGS.TR.02.04",
+       "aciklama": "Eş anlamlı, zıt anlamlı ve eş sesli kelimeleri ayırt eder.",
+       "on_kosullar": [
+        "LGS.TR.02.03"
+       ]
+      },
+      {
+       "kod": "LGS.TR.02.05",
+       "aciklama": "Söz sanatlarını (benzetme, kişileştirme, abartma, karşıtlık, konuşturma) belirler.",
+       "on_kosullar": [
+        "LGS.TR.02.04"
+       ]
+      }
+     ]
     },
     {
-      "kod": "lgs_turkce",
-      "ad": "Türkçe",
-      "ozellik": "bilgelik",
-      "uniteler": [
-        {
-          "kod": "T.8.3",
-          "ad": "Okuma",
-          "sinif_duzeyi": 8,
-          "kazanimlar": [
-            { "kod": "T.8.3.14", "aciklama": "Metinle ilgili sorular sorar ve cevaplar.", "on_kosullar": [] },
-            { "kod": "T.8.3.24", "aciklama": "Okuduğu metindeki ana fikri ve yardımcı fikirleri belirler.", "on_kosullar": [] }
-          ]
-        }
-      ]
+     "kod": "LGS.TR.03",
+     "ad": "Cümlede Anlam",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.TR.03.01",
+       "aciklama": "Cümlede anlam ilişkilerini (neden-sonuç, amaç-sonuç, koşul) belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.TR.03.02",
+       "aciklama": "Öznel ve nesnel yargıları ayırt eder.",
+       "on_kosullar": [
+        "LGS.TR.03.01"
+       ]
+      },
+      {
+       "kod": "LGS.TR.03.03",
+       "aciklama": "Örtülü anlamı ve ön kabulü belirler.",
+       "on_kosullar": [
+        "LGS.TR.03.02"
+       ]
+      },
+      {
+       "kod": "LGS.TR.03.04",
+       "aciklama": "Karşılaştırma, ihtimal, kesinlik, tahmin bildiren ifadeleri ayırt eder.",
+       "on_kosullar": [
+        "LGS.TR.03.03"
+       ]
+      },
+      {
+       "kod": "LGS.TR.03.05",
+       "aciklama": "Cümle yorumlama ve cümle birleştirme sorularını çözer.",
+       "on_kosullar": [
+        "LGS.TR.03.04"
+       ]
+      }
+     ]
     },
     {
-      "kod": "lgs_inkilap",
-      "ad": "T.C. İnkılap Tarihi ve Atatürkçülük",
-      "ozellik": "strateji",
-      "uniteler": [
-        {
-          "kod": "İTA.8.1",
-          "ad": "Bir Kahraman Doğuyor",
-          "sinif_duzeyi": 8,
-          "kazanimlar": [
-            { "kod": "İTA.8.1.1", "aciklama": "Avrupa'daki gelişmelerin Osmanlı Devleti'ne etkilerini kavrar.", "on_kosullar": [] }
-          ]
-        }
-      ]
+     "kod": "LGS.TR.04",
+     "ad": "Paragraf",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.TR.04.01",
+       "aciklama": "Paragrafın konusunu ve ana düşüncesini belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.TR.04.02",
+       "aciklama": "Paragrafta yardımcı düşünceleri belirler.",
+       "on_kosullar": [
+        "LGS.TR.04.01"
+       ]
+      },
+      {
+       "kod": "LGS.TR.04.03",
+       "aciklama": "Paragrafın yapısını (giriş, gelişme, sonuç) ve cümle sıralamasını belirler.",
+       "on_kosullar": [
+        "LGS.TR.04.02"
+       ]
+      },
+      {
+       "kod": "LGS.TR.04.04",
+       "aciklama": "Anlatım biçimlerini (açıklama, tartışma, betimleme, öyküleme) belirler.",
+       "on_kosullar": [
+        "LGS.TR.04.03"
+       ]
+      },
+      {
+       "kod": "LGS.TR.04.05",
+       "aciklama": "Düşünceyi geliştirme yollarını (tanımlama, örnekleme, karşılaştırma, tanık gösterme, sayısal veri) belirler.",
+       "on_kosullar": [
+        "LGS.TR.04.04"
+       ]
+      },
+      {
+       "kod": "LGS.TR.04.06",
+       "aciklama": "Paragrafta akışı bozan cümleyi bulur.",
+       "on_kosullar": [
+        "LGS.TR.04.05"
+       ]
+      }
+     ]
     },
     {
-      "kod": "lgs_din",
-      "ad": "Din Kültürü ve Ahlak Bilgisi",
-      "ozellik": "strateji",
-      "uniteler": [
-        {
-          "kod": "DKAB.8.1",
-          "ad": "Kader İnancı",
-          "sinif_duzeyi": 8,
-          "kazanimlar": [
-            { "kod": "DKAB.8.1.1", "aciklama": "Evrendeki düzen ile kader arasında ilişki kurar.", "on_kosullar": [] }
-          ]
-        }
-      ]
+     "kod": "LGS.TR.05",
+     "ad": "Görsel Okuma ve Sözel Mantık",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.TR.05.01",
+       "aciklama": "Grafik, tablo ve görsellerden çıkarım yapar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.TR.05.02",
+       "aciklama": "Sözel mantık ve muhakeme sorularını çözer.",
+       "on_kosullar": [
+        "LGS.TR.05.01"
+       ]
+      }
+     ]
     },
     {
-      "kod": "lgs_ingilizce",
-      "ad": "İngilizce",
-      "ozellik": "ceviklik",
-      "uniteler": [
-        {
-          "kod": "E8.1",
-          "ad": "Friendship",
-          "sinif_duzeyi": 8,
-          "kazanimlar": [
-            { "kod": "E8.1.R1", "aciklama": "Arkadaşlıkla ilgili kısa metinlerde belirli bilgileri bulur.", "on_kosullar": [] }
-          ]
-        }
-      ]
+     "kod": "LGS.TR.06",
+     "ad": "Fiilimsiler",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.TR.06.01",
+       "aciklama": "İsim-fiil, sıfat-fiil ve zarf-fiilleri belirler ve cümleye kattığı anlamı açıklar.",
+       "on_kosullar": []
+      }
+     ]
+    },
+    {
+     "kod": "LGS.TR.07",
+     "ad": "Cümlenin Ögeleri",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.TR.07.01",
+       "aciklama": "Yüklem ve özneyi belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.TR.07.02",
+       "aciklama": "Nesne, yer tamlayıcısı ve zarf tamlayıcısını belirler.",
+       "on_kosullar": [
+        "LGS.TR.07.01"
+       ]
+      },
+      {
+       "kod": "LGS.TR.07.03",
+       "aciklama": "Ara söz ve cümle dışı unsurları belirler.",
+       "on_kosullar": [
+        "LGS.TR.07.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.TR.08",
+     "ad": "Fiilde Çatı",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.TR.08.01",
+       "aciklama": "Fiillerin etken-edilgen çatısını belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.TR.08.02",
+       "aciklama": "Fiillerin geçişli-geçişsiz çatısını belirler.",
+       "on_kosullar": [
+        "LGS.TR.08.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.TR.09",
+     "ad": "Cümle Türleri",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.TR.09.01",
+       "aciklama": "Yüklemine, anlamına ve yapısına göre cümle türlerini ayırt eder.",
+       "on_kosullar": []
+      }
+     ]
+    },
+    {
+     "kod": "LGS.TR.10",
+     "ad": "Yazım ve Noktalama",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.TR.10.01",
+       "aciklama": "Yazım kurallarını uygular.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.TR.10.02",
+       "aciklama": "Noktalama işaretlerini doğru kullanır.",
+       "on_kosullar": [
+        "LGS.TR.10.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.TR.11",
+     "ad": "Metin Türleri ve Anlatım Bozuklukları",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.TR.11.01",
+       "aciklama": "Metin türlerini (hikâye, masal, fabl, biyografi, deneme, makale, gezi yazısı) ayırt eder.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.TR.11.02",
+       "aciklama": "Anlatım bozukluklarını belirler ve düzeltir.",
+       "on_kosullar": [
+        "LGS.TR.11.01"
+       ]
+      }
+     ]
     }
-  ]
+   ]
+  },
+  {
+   "kod": "lgs_matematik",
+   "ad": "Matematik",
+   "ozellik": "zeka",
+   "uniteler": [
+    {
+     "kod": "M.8.1.1",
+     "ad": "Çarpanlar ve Katlar",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "M.8.1.1.1",
+       "aciklama": "Verilen pozitif tam sayıların pozitif tam sayı çarpanlarını bulur ve üslü ifadelerin çarpımı şeklinde yazar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "M.8.1.1.2",
+       "aciklama": "İki doğal sayının EBOB ve EKOK'unu hesaplar, ilgili problemleri çözer.",
+       "on_kosullar": [
+        "M.8.1.1.1"
+       ]
+      },
+      {
+       "kod": "M.8.1.1.3",
+       "aciklama": "Verilen iki doğal sayının aralarında asal olup olmadığını belirler.",
+       "on_kosullar": [
+        "M.8.1.1.2"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "M.8.1.2",
+     "ad": "Üslü İfadeler",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "M.8.1.2.1",
+       "aciklama": "Tam sayıların, tam sayı kuvvetlerini hesaplar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "M.8.1.2.2",
+       "aciklama": "Üslü ifadelerle ilgili temel kuralları anlar, birbirine denk ifadeler oluşturur.",
+       "on_kosullar": [
+        "M.8.1.2.1"
+       ]
+      },
+      {
+       "kod": "M.8.1.2.3",
+       "aciklama": "Sayıların ondalık gösterimlerini 10'un tam sayı kuvvetlerini kullanarak çözümler.",
+       "on_kosullar": [
+        "M.8.1.2.2"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.02.04",
+       "aciklama": "Verilen bir sayıyı 10'un farklı tam sayı kuvvetlerini kullanarak ifade eder.",
+       "on_kosullar": [
+        "M.8.1.2.3"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.02.05",
+       "aciklama": "Çok büyük ve çok küçük sayıları bilimsel gösterimle ifade eder ve karşılaştırır.",
+       "on_kosullar": [
+        "LGS.MAT.02.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "M.8.1.3",
+     "ad": "Kareköklü İfadeler",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "M.8.1.3.1",
+       "aciklama": "Tam kare pozitif tam sayılarla bu sayıların karekökleri arasındaki ilişkiyi belirler.",
+       "on_kosullar": [
+        "M.8.1.2.1"
+       ]
+      },
+      {
+       "kod": "M.8.1.3.2",
+       "aciklama": "Tam kare olmayan kareköklü bir ifadenin değerinin hangi iki doğal sayı arasında olduğunu belirler.",
+       "on_kosullar": [
+        "M.8.1.3.1"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.03.03",
+       "aciklama": "Kareköklü bir ifadeyi a√b şeklinde yazar ve katsayıyı kök içine alır.",
+       "on_kosullar": [
+        "M.8.1.3.2"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.03.04",
+       "aciklama": "Kareköklü ifadelerde çarpma ve bölme işlemlerini yapar.",
+       "on_kosullar": [
+        "LGS.MAT.03.03"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.03.05",
+       "aciklama": "Kareköklü ifadelerde toplama ve çıkarma işlemlerini yapar.",
+       "on_kosullar": [
+        "LGS.MAT.03.04"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.03.06",
+       "aciklama": "Kareköklü bir ifade ile çarpıldığında sonucu doğal sayı yapan çarpanlara örnek verir.",
+       "on_kosullar": [
+        "LGS.MAT.03.05"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.03.07",
+       "aciklama": "Ondalık ifadelerin kareköklerini belirler.",
+       "on_kosullar": [
+        "LGS.MAT.03.06"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.03.08",
+       "aciklama": "Gerçek sayıları tanır; rasyonel ve irrasyonel sayılarla ilgili çıkarımlar yapar.",
+       "on_kosullar": [
+        "LGS.MAT.03.07"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.MAT.04",
+     "ad": "Veri Analizi",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.MAT.04.01",
+       "aciklama": "En fazla üç veri grubuna ait çizgi ve sütun grafiklerini yorumlar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.MAT.04.02",
+       "aciklama": "Verileri sütun, daire veya çizgi grafiği ile gösterir ve bu gösterimler arasında dönüşüm yapar.",
+       "on_kosullar": [
+        "LGS.MAT.04.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.MAT.05",
+     "ad": "Basit Olayların Olma Olasılığı",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.MAT.05.01",
+       "aciklama": "Bir olaya ait olası durumları belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.MAT.05.02",
+       "aciklama": "Daha fazla, eşit, daha az olasılıklı olayları ayırt eder.",
+       "on_kosullar": [
+        "LGS.MAT.05.01"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.05.03",
+       "aciklama": "Eşit şansa sahip olaylarda her bir çıktının olasılık değerini belirler.",
+       "on_kosullar": [
+        "LGS.MAT.05.02"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.05.04",
+       "aciklama": "Basit olayların olma olasılığını hesaplar.",
+       "on_kosullar": [
+        "LGS.MAT.05.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.MAT.06",
+     "ad": "Cebirsel İfadeler ve Özdeşlikler",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.MAT.06.01",
+       "aciklama": "Basit cebirsel ifadeleri anlar ve farklı biçimlerde yazar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.MAT.06.02",
+       "aciklama": "Cebirsel ifadelerin çarpımını yapar.",
+       "on_kosullar": [
+        "LGS.MAT.06.01"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.06.03",
+       "aciklama": "Özdeşlikleri modellerle açıklar.",
+       "on_kosullar": [
+        "LGS.MAT.06.02"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.06.04",
+       "aciklama": "Cebirsel ifadeleri çarpanlara ayırır.",
+       "on_kosullar": [
+        "LGS.MAT.06.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.MAT.07",
+     "ad": "Doğrusal Denklemler",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.MAT.07.01",
+       "aciklama": "Birinci dereceden bir bilinmeyenli denklemleri çözer.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.MAT.07.02",
+       "aciklama": "Koordinat sistemini özellikleriyle tanır ve sıralı ikilileri gösterir.",
+       "on_kosullar": [
+        "LGS.MAT.07.01"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.07.03",
+       "aciklama": "Aralarında doğrusal ilişki bulunan iki değişkenden birinin diğerine bağlı olarak nasıl değiştiğini tablo ve denklemle ifade eder.",
+       "on_kosullar": [
+        "LGS.MAT.07.02"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.07.04",
+       "aciklama": "Doğrusal denklemlerin grafiğini çizer.",
+       "on_kosullar": [
+        "LGS.MAT.07.03"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.07.05",
+       "aciklama": "Doğrusal ilişki içeren gerçek hayat durumlarına ait denklem, tablo ve grafiği oluşturur ve yorumlar.",
+       "on_kosullar": [
+        "LGS.MAT.07.04"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.07.06",
+       "aciklama": "Doğrunun eğimini modellerle açıklar, doğrusal denklemleri ve grafiklerini eğimle ilişkilendirir.",
+       "on_kosullar": [
+        "LGS.MAT.07.05"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.MAT.08",
+     "ad": "Eşitsizlikler",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.MAT.08.01",
+       "aciklama": "Birinci dereceden bir bilinmeyenli eşitsizlik içeren gerçek hayat durumlarına uygun matematik cümleleri yazar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.MAT.08.02",
+       "aciklama": "Birinci dereceden bir bilinmeyenli eşitsizlikleri sayı doğrusunda gösterir.",
+       "on_kosullar": [
+        "LGS.MAT.08.01"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.08.03",
+       "aciklama": "Birinci dereceden bir bilinmeyenli eşitsizlikleri çözer.",
+       "on_kosullar": [
+        "LGS.MAT.08.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.MAT.09",
+     "ad": "Üçgenler",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.MAT.09.01",
+       "aciklama": "Üçgende kenarortay, açıortay ve yüksekliği inşa eder.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.MAT.09.02",
+       "aciklama": "Üçgenin iki kenar uzunluğunun toplamı veya farkı ile üçüncü kenarının uzunluğunu ilişkilendirir.",
+       "on_kosullar": [
+        "LGS.MAT.09.01"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.09.03",
+       "aciklama": "Üçgenin kenar uzunlukları ile bu kenarların karşısındaki açıların ölçülerini ilişkilendirir.",
+       "on_kosullar": [
+        "LGS.MAT.09.02"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.09.04",
+       "aciklama": "Yeterli sayıda elemanının ölçüleri verilen bir üçgeni çizer.",
+       "on_kosullar": [
+        "LGS.MAT.09.03"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.09.05",
+       "aciklama": "Pisagor bağıntısını oluşturur ve ilgili problemleri çözer.",
+       "on_kosullar": [
+        "LGS.MAT.09.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.MAT.10",
+     "ad": "Eşlik ve Benzerlik",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.MAT.10.01",
+       "aciklama": "Eşlik ve benzerliği ilişkilendirir, eş ve benzer şekillerin kenar ve açı özelliklerini belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.MAT.10.02",
+       "aciklama": "Benzer çokgenlerin benzerlik oranını belirler, bir çokgene eş ve benzer çokgenler oluşturur.",
+       "on_kosullar": [
+        "LGS.MAT.10.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.MAT.11",
+     "ad": "Dönüşüm Geometrisi",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.MAT.11.01",
+       "aciklama": "Nokta, doğru parçası ve diğer düzlemsel şekillerin öteleme sonucundaki görüntülerini çizer.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.MAT.11.02",
+       "aciklama": "Nokta, doğru parçası ve diğer düzlemsel şekillerin yansıma sonucundaki görüntülerini oluşturur.",
+       "on_kosullar": [
+        "LGS.MAT.11.01"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.11.03",
+       "aciklama": "Çokgenlerin öteleme ve yansımalar sonucunda ortaya çıkan görüntüsünü oluşturur.",
+       "on_kosullar": [
+        "LGS.MAT.11.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.MAT.12",
+     "ad": "Geometrik Cisimler",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.MAT.12.01",
+       "aciklama": "Dik prizmaları tanır, temel elemanlarını belirler ve açınımını çizer.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.MAT.12.02",
+       "aciklama": "Dik dairesel silindirin temel elemanlarını belirler, açınımını çizer ve yüzey alanını hesaplar.",
+       "on_kosullar": [
+        "LGS.MAT.12.01"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.12.03",
+       "aciklama": "Dik dairesel silindirin hacmini hesaplar.",
+       "on_kosullar": [
+        "LGS.MAT.12.02"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.12.04",
+       "aciklama": "Dik piramidi tanır, temel elemanlarını belirler ve açınımını çizer.",
+       "on_kosullar": [
+        "LGS.MAT.12.03"
+       ]
+      },
+      {
+       "kod": "LGS.MAT.12.05",
+       "aciklama": "Dik koniyi tanır, temel elemanlarını belirler ve açınımını çizer.",
+       "on_kosullar": [
+        "LGS.MAT.12.04"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "lgs_fen",
+   "ad": "Fen Bilimleri",
+   "ozellik": "enerji",
+   "uniteler": [
+    {
+     "kod": "F.8.1",
+     "ad": "Mevsimler ve İklim",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "F.8.1.1.1",
+       "aciklama": "Mevsimlerin oluşumuna yönelik tahminlerde bulunur.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "F.8.1.2.1",
+       "aciklama": "İklim ve hava olayları arasındaki farkı açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.FEN.01.03",
+       "aciklama": "Dünya'nın Güneş etrafındaki dolanımı ve eksen eğikliğinin mevsimlere etkisini açıklar.",
+       "on_kosullar": [
+        "F.8.1.2.1"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.01.04",
+       "aciklama": "İklim biliminin (klimatoloji) ve meteorolojinin uğraş alanlarını açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.01.03"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.01.05",
+       "aciklama": "Hava olaylarının oluşumunda rüzgârın ve basınç farkının etkisini açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.01.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.FEN.02",
+     "ad": "DNA ve Genetik Kod",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.FEN.02.01",
+       "aciklama": "Nükleotid, gen, DNA ve kromozom kavramlarını açıklar ve aralarında ilişki kurar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.FEN.02.02",
+       "aciklama": "DNA'nın yapısını ve kendini eşlemesini açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.02.01"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.02.03",
+       "aciklama": "Kalıtımla ilgili kavramları (gen, alel, baskın, çekinik, genotip, fenotip, saf döl, melez) tanımlar.",
+       "on_kosullar": [
+        "LGS.FEN.02.02"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.02.04",
+       "aciklama": "Tek karakter çaprazlamaları yapar ve sonuçlarını olasılıkla ifade eder.",
+       "on_kosullar": [
+        "LGS.FEN.02.03"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.02.05",
+       "aciklama": "Akraba evliliklerinin genetik hastalıklara etkisini tartışır.",
+       "on_kosullar": [
+        "LGS.FEN.02.04"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.02.06",
+       "aciklama": "Mutasyon ve modifikasyonu ayırt eder.",
+       "on_kosullar": [
+        "LGS.FEN.02.05"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.02.07",
+       "aciklama": "Adaptasyon ve doğal seçilim kavramlarını açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.02.06"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.02.08",
+       "aciklama": "Biyoteknolojik uygulamaları ve olası etkilerini tartışır.",
+       "on_kosullar": [
+        "LGS.FEN.02.07"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.FEN.03",
+     "ad": "Basınç",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.FEN.03.01",
+       "aciklama": "Katı basıncını etkileyen değişkenleri deneyle belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.FEN.03.02",
+       "aciklama": "Sıvı basıncını etkileyen değişkenleri deneyle belirler.",
+       "on_kosullar": [
+        "LGS.FEN.03.01"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.03.03",
+       "aciklama": "Gaz ve sıvı basıncının günlük hayattaki ve teknolojideki uygulamalarını açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.03.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.FEN.04",
+     "ad": "Madde ve Endüstri",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.FEN.04.01",
+       "aciklama": "Periyodik sistemde elementlerin sınıflandırılmasını (metal, ametal, yarı metal, soy gaz) açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.FEN.04.02",
+       "aciklama": "Fiziksel ve kimyasal değişimleri ayırt eder.",
+       "on_kosullar": [
+        "LGS.FEN.04.01"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.04.03",
+       "aciklama": "Kimyasal tepkimeleri ve kütlenin korunumunu açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.04.02"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.04.04",
+       "aciklama": "Asitlerin ve bazların genel özelliklerini, pH ölçeğini ve nötrleşmeyi açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.04.03"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.04.05",
+       "aciklama": "Maddenin ısı alışverişi, öz ısı, hâl değişimi ve ısınma-soğuma grafiklerini yorumlar.",
+       "on_kosullar": [
+        "LGS.FEN.04.04"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.04.06",
+       "aciklama": "Türkiye'de kimya endüstrisinin önemini açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.04.05"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.FEN.05",
+     "ad": "Basit Makineler",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.FEN.05.01",
+       "aciklama": "Basit makinelerin (kaldıraç, makara, palanga, eğik düzlem, çıkrık, dişli, kasnak, vida) işlevini açıklar ve kuvvet kazancını hesaplar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.FEN.05.02",
+       "aciklama": "Basit makinelerin kuvvet ve yoldan kazanç ilişkisini ve iş prensibini açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.05.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.FEN.06",
+     "ad": "Enerji Dönüşümleri ve Çevre Bilimi",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.FEN.06.01",
+       "aciklama": "Besin zinciri, besin ağı ve enerji piramidini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.FEN.06.02",
+       "aciklama": "Fotosentez olayını ve etkileyen faktörleri açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.06.01"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.06.03",
+       "aciklama": "Solunum (oksijenli ve oksijensiz) olayını açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.06.02"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.06.04",
+       "aciklama": "Madde döngülerini (su, karbon, oksijen, azot) açıklar ve çevre sorunlarıyla ilişkilendirir.",
+       "on_kosullar": [
+        "LGS.FEN.06.03"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.06.05",
+       "aciklama": "Sürdürülebilir kalkınma ve geri dönüşümün önemini açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.06.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.FEN.07",
+     "ad": "Elektrik Yükleri ve Elektrik Enerjisi",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.FEN.07.01",
+       "aciklama": "Cisimlerin elektriklenme yollarını (sürtünme, dokunma, etki) açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.FEN.07.02",
+       "aciklama": "Elektrik yüklü cisimler arasındaki etkileşimi açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.07.01"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.07.03",
+       "aciklama": "Elektroskopla yük türünü ve topraklamayı açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.07.02"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.07.04",
+       "aciklama": "Elektrik enerjisinin ısı, ışık ve hareket enerjisine dönüşümünü açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.07.03"
+       ]
+      },
+      {
+       "kod": "LGS.FEN.07.05",
+       "aciklama": "Elektrik enerjisinin üretimi, iletimi ve bilinçli tüketimini açıklar.",
+       "on_kosullar": [
+        "LGS.FEN.07.04"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "lgs_inkilap",
+   "ad": "T.C. İnkılap Tarihi ve Atatürkçülük",
+   "ozellik": "strateji",
+   "uniteler": [
+    {
+     "kod": "İTA.8.1",
+     "ad": "Bir Kahraman Doğuyor",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "İTA.8.1.1",
+       "aciklama": "Avrupa'daki gelişmelerin Osmanlı Devleti'ne etkilerini kavrar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.ITA.01.02",
+       "aciklama": "20. yüzyıl başlarında Osmanlı Devleti'nin siyasi ve sosyal durumunu açıklar.",
+       "on_kosullar": [
+        "İTA.8.1.1"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.01.03",
+       "aciklama": "Mustafa Kemal'in çocukluk ve öğrenim hayatından hareketle onun kişilik özelliklerinin oluşumunu açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.01.02"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.01.04",
+       "aciklama": "Mustafa Kemal'in askerlik hayatındaki başarılarını ve Trablusgarp, Balkan savaşlarını açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.01.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ITA.02",
+     "ad": "Millî Uyanış: Bağımsızlık Yolunda Atılan Adımlar",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ITA.02.01",
+       "aciklama": "Birinci Dünya Savaşı'nın sebeplerini ve Osmanlı Devleti'nin savaşa girişini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.ITA.02.02",
+       "aciklama": "Osmanlı Devleti'nin savaştığı cepheleri ve Çanakkale Savaşları'nın önemini açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.02.01"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.02.03",
+       "aciklama": "Mondros Ateşkes Antlaşması ve işgaller karşısında Türk milletinin tepkisini açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.02.02"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.02.04",
+       "aciklama": "Cemiyetleri (yararlı ve zararlı) ayırt eder.",
+       "on_kosullar": [
+        "LGS.ITA.02.03"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.02.05",
+       "aciklama": "Mustafa Kemal'in Samsun'a çıkışı, genelgeler ve kongreleri açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.02.04"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.02.06",
+       "aciklama": "Misak-ı Millî ve Son Osmanlı Mebusan Meclisi'ni açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.02.05"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.02.07",
+       "aciklama": "TBMM'nin açılışını ve karşılaştığı ayaklanmaları açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.02.06"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.02.08",
+       "aciklama": "Sevr Antlaşması'nı ve millî mücadeleye etkisini açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.02.07"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ITA.03",
+     "ad": "Millî Bir Destan: Ya İstiklal Ya Ölüm!",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ITA.03.01",
+       "aciklama": "Doğu ve Güney cephelerindeki mücadeleleri ve sonuçlarını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.ITA.03.02",
+       "aciklama": "Düzenli ordunun kurulması, I. ve II. İnönü, Sakarya Meydan Muharebesi'ni açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.03.01"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.03.03",
+       "aciklama": "Tekâlif-i Millîye emirlerini ve halkın fedakârlığını açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.03.02"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.03.04",
+       "aciklama": "Büyük Taarruz, Mudanya Ateşkes ve Lozan Barış Antlaşması'nı açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.03.03"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.03.05",
+       "aciklama": "Millî Mücadele döneminde kültür ve sanattaki gelişmeleri açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.03.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ITA.04",
+     "ad": "Atatürkçülük ve Çağdaşlaşan Türkiye",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ITA.04.01",
+       "aciklama": "Saltanatın kaldırılması, Cumhuriyetin ilanı ve halifeliğin kaldırılmasını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.ITA.04.02",
+       "aciklama": "Hukuk alanındaki inkılapları açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.04.01"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.04.03",
+       "aciklama": "Eğitim ve kültür alanındaki inkılapları açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.04.02"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.04.04",
+       "aciklama": "Toplumsal alanda yapılan inkılapları açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.04.03"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.04.05",
+       "aciklama": "Ekonomi alanındaki gelişmeleri açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.04.04"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.04.06",
+       "aciklama": "Atatürk ilkelerini (cumhuriyetçilik, milliyetçilik, halkçılık, devletçilik, laiklik, inkılapçılık) açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.04.05"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ITA.05",
+     "ad": "Demokratikleşme Çabaları",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ITA.05.01",
+       "aciklama": "Çok partili hayata geçiş denemelerini (Terakkiperver Cumhuriyet Fırkası, Serbest Cumhuriyet Fırkası) açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.ITA.05.02",
+       "aciklama": "Cumhuriyete yönelik tehditleri (Şeyh Sait İsyanı, İzmir Suikast Girişimi, Menemen Olayı) açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.05.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ITA.06",
+     "ad": "Atatürk Dönemi Türk Dış Politikası",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ITA.06.01",
+       "aciklama": "Atatürk dönemi dış politikanın temel ilkelerini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.ITA.06.02",
+       "aciklama": "Lozan'dan kalan sorunları (Musul, nüfus mübadelesi, yabancı okullar, Boğazlar) açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.06.01"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.06.03",
+       "aciklama": "Montrö Boğazlar Sözleşmesi, Balkan Antantı, Sadabat Paktı ve Hatay'ın anavatana katılmasını açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.06.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ITA.07",
+     "ad": "Atatürk'ün Ölümü ve Sonrası",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ITA.07.01",
+       "aciklama": "Atatürk'ün ölümü ve manevi mirasını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.ITA.07.02",
+       "aciklama": "İkinci Dünya Savaşı'nın Türkiye'ye etkilerini açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.07.01"
+       ]
+      },
+      {
+       "kod": "LGS.ITA.07.03",
+       "aciklama": "Çok partili siyasi hayata geçişi açıklar.",
+       "on_kosullar": [
+        "LGS.ITA.07.02"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "lgs_din",
+   "ad": "Din Kültürü ve Ahlak Bilgisi",
+   "ozellik": "strateji",
+   "uniteler": [
+    {
+     "kod": "DKAB.8.1",
+     "ad": "Kader İnancı",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "DKAB.8.1.1",
+       "aciklama": "Evrendeki düzen ile kader arasında ilişki kurar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.DIN.01.02",
+       "aciklama": "Kader, kaza, ecel, rızık, tevekkül kavramlarını açıklar.",
+       "on_kosullar": [
+        "DKAB.8.1.1"
+       ]
+      },
+      {
+       "kod": "LGS.DIN.01.03",
+       "aciklama": "İnsanın iradesi ile kader arasındaki ilişkiyi açıklar.",
+       "on_kosullar": [
+        "LGS.DIN.01.02"
+       ]
+      },
+      {
+       "kod": "LGS.DIN.01.04",
+       "aciklama": "Ayetel Kürsi'yi okur, anlamını açıklar.",
+       "on_kosullar": [
+        "LGS.DIN.01.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.DIN.02",
+     "ad": "Zekât ve Sadaka",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.DIN.02.01",
+       "aciklama": "İslam'ın paylaşma ve yardımlaşmaya verdiği önemi açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.DIN.02.02",
+       "aciklama": "Zekât ve sadaka ibadetlerini, kimlere verileceğini açıklar.",
+       "on_kosullar": [
+        "LGS.DIN.02.01"
+       ]
+      },
+      {
+       "kod": "LGS.DIN.02.03",
+       "aciklama": "Zekâtın bireysel ve toplumsal faydalarını açıklar.",
+       "on_kosullar": [
+        "LGS.DIN.02.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.DIN.03",
+     "ad": "Din ve Hayat",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.DIN.03.01",
+       "aciklama": "Dinin temel gayesini ve insan hayatındaki yerini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.DIN.03.02",
+       "aciklama": "Dinin korunmasını emrettiği temel değerleri (can, akıl, nesil, mal, din) açıklar.",
+       "on_kosullar": [
+        "LGS.DIN.03.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.DIN.04",
+     "ad": "Hz. Muhammed'in Örnekliği",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.DIN.04.01",
+       "aciklama": "Hz. Muhammed'in doğruluk, güvenilirlik, merhamet ve adalet gibi örnek davranışlarını açıklar.",
+       "on_kosullar": []
+      }
+     ]
+    },
+    {
+     "kod": "LGS.DIN.05",
+     "ad": "Kur'an-ı Kerim ve Özellikleri",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.DIN.05.01",
+       "aciklama": "Kur'an-ı Kerim'in ana konularını ve temel özelliklerini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.DIN.05.02",
+       "aciklama": "Kur'an-ı Kerim'de geçen kıssaları ve verdiği mesajları açıklar.",
+       "on_kosullar": [
+        "LGS.DIN.05.01"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "lgs_ingilizce",
+   "ad": "İngilizce",
+   "ozellik": "ceviklik",
+   "uniteler": [
+    {
+     "kod": "E8.1",
+     "ad": "Friendship",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "E8.1.R1",
+       "aciklama": "Arkadaşlıkla ilgili kısa metinlerde belirli bilgileri bulur.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.ING.01.02",
+       "aciklama": "Davet etme, daveti kabul etme ve reddetme, özür dileme ifadelerini anlar.",
+       "on_kosullar": [
+        "E8.1.R1"
+       ]
+      },
+      {
+       "kod": "LGS.ING.01.03",
+       "aciklama": "Bir arkadaşı tanımlayan kısa metinlerde belirli bilgileri bulur.",
+       "on_kosullar": [
+        "LGS.ING.01.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ING.02",
+     "ad": "Teen Life",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ING.02.01",
+       "aciklama": "Tercihleri ifade etme, beğeni ve beğenmeme bildiren ifadeleri anlar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.ING.02.02",
+       "aciklama": "Günlük rutinlerle ilgili kısa metinlerde ana fikri belirler.",
+       "on_kosullar": [
+        "LGS.ING.02.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ING.03",
+     "ad": "In the Kitchen",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ING.03.01",
+       "aciklama": "Bir sürecin aşamalarını (yemek tarifi) anlatan metinleri anlar ve sıralar.",
+       "on_kosullar": []
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ING.04",
+     "ad": "On the Phone",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ING.04.01",
+       "aciklama": "Telefon konuşmalarında kullanılan kalıpları anlar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.ING.04.02",
+       "aciklama": "Telefon konuşmasında eksik bırakılan ifadeyi tamamlar.",
+       "on_kosullar": [
+        "LGS.ING.04.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ING.05",
+     "ad": "The Internet",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ING.05.01",
+       "aciklama": "İnternet kullanımıyla ilgili kabul, ret ve öneri ifadelerini anlar.",
+       "on_kosullar": []
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ING.06",
+     "ad": "Adventures",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ING.06.01",
+       "aciklama": "Karşılaştırma ve tercih bildiren ifadeleri anlar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "LGS.ING.06.02",
+       "aciklama": "Macera sporlarıyla ilgili metinlerden çıkarım yapar.",
+       "on_kosullar": [
+        "LGS.ING.06.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ING.07",
+     "ad": "Tourism",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ING.07.01",
+       "aciklama": "Deneyimleri ve yer tanımlarını anlatan metinleri anlar.",
+       "on_kosullar": []
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ING.08",
+     "ad": "Chores",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ING.08.01",
+       "aciklama": "Görev ve sorumlulukları ifade eden (have to, must) yapıları anlar.",
+       "on_kosullar": []
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ING.09",
+     "ad": "Science",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ING.09.01",
+       "aciklama": "Bilimsel gelişmeler ve süreçleri anlatan metinlerdeki edilgen yapıları anlar.",
+       "on_kosullar": []
+      }
+     ]
+    },
+    {
+     "kod": "LGS.ING.10",
+     "ad": "Natural Forces",
+     "sinif_duzeyi": 8,
+     "kazanimlar": [
+      {
+       "kod": "LGS.ING.10.01",
+       "aciklama": "Doğal afetlerle ilgili tahmin, sebep-sonuç ifadelerini anlar.",
+       "on_kosullar": []
+      }
+     ]
+    }
+   ]
+  }
+ ]
 }

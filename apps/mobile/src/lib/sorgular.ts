@@ -58,14 +58,22 @@ export interface HaritaDersi extends Ders {
   uniteler: HaritaUnitesi[];
 }
 
+/** Öğrencinin paketine ve sınıfına (LGS / YKS, alan) göre açık dersleri ve müfredatı. */
 export function useMufredat() {
+  const id = useOturum((s) => s.oturum?.user.id);
   return useQuery({
-    queryKey: ["mufredat"],
+    queryKey: ["mufredat", id],
+    enabled: Boolean(id),
     staleTime: 10 * 60_000,
     queryFn: async (): Promise<HaritaDersi[]> => {
+      const { data: izinli, error: h1 } = await supabase.rpc("derslerim");
+      if (h1) throw h1;
+      const idler = ((izinli ?? []) as Array<{ id: string }>).map((d) => d.id);
+      if (idler.length === 0) return [];
       const { data, error } = await supabase
         .from("ders")
         .select("id, kod, ad, sinav_turu, sira, uniteler:unite (id, ad, sira, kazanimlar:kazanim (id, kod, aciklama, on_kosullar, sira))")
+        .in("id", idler)
         .order("sira");
       if (error) throw error;
       return ((data ?? []) as unknown as Array<HaritaDersi & { sira: number }>).map((d) => ({

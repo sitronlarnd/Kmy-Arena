@@ -8,7 +8,8 @@
 #   yeterli.
 # • Her migration tek işlem (transaction) içinde çalışır; hata olursa o dosya
 #   geri alınır ve betik durur.
-# • Seed tekrar çalıştırılabilir (idempotent). DEMO hesapları içerir, gerçek
+# • Müfredat (01_mufredat.sql) her çalıştırmada yüklenir/günceller.
+# • --seed: demo verisi (02_demo.sql). DEMO hesapları içerir, gerçek
 #   dershane verisinin olduğu veritabanında --seed kullanma.
 set -euo pipefail
 
@@ -38,8 +39,13 @@ for f in "$KOK"/supabase/migrations/*.sql; do
   "${PSQL[@]}" -1 -f "$f" -c "insert into public.kmy_migration (ad) values ('$ad')" >/dev/null
 done
 
+# Müfredat her zaman yüklenir (demo verisi değildir; tekrar çalıştırılabilir).
+echo "• Müfredat: 01_mufredat.sql"
+"${PSQL[@]}" -1 -f "$KOK/supabase/seed/01_mufredat.sql" >/dev/null
+
 if [[ "$SEED" == "1" ]]; then
   for f in "$KOK"/supabase/seed/*.sql; do
+    [[ "$(basename "$f")" == "01_mufredat.sql" ]] && continue
     echo "• Seed: $(basename "$f")"
     "${PSQL[@]}" -1 -f "$f" >/dev/null
   done

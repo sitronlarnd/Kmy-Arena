@@ -483,4 +483,48 @@ do $$ begin
 end $$;
 rollback;
 
+\echo '▶ 13. Paket ve sınıfa göre ders kapsamı (LGS / YKS, alan)'
+do $$
+declare n integer;
+begin
+  -- 8. sınıf öğrencisi (ogrenci01, 8-A) → yalnızca LGS
+  perform test.dogrula(not exists (select 1 from public.sistem_ogrenci_dersleri(app.sabit_uuid('kullanici:ogrenci01@demo.kmyarena.demo')) where sinav_turu <> 'LGS'), 'LGS öğrencisi YKS dersi görüyor');
+  perform test.dogrula((select count(*) from public.sistem_ogrenci_dersleri(app.sabit_uuid('kullanici:ogrenci01@demo.kmyarena.demo'))) = 6, 'LGS ders sayısı');
+  -- 12-SAY öğrencisi (ogrenci11) → TYT + SAY AYT, sözel AYT yok
+  perform test.dogrula(exists (select 1 from public.sistem_ogrenci_dersleri(app.sabit_uuid('kullanici:ogrenci11@demo.kmyarena.demo')) where kod = 'ayt_fizik'), 'SAY öğrencisi AYT fizik görmüyor');
+  perform test.dogrula(not exists (select 1 from public.sistem_ogrenci_dersleri(app.sabit_uuid('kullanici:ogrenci11@demo.kmyarena.demo')) where kod in ('ayt_edebiyat', 'ydt_ingilizce') or sinav_turu = 'LGS'), 'SAY öğrencisi alan dışı ders görüyor');
+  -- 12-EA öğrencisi (ogrenci31) → edebiyat var, fizik yok
+  perform test.dogrula(exists (select 1 from public.sistem_ogrenci_dersleri(app.sabit_uuid('kullanici:ogrenci31@demo.kmyarena.demo')) where kod = 'ayt_edebiyat')
+    and not exists (select 1 from public.sistem_ogrenci_dersleri(app.sabit_uuid('kullanici:ogrenci31@demo.kmyarena.demo')) where kod = 'ayt_fizik'), 'EA kapsamı yanlış');
+  -- Paket YKS'yi kapsamıyorsa YKS öğrencisi hiçbir ders göremez
+  update public.paket set sinav_gruplari = '{LGS}' where kod = 'pro';
+  select count(*) into n from public.sistem_ogrenci_dersleri(app.sabit_uuid('kullanici:ogrenci11@demo.kmyarena.demo'));
+  perform test.dogrula(n = 0, 'paket dışı grup açıldı');
+  update public.paket set sinav_gruplari = '{LGS,YKS}' where kod = 'pro';
+  -- Elle atanan grup sınıfı ezer
+  update public.kullanici set sinav_grubu = 'YKS', yks_alani = 'DIL' where id = app.sabit_uuid('kullanici:ogrenci02@demo.kmyarena.demo');
+  perform test.dogrula(exists (select 1 from public.sistem_ogrenci_dersleri(app.sabit_uuid('kullanici:ogrenci02@demo.kmyarena.demo')) where kod = 'ydt_ingilizce'), 'elle atama çalışmadı');
+  update public.kullanici set sinav_grubu = null, yks_alani = null where id = app.sabit_uuid('kullanici:ogrenci02@demo.kmyarena.demo');
+  perform test.dogrula((select count(*) from public.kazanim) >= 500, 'müfredat eksik');
+end $$;
+
+begin;
+select test.oturum('ogrenci01@demo.kmyarena.demo');
+set local role authenticated;
+do $$ begin
+  perform test.dogrula((select count(*) from public.derslerim()) = 6 and (select bool_and(sinav_grubu = 'LGS') from public.derslerim()), 'derslerim() yanlış');
+  begin
+    perform public.sistem_ogrenci_dersleri(auth.uid());
+    raise exception 'TEST BAŞARISIZ: istemci sistem fonksiyonunu çağırdı';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    update public.kullanici set sinav_grubu = 'YKS' where id = auth.uid();
+    raise exception 'TEST BAŞARISIZ: öğrenci kendi sınav grubunu değiştirdi';
+  exception when insufficient_privilege then null;
+  end;
+end $$;
+rollback;
+
 \echo '✔ Tüm veritabanı testleri geçti'
+

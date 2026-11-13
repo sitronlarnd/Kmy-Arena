@@ -1,0 +1,1351 @@
+{
+ "_not": "Kaynak: scripts/mufredat_veri.py (elle düzenleme; o dosyayı düzenleyip yeniden üret). Faz 0 kodları (M.8.*, F.8.*, T.8.*, İTA.8.*, DKAB.8.*, E8.*, TYT.M.*, TYT.T.*) korunur; diğerleri platform kodudur, resmî MEB kodu değildir.",
+ "sinav_turu": "AYT",
+ "dersler": [
+  {
+   "kod": "ayt_matematik",
+   "ad": "Matematik",
+   "ozellik": "zeka",
+   "uniteler": [
+    {
+     "kod": "AYT.MAT.01",
+     "ad": "Fonksiyonlar ve Polinomlar",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.MAT.01.01",
+       "aciklama": "Fonksiyonların özelliklerini ve dönüşümlerini uygular.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.MAT.01.02",
+       "aciklama": "Polinomlarla ileri işlemler ve çarpanlara ayırma yapar.",
+       "on_kosullar": [
+        "AYT.MAT.01.01"
+       ]
+      },
+      {
+       "kod": "AYT.MAT.01.03",
+       "aciklama": "İkinci dereceden eşitsizlikleri çözer.",
+       "on_kosullar": [
+        "AYT.MAT.01.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.MAT.02",
+     "ad": "İkinci Dereceden Fonksiyonlar",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.MAT.02.01",
+       "aciklama": "Parabolün grafiğini çizer ve yorumlar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.MAT.02.02",
+       "aciklama": "Parabol ile doğrunun birbirine göre durumlarını inceler.",
+       "on_kosullar": [
+        "AYT.MAT.02.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.MAT.03",
+     "ad": "Trigonometri",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.MAT.03.01",
+       "aciklama": "Yönlü açılar ve birim çemberi kullanır.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.MAT.03.02",
+       "aciklama": "Trigonometrik fonksiyonları ve grafiklerini yorumlar.",
+       "on_kosullar": [
+        "AYT.MAT.03.01"
+       ]
+      },
+      {
+       "kod": "AYT.MAT.03.03",
+       "aciklama": "Kosinüs ve sinüs teoremlerini uygular.",
+       "on_kosullar": [
+        "AYT.MAT.03.02"
+       ]
+      },
+      {
+       "kod": "AYT.MAT.03.04",
+       "aciklama": "Toplam-fark ve iki kat açı formüllerini uygular.",
+       "on_kosullar": [
+        "AYT.MAT.03.03"
+       ]
+      },
+      {
+       "kod": "AYT.MAT.03.05",
+       "aciklama": "Trigonometrik denklemleri çözer.",
+       "on_kosullar": [
+        "AYT.MAT.03.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.MAT.04",
+     "ad": "Üstel ve Logaritmik Fonksiyonlar",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.MAT.04.01",
+       "aciklama": "Üstel fonksiyonları ve grafiklerini yorumlar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.MAT.04.02",
+       "aciklama": "Logaritma fonksiyonunu ve özelliklerini kullanır.",
+       "on_kosullar": [
+        "AYT.MAT.04.01"
+       ]
+      },
+      {
+       "kod": "AYT.MAT.04.03",
+       "aciklama": "Üstel ve logaritmik denklem ve eşitsizlikleri çözer.",
+       "on_kosullar": [
+        "AYT.MAT.04.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.MAT.05",
+     "ad": "Diziler",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.MAT.05.01",
+       "aciklama": "Gerçek sayı dizilerini tanımlar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.MAT.05.02",
+       "aciklama": "Aritmetik ve geometrik dizilerle problem çözer.",
+       "on_kosullar": [
+        "AYT.MAT.05.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.MAT.06",
+     "ad": "Limit ve Süreklilik",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.MAT.06.01",
+       "aciklama": "Limit kavramını ve limit özelliklerini kullanır.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.MAT.06.02",
+       "aciklama": "Belirsizlik durumlarında limit hesaplar.",
+       "on_kosullar": [
+        "AYT.MAT.06.01"
+       ]
+      },
+      {
+       "kod": "AYT.MAT.06.03",
+       "aciklama": "Sürekliliği inceler.",
+       "on_kosullar": [
+        "AYT.MAT.06.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.MAT.07",
+     "ad": "Türev",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.MAT.07.01",
+       "aciklama": "Türev kavramını ve türev alma kurallarını uygular.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.MAT.07.02",
+       "aciklama": "Türevin geometrik yorumunu (teğet) kullanır.",
+       "on_kosullar": [
+        "AYT.MAT.07.01"
+       ]
+      },
+      {
+       "kod": "AYT.MAT.07.03",
+       "aciklama": "Artan-azalan fonksiyonları ve ekstremumları belirler.",
+       "on_kosullar": [
+        "AYT.MAT.07.02"
+       ]
+      },
+      {
+       "kod": "AYT.MAT.07.04",
+       "aciklama": "Türev ile optimizasyon problemlerini çözer.",
+       "on_kosullar": [
+        "AYT.MAT.07.03"
+       ]
+      },
+      {
+       "kod": "AYT.MAT.07.05",
+       "aciklama": "Fonksiyon grafiklerini türev yardımıyla çizer.",
+       "on_kosullar": [
+        "AYT.MAT.07.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.MAT.08",
+     "ad": "İntegral",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.MAT.08.01",
+       "aciklama": "Belirsiz integral ve integral alma yöntemlerini uygular.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.MAT.08.02",
+       "aciklama": "Belirli integrali ve özelliklerini kullanır.",
+       "on_kosullar": [
+        "AYT.MAT.08.01"
+       ]
+      },
+      {
+       "kod": "AYT.MAT.08.03",
+       "aciklama": "İntegral ile alan hesaplar.",
+       "on_kosullar": [
+        "AYT.MAT.08.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.MAT.09",
+     "ad": "Olasılık",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.MAT.09.01",
+       "aciklama": "Koşullu olasılığı hesaplar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.MAT.09.02",
+       "aciklama": "Bağımsız ve bağımlı olayların olasılığını hesaplar.",
+       "on_kosullar": [
+        "AYT.MAT.09.01"
+       ]
+      }
+     ]
+    }
+   ],
+   "alanlar": [
+    "SAY",
+    "EA"
+   ]
+  },
+  {
+   "kod": "ayt_geometri",
+   "ad": "Geometri",
+   "ozellik": "zeka",
+   "uniteler": [
+    {
+     "kod": "AYT.GEO.01",
+     "ad": "Dönüşümler ve Analitik Geometri",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.GEO.01.01",
+       "aciklama": "Doğrunun analitik incelemesini yapar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.GEO.01.02",
+       "aciklama": "Analitik düzlemde öteleme, yansıma ve dönme dönüşümlerini uygular.",
+       "on_kosullar": [
+        "AYT.GEO.01.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.GEO.02",
+     "ad": "Çember ve Daire",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.GEO.02.01",
+       "aciklama": "Çemberde açı, kiriş, teğet özelliklerini kullanır.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.GEO.02.02",
+       "aciklama": "Çemberin analitik incelemesini yapar.",
+       "on_kosullar": [
+        "AYT.GEO.02.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.GEO.03",
+     "ad": "Katı Cisimler",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.GEO.03.01",
+       "aciklama": "Uzayda doğru ve düzlemlerin birbirine göre durumlarını belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.GEO.03.02",
+       "aciklama": "Katı cisimlerin alan ve hacim hesaplarını yapar.",
+       "on_kosullar": [
+        "AYT.GEO.03.01"
+       ]
+      }
+     ]
+    }
+   ],
+   "alanlar": [
+    "SAY",
+    "EA"
+   ]
+  },
+  {
+   "kod": "ayt_fizik",
+   "ad": "Fizik",
+   "ozellik": "enerji",
+   "uniteler": [
+    {
+     "kod": "AYT.FIZ.01",
+     "ad": "Kuvvet ve Hareket",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.FIZ.01.01",
+       "aciklama": "Vektörleri ve bileşenlerini kullanır.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.FIZ.01.02",
+       "aciklama": "Bağıl hareketi açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.01.01"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.01.03",
+       "aciklama": "Newton'un hareket yasalarını uygular.",
+       "on_kosullar": [
+        "AYT.FIZ.01.02"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.01.04",
+       "aciklama": "Bir boyutta sabit ivmeli hareketi inceler.",
+       "on_kosullar": [
+        "AYT.FIZ.01.03"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.01.05",
+       "aciklama": "İki boyutta hareketi (atışlar) inceler.",
+       "on_kosullar": [
+        "AYT.FIZ.01.04"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.01.06",
+       "aciklama": "Enerji ve hareket ilişkisini açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.01.05"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.01.07",
+       "aciklama": "İtme ve çizgisel momentumu uygular.",
+       "on_kosullar": [
+        "AYT.FIZ.01.06"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.01.08",
+       "aciklama": "Tork, denge ve kütle merkezini uygular.",
+       "on_kosullar": [
+        "AYT.FIZ.01.07"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.01.09",
+       "aciklama": "Basit makineleri inceler.",
+       "on_kosullar": [
+        "AYT.FIZ.01.08"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.FIZ.02",
+     "ad": "Elektrik ve Manyetizma",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.FIZ.02.01",
+       "aciklama": "Elektriksel kuvvet ve elektrik alanı açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.FIZ.02.02",
+       "aciklama": "Elektriksel potansiyel ve potansiyel enerjiyi açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.02.01"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.02.03",
+       "aciklama": "Düzgün elektrik alan ve sığayı açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.02.02"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.02.04",
+       "aciklama": "Manyetizmayı ve elektromanyetik indüksiyonu açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.02.03"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.02.05",
+       "aciklama": "Alternatif akım ve transformatörleri açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.02.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.FIZ.03",
+     "ad": "Çembersel ve Harmonik Hareket",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.FIZ.03.01",
+       "aciklama": "Düzgün çembersel hareketi açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.FIZ.03.02",
+       "aciklama": "Dönerek öteleme ve açısal momentumu açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.03.01"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.03.03",
+       "aciklama": "Kütle çekim ve Kepler yasalarını açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.03.02"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.03.04",
+       "aciklama": "Basit harmonik hareketi açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.03.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.FIZ.04",
+     "ad": "Dalga Mekaniği",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.FIZ.04.01",
+       "aciklama": "Su dalgalarında kırınım ve girişimi açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.FIZ.04.02",
+       "aciklama": "Işığın kırınımı, girişimi ve Doppler olayını açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.04.01"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.04.03",
+       "aciklama": "Elektromanyetik dalgaları açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.04.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.FIZ.05",
+     "ad": "Modern Fizik",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.FIZ.05.01",
+       "aciklama": "Atom modellerini ve atom fiziğine girişi açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.FIZ.05.02",
+       "aciklama": "Radyoaktivite ve büyük patlama teorisini açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.05.01"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.05.03",
+       "aciklama": "Özel görelilik, fotoelektrik ve Compton olayını açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.05.02"
+       ]
+      },
+      {
+       "kod": "AYT.FIZ.05.04",
+       "aciklama": "Modern fiziğin teknolojideki uygulamalarını açıklar.",
+       "on_kosullar": [
+        "AYT.FIZ.05.03"
+       ]
+      }
+     ]
+    }
+   ],
+   "alanlar": [
+    "SAY"
+   ]
+  },
+  {
+   "kod": "ayt_kimya",
+   "ad": "Kimya",
+   "ozellik": "enerji",
+   "uniteler": [
+    {
+     "kod": "AYT.KIM.01",
+     "ad": "Modern Atom Teorisi",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.KIM.01.01",
+       "aciklama": "Kuantum sayılarını ve elektron dizilimlerini belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.KIM.01.02",
+       "aciklama": "Periyodik özellikleri açıklar.",
+       "on_kosullar": [
+        "AYT.KIM.01.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.KIM.02",
+     "ad": "Gazlar",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.KIM.02.01",
+       "aciklama": "Gaz yasalarını ve ideal gaz denklemini uygular.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.KIM.02.02",
+       "aciklama": "Kinetik teori, gaz karışımları ve gerçek gazları açıklar.",
+       "on_kosullar": [
+        "AYT.KIM.02.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.KIM.03",
+     "ad": "Sıvı Çözeltiler ve Çözünürlük",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.KIM.03.01",
+       "aciklama": "Çözünme sürecini ve derişim birimlerini kullanır.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.KIM.03.02",
+       "aciklama": "Koligatif özellikleri açıklar.",
+       "on_kosullar": [
+        "AYT.KIM.03.01"
+       ]
+      },
+      {
+       "kod": "AYT.KIM.03.03",
+       "aciklama": "Çözünürlük ve etkileyen faktörleri açıklar.",
+       "on_kosullar": [
+        "AYT.KIM.03.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.KIM.04",
+     "ad": "Kimyasal Tepkimelerde Enerji ve Hız",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.KIM.04.01",
+       "aciklama": "Tepkime ısısı ve Hess yasasını uygular.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.KIM.04.02",
+       "aciklama": "Bağ enerjilerini kullanır.",
+       "on_kosullar": [
+        "AYT.KIM.04.01"
+       ]
+      },
+      {
+       "kod": "AYT.KIM.04.03",
+       "aciklama": "Tepkime hızını ve etkileyen faktörleri açıklar.",
+       "on_kosullar": [
+        "AYT.KIM.04.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.KIM.05",
+     "ad": "Kimyasal Denge",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.KIM.05.01",
+       "aciklama": "Denge sabitini hesaplar ve Le Chatelier ilkesini uygular.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.KIM.05.02",
+       "aciklama": "Asit-baz dengesi ve pH hesaplarını yapar.",
+       "on_kosullar": [
+        "AYT.KIM.05.01"
+       ]
+      },
+      {
+       "kod": "AYT.KIM.05.03",
+       "aciklama": "Tampon çözeltiler ve titrasyonu açıklar.",
+       "on_kosullar": [
+        "AYT.KIM.05.02"
+       ]
+      },
+      {
+       "kod": "AYT.KIM.05.04",
+       "aciklama": "Çözünürlük dengesini (Kçç) hesaplar.",
+       "on_kosullar": [
+        "AYT.KIM.05.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.KIM.06",
+     "ad": "Kimya ve Elektrik",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.KIM.06.01",
+       "aciklama": "Redoks tepkimelerini denkleştirir.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.KIM.06.02",
+       "aciklama": "Elektrot potansiyelleri ve pilleri açıklar.",
+       "on_kosullar": [
+        "AYT.KIM.06.01"
+       ]
+      },
+      {
+       "kod": "AYT.KIM.06.03",
+       "aciklama": "Elektroliz ve korozyonu açıklar.",
+       "on_kosullar": [
+        "AYT.KIM.06.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.KIM.07",
+     "ad": "Karbon Kimyası",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.KIM.07.01",
+       "aciklama": "Karbon kimyasına girişi ve hibritleşmeyi açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.KIM.07.02",
+       "aciklama": "Hidrokarbonları adlandırır ve özelliklerini açıklar.",
+       "on_kosullar": [
+        "AYT.KIM.07.01"
+       ]
+      },
+      {
+       "kod": "AYT.KIM.07.03",
+       "aciklama": "Fonksiyonel grupları (alkol, eter, karbonil, karboksilik asit, ester) açıklar.",
+       "on_kosullar": [
+        "AYT.KIM.07.02"
+       ]
+      },
+      {
+       "kod": "AYT.KIM.07.04",
+       "aciklama": "Enerji kaynakları ve bilimsel gelişmeleri açıklar.",
+       "on_kosullar": [
+        "AYT.KIM.07.03"
+       ]
+      }
+     ]
+    }
+   ],
+   "alanlar": [
+    "SAY"
+   ]
+  },
+  {
+   "kod": "ayt_biyoloji",
+   "ad": "Biyoloji",
+   "ozellik": "enerji",
+   "uniteler": [
+    {
+     "kod": "AYT.BIO.01",
+     "ad": "İnsan Fizyolojisi",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.BIO.01.01",
+       "aciklama": "Sinir sistemini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.BIO.01.02",
+       "aciklama": "Endokrin sistemi açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.01.01"
+       ]
+      },
+      {
+       "kod": "AYT.BIO.01.03",
+       "aciklama": "Duyu organlarını açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.01.02"
+       ]
+      },
+      {
+       "kod": "AYT.BIO.01.04",
+       "aciklama": "Destek ve hareket sistemini açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.01.03"
+       ]
+      },
+      {
+       "kod": "AYT.BIO.01.05",
+       "aciklama": "Sindirim sistemini açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.01.04"
+       ]
+      },
+      {
+       "kod": "AYT.BIO.01.06",
+       "aciklama": "Dolaşım ve bağışıklık sistemini açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.01.05"
+       ]
+      },
+      {
+       "kod": "AYT.BIO.01.07",
+       "aciklama": "Solunum sistemini açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.01.06"
+       ]
+      },
+      {
+       "kod": "AYT.BIO.01.08",
+       "aciklama": "Üriner sistemi açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.01.07"
+       ]
+      },
+      {
+       "kod": "AYT.BIO.01.09",
+       "aciklama": "Üreme sistemi ve embriyonik gelişimi açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.01.08"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.BIO.02",
+     "ad": "Komünite ve Popülasyon Ekolojisi",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.BIO.02.01",
+       "aciklama": "Komünite ekolojisini ve süksesyonu açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.BIO.02.02",
+       "aciklama": "Popülasyon ekolojisini açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.02.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.BIO.03",
+     "ad": "Genden Proteine",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.BIO.03.01",
+       "aciklama": "Nükleik asitleri ve DNA eşlenmesini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.BIO.03.02",
+       "aciklama": "Genetik şifre ve protein sentezini açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.03.01"
+       ]
+      },
+      {
+       "kod": "AYT.BIO.03.03",
+       "aciklama": "Biyoteknoloji ve gen mühendisliğini açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.03.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.BIO.04",
+     "ad": "Canlılarda Enerji Dönüşümleri",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.BIO.04.01",
+       "aciklama": "Fotosentezi açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.BIO.04.02",
+       "aciklama": "Kemosentezi açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.04.01"
+       ]
+      },
+      {
+       "kod": "AYT.BIO.04.03",
+       "aciklama": "Hücresel solunumu (oksijenli, oksijensiz, fermantasyon) açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.04.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.BIO.05",
+     "ad": "Bitki Biyolojisi ve Canlılar ile Çevre",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.BIO.05.01",
+       "aciklama": "Bitkilerin yapısını, madde taşınmasını ve üremesini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.BIO.05.02",
+       "aciklama": "Canlılar ve çevre ilişkisini açıklar.",
+       "on_kosullar": [
+        "AYT.BIO.05.01"
+       ]
+      }
+     ]
+    }
+   ],
+   "alanlar": [
+    "SAY"
+   ]
+  },
+  {
+   "kod": "ayt_edebiyat",
+   "ad": "Türk Dili ve Edebiyatı",
+   "ozellik": "bilgelik",
+   "uniteler": [
+    {
+     "kod": "AYT.EDB.01",
+     "ad": "Edebiyat Bilgisi",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "AYT.EDB.01.01",
+       "aciklama": "Anlam bilgisi ve edebi sanatları belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.EDB.01.02",
+       "aciklama": "Şiir bilgisi: nazım birimi, ölçü, uyak ve redif belirler.",
+       "on_kosullar": [
+        "AYT.EDB.01.01"
+       ]
+      },
+      {
+       "kod": "AYT.EDB.01.03",
+       "aciklama": "Nazım biçimleri ve türlerini ayırt eder.",
+       "on_kosullar": [
+        "AYT.EDB.01.02"
+       ]
+      },
+      {
+       "kod": "AYT.EDB.01.04",
+       "aciklama": "Edebi akımları açıklar.",
+       "on_kosullar": [
+        "AYT.EDB.01.03"
+       ]
+      },
+      {
+       "kod": "AYT.EDB.01.05",
+       "aciklama": "Metin türlerini (roman, hikâye, tiyatro, deneme, makale, fıkra, eleştiri) ayırt eder.",
+       "on_kosullar": [
+        "AYT.EDB.01.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.EDB.02",
+     "ad": "İslamiyet Öncesi ve Geçiş Dönemi",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "AYT.EDB.02.01",
+       "aciklama": "İslamiyet öncesi Türk edebiyatını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.EDB.02.02",
+       "aciklama": "Geçiş dönemi eserlerini açıklar.",
+       "on_kosullar": [
+        "AYT.EDB.02.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.EDB.03",
+     "ad": "Halk ve Divan Edebiyatı",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "AYT.EDB.03.01",
+       "aciklama": "Halk edebiyatını (anonim, âşık, tekke) açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.EDB.03.02",
+       "aciklama": "Divan edebiyatını, nazım şekillerini ve şairlerini açıklar.",
+       "on_kosullar": [
+        "AYT.EDB.03.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.EDB.04",
+     "ad": "Tanzimat'tan Millî Edebiyata",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.EDB.04.01",
+       "aciklama": "Tanzimat edebiyatını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.EDB.04.02",
+       "aciklama": "Servet-i Fünun ve Fecr-i Ati edebiyatını açıklar.",
+       "on_kosullar": [
+        "AYT.EDB.04.01"
+       ]
+      },
+      {
+       "kod": "AYT.EDB.04.03",
+       "aciklama": "Millî edebiyatı açıklar.",
+       "on_kosullar": [
+        "AYT.EDB.04.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.EDB.05",
+     "ad": "Cumhuriyet Dönemi ve Dünya Edebiyatı",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.EDB.05.01",
+       "aciklama": "Cumhuriyet dönemi şiirini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.EDB.05.02",
+       "aciklama": "Cumhuriyet dönemi roman ve hikâyesini açıklar.",
+       "on_kosullar": [
+        "AYT.EDB.05.01"
+       ]
+      },
+      {
+       "kod": "AYT.EDB.05.03",
+       "aciklama": "Cumhuriyet dönemi tiyatrosunu açıklar.",
+       "on_kosullar": [
+        "AYT.EDB.05.02"
+       ]
+      },
+      {
+       "kod": "AYT.EDB.05.04",
+       "aciklama": "Dünya edebiyatının önemli eser ve yazarlarını açıklar.",
+       "on_kosullar": [
+        "AYT.EDB.05.03"
+       ]
+      }
+     ]
+    }
+   ],
+   "alanlar": [
+    "EA",
+    "SOZ"
+   ]
+  },
+  {
+   "kod": "ayt_tarih",
+   "ad": "Tarih",
+   "ozellik": "strateji",
+   "uniteler": [
+    {
+     "kod": "AYT.TAR.01",
+     "ad": "Osmanlı Tarihi",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "AYT.TAR.01.01",
+       "aciklama": "Osmanlı kültür ve medeniyetini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.TAR.01.02",
+       "aciklama": "Osmanlı'da yenileşme ve demokratikleşme hareketlerini açıklar.",
+       "on_kosullar": [
+        "AYT.TAR.01.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.TAR.02",
+     "ad": "Millî Mücadele ve Atatürk Dönemi",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.TAR.02.01",
+       "aciklama": "Millî Mücadele dönemini ayrıntılı açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.TAR.02.02",
+       "aciklama": "Atatürk dönemi iç ve dış politikayı açıklar.",
+       "on_kosullar": [
+        "AYT.TAR.02.01"
+       ]
+      },
+      {
+       "kod": "AYT.TAR.02.03",
+       "aciklama": "İki savaş arası dönemde dünyayı açıklar.",
+       "on_kosullar": [
+        "AYT.TAR.02.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.TAR.03",
+     "ad": "20. Yüzyıl ve Günümüz",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.TAR.03.01",
+       "aciklama": "II. Dünya Savaşı ve Türkiye'yi açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.TAR.03.02",
+       "aciklama": "Soğuk Savaş dönemini açıklar.",
+       "on_kosullar": [
+        "AYT.TAR.03.01"
+       ]
+      },
+      {
+       "kod": "AYT.TAR.03.03",
+       "aciklama": "Yumuşama dönemi ve sonrasını açıklar.",
+       "on_kosullar": [
+        "AYT.TAR.03.02"
+       ]
+      },
+      {
+       "kod": "AYT.TAR.03.04",
+       "aciklama": "Küreselleşen dünyayı açıklar.",
+       "on_kosullar": [
+        "AYT.TAR.03.03"
+       ]
+      }
+     ]
+    }
+   ],
+   "alanlar": [
+    "EA",
+    "SOZ"
+   ]
+  },
+  {
+   "kod": "ayt_cografya",
+   "ad": "Coğrafya",
+   "ozellik": "strateji",
+   "uniteler": [
+    {
+     "kod": "AYT.COG.01",
+     "ad": "Doğal Sistemler ve Ekosistemler",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.COG.01.01",
+       "aciklama": "Biyoçeşitliliği ve ekosistemlerin işleyişini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.COG.01.02",
+       "aciklama": "Enerji akışı ve madde döngülerini açıklar.",
+       "on_kosullar": [
+        "AYT.COG.01.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.COG.02",
+     "ad": "Beşerî Sistemler",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.COG.02.01",
+       "aciklama": "Nüfus politikalarını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.COG.02.02",
+       "aciklama": "Türkiye'de nüfus ve yerleşmeyi açıklar.",
+       "on_kosullar": [
+        "AYT.COG.02.01"
+       ]
+      },
+      {
+       "kod": "AYT.COG.02.03",
+       "aciklama": "Ekonomik faaliyetler ve doğal kaynakları açıklar.",
+       "on_kosullar": [
+        "AYT.COG.02.02"
+       ]
+      },
+      {
+       "kod": "AYT.COG.02.04",
+       "aciklama": "Türkiye ekonomisini (tarım, sanayi, enerji, turizm) açıklar.",
+       "on_kosullar": [
+        "AYT.COG.02.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.COG.03",
+     "ad": "Küresel Ortam: Bölgeler ve Ülkeler",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.COG.03.01",
+       "aciklama": "Türkiye'nin işlevsel bölgelerini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.COG.03.02",
+       "aciklama": "Küresel ticareti açıklar.",
+       "on_kosullar": [
+        "AYT.COG.03.01"
+       ]
+      },
+      {
+       "kod": "AYT.COG.03.03",
+       "aciklama": "Kültür bölgeleri ve ülkeleri açıklar.",
+       "on_kosullar": [
+        "AYT.COG.03.02"
+       ]
+      },
+      {
+       "kod": "AYT.COG.03.04",
+       "aciklama": "Çevre ve toplum ilişkisini açıklar.",
+       "on_kosullar": [
+        "AYT.COG.03.03"
+       ]
+      }
+     ]
+    }
+   ],
+   "alanlar": [
+    "EA",
+    "SOZ"
+   ]
+  },
+  {
+   "kod": "ayt_felsefe_grubu",
+   "ad": "Felsefe Grubu",
+   "ozellik": "strateji",
+   "uniteler": [
+    {
+     "kod": "AYT.FEG.01",
+     "ad": "Mantık",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.FEG.01.01",
+       "aciklama": "Klasik mantıkta kavram, önerme ve çıkarımı açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.FEG.01.02",
+       "aciklama": "Sembolik mantıkta önermeler ve doğruluk tablolarını kullanır.",
+       "on_kosullar": [
+        "AYT.FEG.01.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.FEG.02",
+     "ad": "Psikoloji",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.FEG.02.01",
+       "aciklama": "Psikolojinin temel süreçlerini (algı, öğrenme, bellek, düşünme) açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.FEG.02.02",
+       "aciklama": "Ruh sağlığının temellerini açıklar.",
+       "on_kosullar": [
+        "AYT.FEG.02.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.FEG.03",
+     "ad": "Sosyoloji",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "AYT.FEG.03.01",
+       "aciklama": "Birey ve toplum ilişkisini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.FEG.03.02",
+       "aciklama": "Toplumsal yapı, değişme ve kurumları açıklar.",
+       "on_kosullar": [
+        "AYT.FEG.03.01"
+       ]
+      }
+     ]
+    }
+   ],
+   "alanlar": [
+    "SOZ"
+   ]
+  },
+  {
+   "kod": "ayt_din",
+   "ad": "Din Kültürü ve Ahlak Bilgisi",
+   "ozellik": "strateji",
+   "uniteler": [
+    {
+     "kod": "AYT.DIN.01",
+     "ad": "Dünya ve Ahiret",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.DIN.01.01",
+       "aciklama": "Dünya ve ahiret inancını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.DIN.01.02",
+       "aciklama": "Kur'an'a göre hz. Muhammed ve Kur'an'da bazı kavramları açıklar.",
+       "on_kosullar": [
+        "AYT.DIN.01.01"
+       ]
+      },
+      {
+       "kod": "AYT.DIN.01.03",
+       "aciklama": "İnançla ilgili meseleleri açıklar.",
+       "on_kosullar": [
+        "AYT.DIN.01.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "AYT.DIN.02",
+     "ad": "İslam ve Bilim",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "AYT.DIN.02.01",
+       "aciklama": "İslam medeniyetinde bilimsel gelişmeleri açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "AYT.DIN.02.02",
+       "aciklama": "Anadolu'da İslam'ı açıklar.",
+       "on_kosullar": [
+        "AYT.DIN.02.01"
+       ]
+      }
+     ]
+    }
+   ],
+   "alanlar": [
+    "SOZ"
+   ]
+  }
+ ]
+}

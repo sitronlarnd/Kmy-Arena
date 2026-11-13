@@ -1,48 +1,1771 @@
 {
-  "_not": "BAŞLANGIÇ ÖRNEĞİ. Tam ÖSYM/MEB kapsamı (TYT, AYT, YDT) Faz 1'de eklenecek.",
-  "sinav_turu": "TYT",
-  "dersler": [
+ "_not": "Kaynak: scripts/mufredat_veri.py (elle düzenleme; o dosyayı düzenleyip yeniden üret). Faz 0 kodları (M.8.*, F.8.*, T.8.*, İTA.8.*, DKAB.8.*, E8.*, TYT.M.*, TYT.T.*) korunur; diğerleri platform kodudur, resmî MEB kodu değildir.",
+ "sinav_turu": "TYT",
+ "dersler": [
+  {
+   "kod": "tyt_turkce",
+   "ad": "Türkçe",
+   "ozellik": "bilgelik",
+   "uniteler": [
     {
-      "kod": "tyt_matematik",
-      "ad": "Temel Matematik",
-      "ozellik": "zeka",
-      "uniteler": [
-        {
-          "kod": "TYT.M.1",
-          "ad": "Temel Kavramlar ve Sayılar",
-          "sinif_duzeyi": 12,
-          "kazanimlar": [
-            { "kod": "TYT.M.1.1", "aciklama": "Sayı kümelerini ve temel kavramları kullanarak işlem yapar.", "on_kosullar": [] },
-            { "kod": "TYT.M.1.2", "aciklama": "Bölünebilme kurallarını kullanarak problem çözer.", "on_kosullar": ["TYT.M.1.1"] },
-            { "kod": "TYT.M.1.3", "aciklama": "Rasyonel ve ondalık sayılarla işlem yapar.", "on_kosullar": ["TYT.M.1.1"] }
-          ]
-        },
-        {
-          "kod": "TYT.M.2",
-          "ad": "Problemler",
-          "sinif_duzeyi": 12,
-          "kazanimlar": [
-            { "kod": "TYT.M.2.1", "aciklama": "Sayı ve kesir problemlerini çözer.", "on_kosullar": ["TYT.M.1.3"] },
-            { "kod": "TYT.M.2.2", "aciklama": "Yüzde, kâr-zarar ve faiz problemlerini çözer.", "on_kosullar": ["TYT.M.2.1"] }
-          ]
-        }
-      ]
+     "kod": "TYT.T.1",
+     "ad": "Paragraf",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.T.1.1",
+       "aciklama": "Paragrafta ana düşünceyi belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.T.1.2",
+       "aciklama": "Paragrafta yardımcı düşünceleri ve anlatım biçimlerini belirler.",
+       "on_kosullar": [
+        "TYT.T.1.1"
+       ]
+      },
+      {
+       "kod": "TYT.TR.01.03",
+       "aciklama": "Paragrafta konu ve başlık belirler.",
+       "on_kosullar": [
+        "TYT.T.1.2"
+       ]
+      },
+      {
+       "kod": "TYT.TR.01.04",
+       "aciklama": "Paragrafta yapı: giriş-gelişme-sonuç cümlelerini, cümle sıralamasını ve akışı bozan cümleyi belirler.",
+       "on_kosullar": [
+        "TYT.TR.01.03"
+       ]
+      },
+      {
+       "kod": "TYT.TR.01.05",
+       "aciklama": "Anlatım biçimlerini ve düşünceyi geliştirme yollarını belirler.",
+       "on_kosullar": [
+        "TYT.TR.01.04"
+       ]
+      }
+     ]
     },
     {
-      "kod": "tyt_turkce",
-      "ad": "Türkçe",
-      "ozellik": "bilgelik",
-      "uniteler": [
-        {
-          "kod": "TYT.T.1",
-          "ad": "Paragraf",
-          "sinif_duzeyi": 12,
-          "kazanimlar": [
-            { "kod": "TYT.T.1.1", "aciklama": "Paragrafta ana düşünceyi belirler.", "on_kosullar": [] },
-            { "kod": "TYT.T.1.2", "aciklama": "Paragrafta yardımcı düşünceleri ve anlatım biçimlerini belirler.", "on_kosullar": ["TYT.T.1.1"] }
-          ]
-        }
-      ]
+     "kod": "TYT.TR.02",
+     "ad": "Sözcükte ve Cümlede Anlam",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.TR.02.01",
+       "aciklama": "Sözcükte anlam: gerçek, mecaz, terim, yan anlam; deyim ve atasözü.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.TR.02.02",
+       "aciklama": "Sözcükler arası anlam ilişkileri ve söz sanatları.",
+       "on_kosullar": [
+        "TYT.TR.02.01"
+       ]
+      },
+      {
+       "kod": "TYT.TR.02.03",
+       "aciklama": "Cümlede anlam: öznel-nesnel yargı, neden-sonuç, amaç-sonuç, koşul, örtülü anlam.",
+       "on_kosullar": [
+        "TYT.TR.02.02"
+       ]
+      },
+      {
+       "kod": "TYT.TR.02.04",
+       "aciklama": "Cümle yorumlama, cümle tamamlama ve cümle birleştirme.",
+       "on_kosullar": [
+        "TYT.TR.02.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.TR.03",
+     "ad": "Ses ve Yazım Bilgisi",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.TR.03.01",
+       "aciklama": "Ses olaylarını (ünlü düşmesi, ünsüz yumuşaması, benzeşme, türeme vb.) belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.TR.03.02",
+       "aciklama": "Yazım kurallarını uygular.",
+       "on_kosullar": [
+        "TYT.TR.03.01"
+       ]
+      },
+      {
+       "kod": "TYT.TR.03.03",
+       "aciklama": "Noktalama işaretlerini doğru kullanır.",
+       "on_kosullar": [
+        "TYT.TR.03.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.TR.04",
+     "ad": "Sözcük Yapısı ve Sözcük Türleri",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.TR.04.01",
+       "aciklama": "Kök, gövde, yapım ve çekim eklerini ayırt eder; basit, türemiş ve birleşik sözcükleri belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.TR.04.02",
+       "aciklama": "İsim, sıfat ve isim/sıfat tamlamalarını belirler.",
+       "on_kosullar": [
+        "TYT.TR.04.01"
+       ]
+      },
+      {
+       "kod": "TYT.TR.04.03",
+       "aciklama": "Zamir ve zarfları belirler.",
+       "on_kosullar": [
+        "TYT.TR.04.02"
+       ]
+      },
+      {
+       "kod": "TYT.TR.04.04",
+       "aciklama": "Edat, bağlaç ve ünlemleri belirler.",
+       "on_kosullar": [
+        "TYT.TR.04.03"
+       ]
+      },
+      {
+       "kod": "TYT.TR.04.05",
+       "aciklama": "Fiilde kip, kişi, yapı ve ek fiili belirler.",
+       "on_kosullar": [
+        "TYT.TR.04.04"
+       ]
+      },
+      {
+       "kod": "TYT.TR.04.06",
+       "aciklama": "Fiilimsileri (isim-fiil, sıfat-fiil, zarf-fiil) belirler.",
+       "on_kosullar": [
+        "TYT.TR.04.05"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.TR.05",
+     "ad": "Cümle Bilgisi",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.TR.05.01",
+       "aciklama": "Cümlenin ögelerini belirler.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.TR.05.02",
+       "aciklama": "Fiilde çatıyı belirler.",
+       "on_kosullar": [
+        "TYT.TR.05.01"
+       ]
+      },
+      {
+       "kod": "TYT.TR.05.03",
+       "aciklama": "Cümle türlerini belirler.",
+       "on_kosullar": [
+        "TYT.TR.05.02"
+       ]
+      },
+      {
+       "kod": "TYT.TR.05.04",
+       "aciklama": "Anlatım bozukluklarını belirler ve düzeltir.",
+       "on_kosullar": [
+        "TYT.TR.05.03"
+       ]
+      }
+     ]
     }
-  ]
+   ]
+  },
+  {
+   "kod": "tyt_matematik",
+   "ad": "Temel Matematik",
+   "ozellik": "zeka",
+   "uniteler": [
+    {
+     "kod": "TYT.M.1",
+     "ad": "Temel Kavramlar ve Sayılar",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.M.1.1",
+       "aciklama": "Sayı kümelerini ve temel kavramları kullanarak işlem yapar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.M.1.2",
+       "aciklama": "Bölünebilme kurallarını kullanarak problem çözer.",
+       "on_kosullar": [
+        "TYT.M.1.1"
+       ]
+      },
+      {
+       "kod": "TYT.M.1.3",
+       "aciklama": "Rasyonel ve ondalık sayılarla işlem yapar.",
+       "on_kosullar": [
+        "TYT.M.1.1"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.01.04",
+       "aciklama": "Sayı basamakları ve çözümleme ile işlem yapar.",
+       "on_kosullar": [
+        "TYT.M.1.3"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.01.05",
+       "aciklama": "Asal sayılar, asal çarpanlara ayırma ve faktöriyel ile işlem yapar.",
+       "on_kosullar": [
+        "TYT.MAT.01.04"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.01.06",
+       "aciklama": "EBOB-EKOK ile problem çözer.",
+       "on_kosullar": [
+        "TYT.MAT.01.05"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.01.07",
+       "aciklama": "Basit eşitsizlikler ve sıralama ile işlem yapar.",
+       "on_kosullar": [
+        "TYT.MAT.01.06"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.01.08",
+       "aciklama": "Mutlak değer içeren ifade ve denklemleri çözer.",
+       "on_kosullar": [
+        "TYT.MAT.01.07"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.01.09",
+       "aciklama": "Üslü sayılarla işlem yapar.",
+       "on_kosullar": [
+        "TYT.MAT.01.08"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.01.10",
+       "aciklama": "Köklü sayılarla işlem yapar.",
+       "on_kosullar": [
+        "TYT.MAT.01.09"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.01.11",
+       "aciklama": "Çarpanlara ayırma ve özdeşliklerle ifadeleri sadeleştirir.",
+       "on_kosullar": [
+        "TYT.MAT.01.10"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.01.12",
+       "aciklama": "Oran ve orantı ile problem çözer.",
+       "on_kosullar": [
+        "TYT.MAT.01.11"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.01.13",
+       "aciklama": "Birinci dereceden denklemleri çözer.",
+       "on_kosullar": [
+        "TYT.MAT.01.12"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.M.2",
+     "ad": "Problemler",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.M.2.1",
+       "aciklama": "Sayı ve kesir problemlerini çözer.",
+       "on_kosullar": [
+        "TYT.M.1.3"
+       ]
+      },
+      {
+       "kod": "TYT.M.2.2",
+       "aciklama": "Yüzde, kâr-zarar ve faiz problemlerini çözer.",
+       "on_kosullar": [
+        "TYT.M.2.1"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.02.03",
+       "aciklama": "Yaş problemlerini çözer.",
+       "on_kosullar": [
+        "TYT.M.2.2"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.02.04",
+       "aciklama": "İşçi ve havuz problemlerini çözer.",
+       "on_kosullar": [
+        "TYT.MAT.02.03"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.02.05",
+       "aciklama": "Karışım problemlerini çözer.",
+       "on_kosullar": [
+        "TYT.MAT.02.04"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.02.06",
+       "aciklama": "Hareket problemlerini çözer.",
+       "on_kosullar": [
+        "TYT.MAT.02.05"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.02.07",
+       "aciklama": "Grafik ve tablo problemlerini çözer.",
+       "on_kosullar": [
+        "TYT.MAT.02.06"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.02.08",
+       "aciklama": "Rutin olmayan (mantıksal akıl yürütme) problemleri çözer.",
+       "on_kosullar": [
+        "TYT.MAT.02.07"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.MAT.03",
+     "ad": "Kümeler, Mantık ve Fonksiyonlar",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.MAT.03.01",
+       "aciklama": "Kümelerde işlemleri yapar ve küme problemlerini çözer.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.MAT.03.02",
+       "aciklama": "Kartezyen çarpımı belirler.",
+       "on_kosullar": [
+        "TYT.MAT.03.01"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.03.03",
+       "aciklama": "Önermeler, bağlaçlar ve niceleyicilerle mantık işlemleri yapar.",
+       "on_kosullar": [
+        "TYT.MAT.03.02"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.03.04",
+       "aciklama": "Fonksiyon kavramı, tanım ve görüntü kümesini belirler.",
+       "on_kosullar": [
+        "TYT.MAT.03.03"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.03.05",
+       "aciklama": "Bileşke ve ters fonksiyon işlemlerini yapar.",
+       "on_kosullar": [
+        "TYT.MAT.03.04"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.03.06",
+       "aciklama": "Fonksiyon grafiklerini yorumlar.",
+       "on_kosullar": [
+        "TYT.MAT.03.05"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.MAT.04",
+     "ad": "Polinomlar ve İkinci Dereceden Denklemler",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.MAT.04.01",
+       "aciklama": "Polinom kavramı ve polinomlarla işlemleri yapar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.MAT.04.02",
+       "aciklama": "Polinom bölmesi ve kalan teoremini uygular.",
+       "on_kosullar": [
+        "TYT.MAT.04.01"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.04.03",
+       "aciklama": "İkinci dereceden denklemleri çözer, kökler ile katsayılar arasındaki ilişkiyi kullanır.",
+       "on_kosullar": [
+        "TYT.MAT.04.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.MAT.05",
+     "ad": "Sayma ve Olasılık",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.MAT.05.01",
+       "aciklama": "Toplama ve çarpma yoluyla sayma yapar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.MAT.05.02",
+       "aciklama": "Permütasyon ile sayma problemlerini çözer.",
+       "on_kosullar": [
+        "TYT.MAT.05.01"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.05.03",
+       "aciklama": "Kombinasyon ile sayma problemlerini çözer.",
+       "on_kosullar": [
+        "TYT.MAT.05.02"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.05.04",
+       "aciklama": "Binom açılımını yapar.",
+       "on_kosullar": [
+        "TYT.MAT.05.03"
+       ]
+      },
+      {
+       "kod": "TYT.MAT.05.05",
+       "aciklama": "Basit olayların olasılığını hesaplar.",
+       "on_kosullar": [
+        "TYT.MAT.05.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.MAT.06",
+     "ad": "Veri ve İstatistik",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.MAT.06.01",
+       "aciklama": "Merkezî eğilim ve yayılım ölçülerini hesaplar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.MAT.06.02",
+       "aciklama": "Verileri grafiklerle gösterir ve yorumlar.",
+       "on_kosullar": [
+        "TYT.MAT.06.01"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "tyt_geometri",
+   "ad": "Geometri",
+   "ozellik": "zeka",
+   "uniteler": [
+    {
+     "kod": "TYT.GEO.01",
+     "ad": "Doğruda ve Üçgende Açılar",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.GEO.01.01",
+       "aciklama": "Doğruda ve paralel doğrularda açı özelliklerini kullanır.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.GEO.01.02",
+       "aciklama": "Üçgende iç ve dış açı özelliklerini kullanır.",
+       "on_kosullar": [
+        "TYT.GEO.01.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.GEO.02",
+     "ad": "Özel Üçgenler",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.GEO.02.01",
+       "aciklama": "Dik üçgen ve Pisagor bağıntısını kullanır.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.GEO.02.02",
+       "aciklama": "Özel dik üçgenler (30-60-90, 45-45-90) ile problem çözer.",
+       "on_kosullar": [
+        "TYT.GEO.02.01"
+       ]
+      },
+      {
+       "kod": "TYT.GEO.02.03",
+       "aciklama": "İkizkenar ve eşkenar üçgen özelliklerini kullanır.",
+       "on_kosullar": [
+        "TYT.GEO.02.02"
+       ]
+      },
+      {
+       "kod": "TYT.GEO.02.04",
+       "aciklama": "Dik üçgende trigonometrik oranları kullanır.",
+       "on_kosullar": [
+        "TYT.GEO.02.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.GEO.03",
+     "ad": "Üçgende Temel Elemanlar",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.GEO.03.01",
+       "aciklama": "Açıortay özelliklerini kullanır.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.GEO.03.02",
+       "aciklama": "Kenarortay özelliklerini ve ağırlık merkezini kullanır.",
+       "on_kosullar": [
+        "TYT.GEO.03.01"
+       ]
+      },
+      {
+       "kod": "TYT.GEO.03.03",
+       "aciklama": "Üçgende eşlik ve benzerliği kullanır.",
+       "on_kosullar": [
+        "TYT.GEO.03.02"
+       ]
+      },
+      {
+       "kod": "TYT.GEO.03.04",
+       "aciklama": "Üçgende açı-kenar bağıntılarını kullanır.",
+       "on_kosullar": [
+        "TYT.GEO.03.03"
+       ]
+      },
+      {
+       "kod": "TYT.GEO.03.05",
+       "aciklama": "Üçgende alan formüllerini kullanır.",
+       "on_kosullar": [
+        "TYT.GEO.03.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.GEO.04",
+     "ad": "Çokgenler ve Dörtgenler",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.GEO.04.01",
+       "aciklama": "Çokgenlerin açı ve köşegen özelliklerini kullanır.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.GEO.04.02",
+       "aciklama": "Dörtgenlerin genel özelliklerini kullanır.",
+       "on_kosullar": [
+        "TYT.GEO.04.01"
+       ]
+      },
+      {
+       "kod": "TYT.GEO.04.03",
+       "aciklama": "Paralelkenar, eşkenar dörtgen, dikdörtgen ve kare özelliklerini kullanır.",
+       "on_kosullar": [
+        "TYT.GEO.04.02"
+       ]
+      },
+      {
+       "kod": "TYT.GEO.04.04",
+       "aciklama": "Yamuk ve deltoid özelliklerini kullanır.",
+       "on_kosullar": [
+        "TYT.GEO.04.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.GEO.05",
+     "ad": "Çember ve Daire",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.GEO.05.01",
+       "aciklama": "Çemberde açı ve uzunluk özelliklerini kullanır.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.GEO.05.02",
+       "aciklama": "Dairenin çevresi, alanı ve daire dilimini hesaplar.",
+       "on_kosullar": [
+        "TYT.GEO.05.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.GEO.06",
+     "ad": "Analitik Geometri ve Katı Cisimler",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.GEO.06.01",
+       "aciklama": "Noktanın analitiği: iki nokta arası uzaklık ve orta nokta hesaplar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.GEO.06.02",
+       "aciklama": "Doğrunun analitiği: eğim ve doğru denklemi yazar.",
+       "on_kosullar": [
+        "TYT.GEO.06.01"
+       ]
+      },
+      {
+       "kod": "TYT.GEO.06.03",
+       "aciklama": "Prizma ve piramidin alan ve hacmini hesaplar.",
+       "on_kosullar": [
+        "TYT.GEO.06.02"
+       ]
+      },
+      {
+       "kod": "TYT.GEO.06.04",
+       "aciklama": "Silindir, koni ve kürenin alan ve hacmini hesaplar.",
+       "on_kosullar": [
+        "TYT.GEO.06.03"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "tyt_fizik",
+   "ad": "Fizik",
+   "ozellik": "enerji",
+   "uniteler": [
+    {
+     "kod": "TYT.FIZ.01",
+     "ad": "Fizik Bilimine Giriş ve Madde",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.FIZ.01.01",
+       "aciklama": "Fiziğin alt dalları, temel ve türetilmiş büyüklükleri, skaler ve vektörel büyüklükleri ayırt eder.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.FIZ.01.02",
+       "aciklama": "Kütle, hacim, özkütle ilişkisini kullanır.",
+       "on_kosullar": [
+        "TYT.FIZ.01.01"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.01.03",
+       "aciklama": "Dayanıklılık, adezyon, kohezyon ve kılcallığı açıklar.",
+       "on_kosullar": [
+        "TYT.FIZ.01.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.FIZ.02",
+     "ad": "Hareket ve Kuvvet",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.FIZ.02.01",
+       "aciklama": "Konum, yol, yer değiştirme, sürat ve hızı açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.FIZ.02.02",
+       "aciklama": "Düzgün doğrusal hareket ve ivmeli hareket grafiklerini yorumlar.",
+       "on_kosullar": [
+        "TYT.FIZ.02.01"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.02.03",
+       "aciklama": "Newton'un hareket yasalarını uygular.",
+       "on_kosullar": [
+        "TYT.FIZ.02.02"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.02.04",
+       "aciklama": "Sürtünme kuvvetini açıklar.",
+       "on_kosullar": [
+        "TYT.FIZ.02.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.FIZ.03",
+     "ad": "İş, Güç ve Enerji",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.FIZ.03.01",
+       "aciklama": "İş, güç ve enerji kavramlarını ilişkilendirir.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.FIZ.03.02",
+       "aciklama": "Mekanik enerjinin korunumunu ve enerji dönüşümlerini açıklar.",
+       "on_kosullar": [
+        "TYT.FIZ.03.01"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.03.03",
+       "aciklama": "Verimi hesaplar ve enerji kaynaklarını sınıflandırır.",
+       "on_kosullar": [
+        "TYT.FIZ.03.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.FIZ.04",
+     "ad": "Isı, Sıcaklık ve Genleşme",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.FIZ.04.01",
+       "aciklama": "Isı, sıcaklık ve iç enerji kavramlarını ayırt eder.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.FIZ.04.02",
+       "aciklama": "Öz ısı, ısı sığası ve hâl değişimini hesaplar.",
+       "on_kosullar": [
+        "TYT.FIZ.04.01"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.04.03",
+       "aciklama": "Isı aktarım yollarını ve genleşmeyi açıklar.",
+       "on_kosullar": [
+        "TYT.FIZ.04.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.FIZ.05",
+     "ad": "Elektrostatik ve Elektrik",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.FIZ.05.01",
+       "aciklama": "Elektriklenme çeşitlerini ve Coulomb kuvvetini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.FIZ.05.02",
+       "aciklama": "Elektrik akımı, potansiyel fark ve direnci ilişkilendirir (Ohm yasası).",
+       "on_kosullar": [
+        "TYT.FIZ.05.01"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.05.03",
+       "aciklama": "Seri ve paralel bağlı dirençlerin eşdeğerini hesaplar.",
+       "on_kosullar": [
+        "TYT.FIZ.05.02"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.05.04",
+       "aciklama": "Elektrik enerjisi ve gücünü hesaplar.",
+       "on_kosullar": [
+        "TYT.FIZ.05.03"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.05.05",
+       "aciklama": "Mıknatıs ve manyetik alanı açıklar.",
+       "on_kosullar": [
+        "TYT.FIZ.05.04"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.FIZ.06",
+     "ad": "Basınç ve Kaldırma Kuvveti",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.FIZ.06.01",
+       "aciklama": "Katı, sıvı ve gaz basıncını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.FIZ.06.02",
+       "aciklama": "Kaldırma kuvvetini ve yüzme-batma koşullarını açıklar.",
+       "on_kosullar": [
+        "TYT.FIZ.06.01"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.06.03",
+       "aciklama": "Bernoulli ilkesini açıklar.",
+       "on_kosullar": [
+        "TYT.FIZ.06.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.FIZ.07",
+     "ad": "Dalgalar ve Optik",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.FIZ.07.01",
+       "aciklama": "Dalga çeşitlerini ve temel dalga büyüklüklerini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.FIZ.07.02",
+       "aciklama": "Yay, su ve ses dalgalarının özelliklerini açıklar.",
+       "on_kosullar": [
+        "TYT.FIZ.07.01"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.07.03",
+       "aciklama": "Aydınlanma, gölge ve yansıma kurallarını uygular.",
+       "on_kosullar": [
+        "TYT.FIZ.07.02"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.07.04",
+       "aciklama": "Düzlem ve küresel aynalarda görüntüyü belirler.",
+       "on_kosullar": [
+        "TYT.FIZ.07.03"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.07.05",
+       "aciklama": "Kırılma, mercekler ve prizmaları açıklar.",
+       "on_kosullar": [
+        "TYT.FIZ.07.04"
+       ]
+      },
+      {
+       "kod": "TYT.FIZ.07.06",
+       "aciklama": "Renk ve renklerin oluşumunu açıklar.",
+       "on_kosullar": [
+        "TYT.FIZ.07.05"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "tyt_kimya",
+   "ad": "Kimya",
+   "ozellik": "enerji",
+   "uniteler": [
+    {
+     "kod": "TYT.KIM.01",
+     "ad": "Kimya Bilimi",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.KIM.01.01",
+       "aciklama": "Kimyanın alt disiplinlerini, kimyasal sembolleri ve laboratuvar güvenliğini açıklar.",
+       "on_kosullar": []
+      }
+     ]
+    },
+    {
+     "kod": "TYT.KIM.02",
+     "ad": "Atom ve Periyodik Sistem",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.KIM.02.01",
+       "aciklama": "Atom modellerinin gelişimini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.KIM.02.02",
+       "aciklama": "Atomun yapısını (proton, nötron, elektron, izotop) açıklar.",
+       "on_kosullar": [
+        "TYT.KIM.02.01"
+       ]
+      },
+      {
+       "kod": "TYT.KIM.02.03",
+       "aciklama": "Periyodik sistemde elementlerin özelliklerinin değişimini açıklar.",
+       "on_kosullar": [
+        "TYT.KIM.02.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.KIM.03",
+     "ad": "Kimyasal Türler Arası Etkileşimler",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.KIM.03.01",
+       "aciklama": "İyonik ve kovalent bağları açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.KIM.03.02",
+       "aciklama": "Metalik bağı açıklar.",
+       "on_kosullar": [
+        "TYT.KIM.03.01"
+       ]
+      },
+      {
+       "kod": "TYT.KIM.03.03",
+       "aciklama": "Zayıf etkileşimleri (hidrojen bağı, van der Waals) açıklar.",
+       "on_kosullar": [
+        "TYT.KIM.03.02"
+       ]
+      },
+      {
+       "kod": "TYT.KIM.03.04",
+       "aciklama": "Fiziksel ve kimyasal değişimleri ayırt eder.",
+       "on_kosullar": [
+        "TYT.KIM.03.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.KIM.04",
+     "ad": "Maddenin Hâlleri",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.KIM.04.01",
+       "aciklama": "Katı, sıvı, gaz ve plazma hâllerinin özelliklerini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.KIM.04.02",
+       "aciklama": "Hâl değişimlerini ve buhar basıncını açıklar.",
+       "on_kosullar": [
+        "TYT.KIM.04.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.KIM.05",
+     "ad": "Kimyanın Temel Kanunları ve Hesaplamalar",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.KIM.05.01",
+       "aciklama": "Kütlenin korunumu, sabit ve katlı oranlar kanunlarını uygular.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.KIM.05.02",
+       "aciklama": "Mol kavramını ve mol hesaplamalarını yapar.",
+       "on_kosullar": [
+        "TYT.KIM.05.01"
+       ]
+      },
+      {
+       "kod": "TYT.KIM.05.03",
+       "aciklama": "Kimyasal tepkime türlerini ve denkleştirmeyi açıklar.",
+       "on_kosullar": [
+        "TYT.KIM.05.02"
+       ]
+      },
+      {
+       "kod": "TYT.KIM.05.04",
+       "aciklama": "Tepkimelerde sınırlayıcı bileşen ve verim hesabı yapar.",
+       "on_kosullar": [
+        "TYT.KIM.05.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.KIM.06",
+     "ad": "Karışımlar",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.KIM.06.01",
+       "aciklama": "Homojen ve heterojen karışımları ayırt eder.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.KIM.06.02",
+       "aciklama": "Derişim birimlerini (kütlece yüzde, molarite) hesaplar.",
+       "on_kosullar": [
+        "TYT.KIM.06.01"
+       ]
+      },
+      {
+       "kod": "TYT.KIM.06.03",
+       "aciklama": "Karışımların ayrılma yöntemlerini açıklar.",
+       "on_kosullar": [
+        "TYT.KIM.06.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.KIM.07",
+     "ad": "Asitler, Bazlar ve Tuzlar",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.KIM.07.01",
+       "aciklama": "Asit ve bazların özelliklerini ve tepkimelerini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.KIM.07.02",
+       "aciklama": "Tuzların oluşumunu ve kullanım alanlarını açıklar.",
+       "on_kosullar": [
+        "TYT.KIM.07.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.KIM.08",
+     "ad": "Kimya Her Yerde ve Doğa",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.KIM.08.01",
+       "aciklama": "Yaygın günlük hayat kimyasallarını (temizlik maddeleri, polimerler, kozmetik) açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.KIM.08.02",
+       "aciklama": "Su, hava ve toprak kirliliğini açıklar.",
+       "on_kosullar": [
+        "TYT.KIM.08.01"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "tyt_biyoloji",
+   "ad": "Biyoloji",
+   "ozellik": "enerji",
+   "uniteler": [
+    {
+     "kod": "TYT.BIO.01",
+     "ad": "Yaşam Bilimi Biyoloji",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.BIO.01.01",
+       "aciklama": "Canlıların ortak özelliklerini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.BIO.01.02",
+       "aciklama": "Canlıların yapısındaki inorganik bileşikleri açıklar.",
+       "on_kosullar": [
+        "TYT.BIO.01.01"
+       ]
+      },
+      {
+       "kod": "TYT.BIO.01.03",
+       "aciklama": "Karbonhidrat, lipit ve proteinleri açıklar.",
+       "on_kosullar": [
+        "TYT.BIO.01.02"
+       ]
+      },
+      {
+       "kod": "TYT.BIO.01.04",
+       "aciklama": "Enzimler, vitaminler, nükleik asitler ve ATP'yi açıklar.",
+       "on_kosullar": [
+        "TYT.BIO.01.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.BIO.02",
+     "ad": "Hücre",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.BIO.02.01",
+       "aciklama": "Hücre zarı ve organellerin yapı ve görevlerini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.BIO.02.02",
+       "aciklama": "Hücre zarından madde geçişlerini açıklar.",
+       "on_kosullar": [
+        "TYT.BIO.02.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.BIO.03",
+     "ad": "Canlılar Dünyası",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.BIO.03.01",
+       "aciklama": "Canlıların sınıflandırılmasında kullanılan ölçütleri açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.BIO.03.02",
+       "aciklama": "Canlı âlemlerinin genel özelliklerini açıklar.",
+       "on_kosullar": [
+        "TYT.BIO.03.01"
+       ]
+      },
+      {
+       "kod": "TYT.BIO.03.03",
+       "aciklama": "Virüslerin özelliklerini açıklar.",
+       "on_kosullar": [
+        "TYT.BIO.03.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.BIO.04",
+     "ad": "Hücre Bölünmeleri ve Üreme",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.BIO.04.01",
+       "aciklama": "Mitoz bölünmeyi ve eşeysiz üremeyi açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.BIO.04.02",
+       "aciklama": "Mayoz bölünmeyi ve eşeyli üremeyi açıklar.",
+       "on_kosullar": [
+        "TYT.BIO.04.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.BIO.05",
+     "ad": "Kalıtım",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.BIO.05.01",
+       "aciklama": "Mendel ilkelerini ve kalıtım kavramlarını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.BIO.05.02",
+       "aciklama": "Çaprazlama problemlerini çözer.",
+       "on_kosullar": [
+        "TYT.BIO.05.01"
+       ]
+      },
+      {
+       "kod": "TYT.BIO.05.03",
+       "aciklama": "Eş baskınlık, çok alellilik ve kan gruplarını açıklar.",
+       "on_kosullar": [
+        "TYT.BIO.05.02"
+       ]
+      },
+      {
+       "kod": "TYT.BIO.05.04",
+       "aciklama": "Eşeye bağlı kalıtımı ve soy ağaçlarını yorumlar.",
+       "on_kosullar": [
+        "TYT.BIO.05.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.BIO.06",
+     "ad": "Ekosistem Ekolojisi",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.BIO.06.01",
+       "aciklama": "Ekosistemin bileşenlerini ve madde-enerji akışını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.BIO.06.02",
+       "aciklama": "Madde döngülerini açıklar.",
+       "on_kosullar": [
+        "TYT.BIO.06.01"
+       ]
+      },
+      {
+       "kod": "TYT.BIO.06.03",
+       "aciklama": "Güncel çevre sorunlarını ve biyoçeşitliliğin korunmasını açıklar.",
+       "on_kosullar": [
+        "TYT.BIO.06.02"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "tyt_tarih",
+   "ad": "Tarih",
+   "ozellik": "strateji",
+   "uniteler": [
+    {
+     "kod": "TYT.TAR.01",
+     "ad": "Tarih ve Zaman",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.TAR.01.01",
+       "aciklama": "Tarih biliminin yöntemini, kaynaklarını ve zaman hesaplamalarını açıklar.",
+       "on_kosullar": []
+      }
+     ]
+    },
+    {
+     "kod": "TYT.TAR.02",
+     "ad": "İlk ve Orta Çağlarda Türk Dünyası",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.TAR.02.01",
+       "aciklama": "İlk uygarlıkları ve yazının icadını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.TAR.02.02",
+       "aciklama": "İlk Türk devletlerinin siyasi, sosyal ve kültürel özelliklerini açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.02.01"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.TAR.03",
+     "ad": "İslam Medeniyetinin Doğuşu ve İlk Türk-İslam Devletleri",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.TAR.03.01",
+       "aciklama": "İslamiyet'in doğuşunu ve Dört Halife, Emevi, Abbasi dönemlerini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.TAR.03.02",
+       "aciklama": "Türklerin İslamiyet'i kabulünü ve ilk Türk-İslam devletlerini açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.03.01"
+       ]
+      },
+      {
+       "kod": "TYT.TAR.03.03",
+       "aciklama": "Büyük Selçuklu ve Türkiye Selçuklu devletlerini açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.03.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.TAR.04",
+     "ad": "Osmanlı Devleti: Kuruluş ve Yükselme",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.TAR.04.01",
+       "aciklama": "Beylikten devlete Osmanlı'nın kuruluşunu açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.TAR.04.02",
+       "aciklama": "Dünya gücü Osmanlı'yı (fetihler, kurumlar) açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.04.01"
+       ]
+      },
+      {
+       "kod": "TYT.TAR.04.03",
+       "aciklama": "Osmanlı devlet teşkilatı, toplum ve ekonomi yapısını açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.04.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.TAR.05",
+     "ad": "Değişen Dünya ve Osmanlı",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.TAR.05.01",
+       "aciklama": "Değişim çağında Avrupa'yı (Rönesans, Reform, coğrafi keşifler) açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.TAR.05.02",
+       "aciklama": "17. ve 18. yüzyılda Osmanlı'daki değişimi ve ıslahatları açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.05.01"
+       ]
+      },
+      {
+       "kod": "TYT.TAR.05.03",
+       "aciklama": "Uluslararası ilişkilerde denge stratejisini (1774-1914) açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.05.02"
+       ]
+      },
+      {
+       "kod": "TYT.TAR.05.04",
+       "aciklama": "Devrimler çağında devlet-toplum ilişkilerini açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.05.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.TAR.06",
+     "ad": "20. Yüzyıl Başlarında Osmanlı ve Millî Mücadele",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "TYT.TAR.06.01",
+       "aciklama": "20. yüzyıl başlarında Osmanlı Devleti ve dünyayı açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.TAR.06.02",
+       "aciklama": "I. Dünya Savaşı ve Osmanlı cephelerini açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.06.01"
+       ]
+      },
+      {
+       "kod": "TYT.TAR.06.03",
+       "aciklama": "Millî Mücadele'nin hazırlık dönemini açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.06.02"
+       ]
+      },
+      {
+       "kod": "TYT.TAR.06.04",
+       "aciklama": "Kurtuluş Savaşı'nda cepheleri ve Lozan'ı açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.06.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.TAR.07",
+     "ad": "Atatürkçülük ve Türk İnkılabı",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "TYT.TAR.07.01",
+       "aciklama": "Türk inkılabını (siyasi, hukuki, eğitim, toplumsal, ekonomik) açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.TAR.07.02",
+       "aciklama": "Atatürk ilkelerini açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.07.01"
+       ]
+      },
+      {
+       "kod": "TYT.TAR.07.03",
+       "aciklama": "Atatürk dönemi dış politikasını açıklar.",
+       "on_kosullar": [
+        "TYT.TAR.07.02"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "tyt_cografya",
+   "ad": "Coğrafya",
+   "ozellik": "strateji",
+   "uniteler": [
+    {
+     "kod": "TYT.COG.01",
+     "ad": "Doğal Sistemler",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.COG.01.01",
+       "aciklama": "Doğa ve insan etkileşimini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.COG.01.02",
+       "aciklama": "Dünya'nın şekli ve hareketlerinin sonuçlarını açıklar.",
+       "on_kosullar": [
+        "TYT.COG.01.01"
+       ]
+      },
+      {
+       "kod": "TYT.COG.01.03",
+       "aciklama": "Coğrafi konum (mutlak ve göreceli) kavramlarını açıklar.",
+       "on_kosullar": [
+        "TYT.COG.01.02"
+       ]
+      },
+      {
+       "kod": "TYT.COG.01.04",
+       "aciklama": "Harita bilgisi: ölçek, izohips, projeksiyonlar.",
+       "on_kosullar": [
+        "TYT.COG.01.03"
+       ]
+      },
+      {
+       "kod": "TYT.COG.01.05",
+       "aciklama": "Atmosfer ve iklim elemanlarını açıklar.",
+       "on_kosullar": [
+        "TYT.COG.01.04"
+       ]
+      },
+      {
+       "kod": "TYT.COG.01.06",
+       "aciklama": "İklim tiplerini ve Türkiye'nin iklimini açıklar.",
+       "on_kosullar": [
+        "TYT.COG.01.05"
+       ]
+      },
+      {
+       "kod": "TYT.COG.01.07",
+       "aciklama": "İç ve dış kuvvetleri ve yer şekillerini açıklar.",
+       "on_kosullar": [
+        "TYT.COG.01.06"
+       ]
+      },
+      {
+       "kod": "TYT.COG.01.08",
+       "aciklama": "Türkiye'nin yer şekillerini açıklar.",
+       "on_kosullar": [
+        "TYT.COG.01.07"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.COG.02",
+     "ad": "Beşerî Sistemler",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.COG.02.01",
+       "aciklama": "Nüfusun dağılışını ve nüfus piramitlerini yorumlar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.COG.02.02",
+       "aciklama": "Göçün nedenlerini ve sonuçlarını açıklar.",
+       "on_kosullar": [
+        "TYT.COG.02.01"
+       ]
+      },
+      {
+       "kod": "TYT.COG.02.03",
+       "aciklama": "Yerleşme tiplerini açıklar.",
+       "on_kosullar": [
+        "TYT.COG.02.02"
+       ]
+      },
+      {
+       "kod": "TYT.COG.02.04",
+       "aciklama": "Ekonomik faaliyetleri sınıflandırır.",
+       "on_kosullar": [
+        "TYT.COG.02.03"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.COG.03",
+     "ad": "Küresel Ortam ve Çevre",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.COG.03.01",
+       "aciklama": "Bölge türlerini ve uluslararası ulaşım hatlarını açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.COG.03.02",
+       "aciklama": "Doğal afetleri ve korunma yollarını açıklar.",
+       "on_kosullar": [
+        "TYT.COG.03.01"
+       ]
+      },
+      {
+       "kod": "TYT.COG.03.03",
+       "aciklama": "Çevre sorunlarını açıklar.",
+       "on_kosullar": [
+        "TYT.COG.03.02"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "tyt_felsefe",
+   "ad": "Felsefe",
+   "ozellik": "strateji",
+   "uniteler": [
+    {
+     "kod": "TYT.FEL.01",
+     "ad": "Felsefeyi Tanıma ve Felsefe Alanları",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.FEL.01.01",
+       "aciklama": "Felsefenin anlamını, bilgi türleri içindeki yerini ve felsefi düşüncenin özelliklerini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.FEL.01.02",
+       "aciklama": "Bilgi felsefesinin temel problemlerini açıklar.",
+       "on_kosullar": [
+        "TYT.FEL.01.01"
+       ]
+      },
+      {
+       "kod": "TYT.FEL.01.03",
+       "aciklama": "Varlık felsefesinin temel problemlerini açıklar.",
+       "on_kosullar": [
+        "TYT.FEL.01.02"
+       ]
+      },
+      {
+       "kod": "TYT.FEL.01.04",
+       "aciklama": "Ahlak felsefesinin temel problemlerini açıklar.",
+       "on_kosullar": [
+        "TYT.FEL.01.03"
+       ]
+      },
+      {
+       "kod": "TYT.FEL.01.05",
+       "aciklama": "Sanat felsefesinin temel problemlerini açıklar.",
+       "on_kosullar": [
+        "TYT.FEL.01.04"
+       ]
+      },
+      {
+       "kod": "TYT.FEL.01.06",
+       "aciklama": "Din felsefesinin temel problemlerini açıklar.",
+       "on_kosullar": [
+        "TYT.FEL.01.05"
+       ]
+      },
+      {
+       "kod": "TYT.FEL.01.07",
+       "aciklama": "Siyaset felsefesinin temel problemlerini açıklar.",
+       "on_kosullar": [
+        "TYT.FEL.01.06"
+       ]
+      },
+      {
+       "kod": "TYT.FEL.01.08",
+       "aciklama": "Bilim felsefesinin temel problemlerini açıklar.",
+       "on_kosullar": [
+        "TYT.FEL.01.07"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.FEL.02",
+     "ad": "Felsefe Tarihi",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "TYT.FEL.02.01",
+       "aciklama": "MÖ 6. yüzyıl - MS 2. yüzyıl felsefesini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.FEL.02.02",
+       "aciklama": "MS 2. yüzyıl - 15. yüzyıl felsefesini açıklar.",
+       "on_kosullar": [
+        "TYT.FEL.02.01"
+       ]
+      },
+      {
+       "kod": "TYT.FEL.02.03",
+       "aciklama": "15. - 17. yüzyıl felsefesini açıklar.",
+       "on_kosullar": [
+        "TYT.FEL.02.02"
+       ]
+      },
+      {
+       "kod": "TYT.FEL.02.04",
+       "aciklama": "18. - 19. yüzyıl felsefesini açıklar.",
+       "on_kosullar": [
+        "TYT.FEL.02.03"
+       ]
+      },
+      {
+       "kod": "TYT.FEL.02.05",
+       "aciklama": "20. yüzyıl felsefesini açıklar.",
+       "on_kosullar": [
+        "TYT.FEL.02.04"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "kod": "tyt_din",
+   "ad": "Din Kültürü ve Ahlak Bilgisi",
+   "ozellik": "strateji",
+   "uniteler": [
+    {
+     "kod": "TYT.DIN.01",
+     "ad": "İnanç ve İbadet",
+     "sinif_duzeyi": 9,
+     "kazanimlar": [
+      {
+       "kod": "TYT.DIN.01.01",
+       "aciklama": "Bilgi ve inanç ilişkisini açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.DIN.01.02",
+       "aciklama": "İslam'da ibadet anlayışını ve temel ibadetleri açıklar.",
+       "on_kosullar": [
+        "TYT.DIN.01.01"
+       ]
+      },
+      {
+       "kod": "TYT.DIN.01.03",
+       "aciklama": "Allah-insan ilişkisini açıklar.",
+       "on_kosullar": [
+        "TYT.DIN.01.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.DIN.02",
+     "ad": "Ahlak, Değerler ve Hz. Muhammed",
+     "sinif_duzeyi": 10,
+     "kazanimlar": [
+      {
+       "kod": "TYT.DIN.02.01",
+       "aciklama": "Ahlak ve değerleri açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.DIN.02.02",
+       "aciklama": "Hz. Muhammed'in hayatını ve gençliğe örnekliğini açıklar.",
+       "on_kosullar": [
+        "TYT.DIN.02.01"
+       ]
+      },
+      {
+       "kod": "TYT.DIN.02.03",
+       "aciklama": "Kur'an'a göre Hz. Muhammed'i açıklar.",
+       "on_kosullar": [
+        "TYT.DIN.02.02"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "TYT.DIN.03",
+     "ad": "Din, Toplum ve Düşünce",
+     "sinif_duzeyi": 11,
+     "kazanimlar": [
+      {
+       "kod": "TYT.DIN.03.01",
+       "aciklama": "İslam düşüncesinde yorumları (itikadi, siyasi, fıkhi) açıklar.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "TYT.DIN.03.02",
+       "aciklama": "Anadolu'da İslam ve tasavvufi yorumları açıklar.",
+       "on_kosullar": [
+        "TYT.DIN.03.01"
+       ]
+      },
+      {
+       "kod": "TYT.DIN.03.03",
+       "aciklama": "Dünya dinlerini (Yahudilik, Hristiyanlık, Hint ve Çin dinleri) açıklar.",
+       "on_kosullar": [
+        "TYT.DIN.03.02"
+       ]
+      },
+      {
+       "kod": "TYT.DIN.03.04",
+       "aciklama": "Güncel dini meseleleri açıklar.",
+       "on_kosullar": [
+        "TYT.DIN.03.03"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
 }

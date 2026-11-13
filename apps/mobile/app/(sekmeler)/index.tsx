@@ -14,7 +14,8 @@ export default function Arena() {
   const tema = useTema();
   const { profil, dershane } = useOturum();
   const ilerleme = useIlerleme().data;
-  const dersler = useMufredat().data ?? [];
+  const mufredat = useMufredat();
+  const dersler = mufredat.data ?? [];
   const tespitler = useTespitler().data;
   const hatalar = useHataDefteri().data ?? [];
   const [dersKodu, setDersKodu] = useState<string | null>(null);
@@ -47,6 +48,12 @@ export default function Arena() {
             <View style={{ width: `${Math.round(oran * 100)}%`, height: 10, backgroundColor: tema.vurgu }} />
           </View>
           <Text style={{ color: tema.soluk, fontSize: 13 }}>{ilerleme?.xp ?? 0} / {ust} {t("arena.xp")}</Text>
+        </Kart>
+      )}
+
+      {ogrenci && mufredat.isSuccess && dersler.length === 0 && (
+        <Kart>
+          <Text style={{ color: tema.metin }}>{t("soru.paketYok")}</Text>
         </Kart>
       )}
 

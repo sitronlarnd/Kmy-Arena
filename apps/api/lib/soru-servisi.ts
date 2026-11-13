@@ -104,20 +104,36 @@ async function soruSec(
   return data as SecimSonucu;
 }
 
+/** Öğrencinin paketine ve sınıfına (LGS / YKS, alan) göre açık dersleri. */
+async function izinliDersler(k: Kullanici): Promise<Set<string>> {
+  const { data, error } = await servisIstemcisi().rpc("sistem_ogrenci_dersleri", { p_kullanici: k.id });
+  if (error) throw error;
+  const set = new Set(((data ?? []) as Array<{ id: string }>).map((d) => d.id));
+  if (set.size === 0) throw new IstemciHatasi("soru.paketYok", 403);
+  return set;
+}
+
+function dersKontrol(izinli: Set<string>, dersId: string): void {
+  if (!izinli.has(dersId)) throw new IstemciHatasi("soru.kapsamDisi", 403);
+}
+
 /** Antrenmanda kazanım seçimi: verilen kazanım, yoksa dersin en az çalışılmış kazanımlarından biri. */
 async function antrenmanKazanimi(k: Kullanici, m: Mufredat, istek: SiradakiIstegi): Promise<MufredatKazanimi> {
+  const izinli = await izinliDersler(k);
   if (istek.kazanimKodu) {
     const kz = m.kodla.get(istek.kazanimKodu);
     if (!kz) throw new IstemciHatasi("soru.kazanimYok", 404);
+    dersKontrol(izinli, kz.dersId);
     return kz;
   }
   let liste: MufredatKazanimi[] = [];
   if (istek.dersKodu) {
     const d = m.dersKodla.get(istek.dersKodu);
     if (!d) throw new IstemciHatasi("soru.kazanimYok", 404);
+    dersKontrol(izinli, d.id);
     liste = m.derseGore.get(d.id) ?? [];
   } else {
-    liste = [...m.kazanimlar.values()];
+    liste = [...m.kazanimlar.values()].filter((x) => izinli.has(x.dersId));
   }
   if (liste.length === 0) throw new IstemciHatasi("soru.kazanimYok", 404);
   const { data } = await servisIstemcisi()
@@ -191,6 +207,7 @@ export async function siradakiSoru(k: Kullanici, istek: SiradakiIstegi): Promise
   if (mod === "tespit") {
     const ders = istek.tespitDersKodu ? m.dersKodla.get(istek.tespitDersKodu) : undefined;
     if (!ders) throw new IstemciHatasi("soru.kazanimYok", 404);
+    dersKontrol(await izinliDersler(k), ders.id);
     const kazanimlar = m.derseGore.get(ders.id) ?? [];
     let { data: oturum } = await s
       .from("tespit_oturumu")

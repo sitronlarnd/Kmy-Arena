@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 
 interface Kazanim { kod: string; aciklama: string; on_kosullar: string[] }
 interface Unite { kod: string; ad: string; sinif_duzeyi: number; kazanimlar: Kazanim[] }
-interface Ders { kod: string; ad: string; ozellik: string; uniteler: Unite[] }
+interface Ders { kod: string; ad: string; ozellik: string; alanlar?: string[]; uniteler: Unite[] }
 interface Dosya { sinav_turu: string; dersler: Ders[] }
 
 const kok = fileURLToPath(new URL("..", import.meta.url));
@@ -23,14 +23,18 @@ const satirlar: string[] = [
   "",
 ];
 const tumKodlar = new Set<string>();
-const dosyalar = readdirSync(klasor).filter((f) => f.endsWith(".json")).sort();
+// Sıra: LGS, TYT, AYT, YDT (uygulamadaki ders sırası)
+const SIRA = ["lgs.json", "tyt.json", "ayt.json", "ydt.json"];
+const dosyalar = readdirSync(klasor).filter((f) => f.endsWith(".json")).sort((a, b) => SIRA.indexOf(a) - SIRA.indexOf(b));
+let dersSirasi = 0;
 
 for (const ad of dosyalar) {
   const d = JSON.parse(readFileSync(join(klasor, ad), "utf8")) as Dosya;
-  d.dersler.forEach((ders, di) => {
+  d.dersler.forEach((ders) => {
+    const alanlar = ders.alanlar?.length ? `array[${ders.alanlar.map(q).join(", ")}]::text[]` : "'{}'::text[]";
     satirlar.push(
-      `insert into public.ders (id, kod, ad, sinav_turu, ozellik, sira) values (${id("ders", ders.kod)}, ${q(ders.kod)}, ${q(ders.ad)}, ${q(d.sinav_turu)}, ${q(ders.ozellik)}, ${di})`,
-      "  on conflict (kod) do update set ad = excluded.ad, ozellik = excluded.ozellik, sira = excluded.sira;",
+      `insert into public.ders (id, kod, ad, sinav_turu, ozellik, alanlar, sira) values (${id("ders", ders.kod)}, ${q(ders.kod)}, ${q(ders.ad)}, ${q(d.sinav_turu)}, ${q(ders.ozellik)}, ${alanlar}, ${dersSirasi++})`,
+      "  on conflict (kod) do update set ad = excluded.ad, ozellik = excluded.ozellik, alanlar = excluded.alanlar, sira = excluded.sira;",
     );
     ders.uniteler.forEach((u, ui) => {
       satirlar.push(
@@ -42,7 +46,7 @@ for (const ad of dosyalar) {
         const onKosul = k.on_kosullar.length ? `array[${k.on_kosullar.map((o) => id("kazanim", o)).join(", ")}]` : "'{}'::uuid[]";
         satirlar.push(
           `insert into public.kazanim (id, unite_id, kod, aciklama, sinif_duzeyi, sinav_turu, on_kosullar, sira) values (${id("kazanim", k.kod)}, ${id("unite", u.kod)}, ${q(k.kod)}, ${q(k.aciklama)}, ${u.sinif_duzeyi}, ${q(d.sinav_turu)}, ${onKosul}, ${ki})`,
-          "  on conflict (kod) do update set aciklama = excluded.aciklama, on_kosullar = excluded.on_kosullar, sira = excluded.sira;",
+          "  on conflict (kod) do update set aciklama = excluded.aciklama, on_kosullar = excluded.on_kosullar, sira = excluded.sira, unite_id = excluded.unite_id;",
         );
       });
     });

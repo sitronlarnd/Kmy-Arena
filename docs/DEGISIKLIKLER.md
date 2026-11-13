@@ -5,7 +5,7 @@
 | Faz | Kapsam | Durum |
 |---|---|---|
 | 0 | Altyapı: monorepo, uygulama iskeletleri, Supabase şema + RLS + RBAC, davet kodu, özellik bayrakları, seed, CI | **Tamamlandı** |
-| 1 | Çekirdek soru döngüsü: üretim + doğrulama hattı, havuz, soru ekranı (LaTeX), Elo, tespit sınavı, XP/Altın, çözüm, hata defteri, konu haritası, AI Merkezi temel | **Tamamlandı** (tam müfredat listesi hariç, aşağıya bakın) |
+| 1 | Çekirdek soru döngüsü: üretim + doğrulama hattı, havuz, soru ekranı (LaTeX), Elo, tespit sınavı, XP/Altın, çözüm, hata defteri, konu haritası, AI Merkezi temel | **Tamamlandı** |
 | 2 | Oyun katmanı: karakter, seri, görevler, 40 rozet, mağaza, lig, sıralamalar, kart albümü | |
 | 3 | Düello ve Canlı Soru Saati (Supabase Realtime) | |
 | 4 | Klanlar, boss, klan savaşı | |
@@ -136,3 +136,15 @@ Tamamı `.env.example` içinde.
 
 - Panel: `SUPABASE_SERVICE_ROLE_KEY` (zaten girildi), isteğe bağlı `NEXT_PUBLIC_API_URL`.
 - `KMYAI_ZAMAN_ASIMI_URETIM_MS` varsayılanı 90000.
+
+---
+
+## Faz 1.1 — Tam müfredat ve LGS / YKS paketleri (2026-11-13)
+
+- **Müfredat:** 27 ders, 539 kazanım/konu (LGS 173, TYT 204, AYT 145, YDT 17). Ayrıntı ve kod yapısı: VARSAYIMLAR #11.
+- **0012:** `paket.sinav_gruplari`, `ders.alanlar`, `sinif.yks_alani`, `kullanici.sinav_grubu / yks_alani`; `sistem_ogrenci_dersleri`, `derslerim()`. Örnek paketler: `lgs` (LGS Paketi), `yks` (YKS Paketi).
+- **API:** soru seçimi ve tespit yalnızca öğrencinin kapsamındaki derslerden; kapsam dışı istek 403 (`soru.kapsamDisi`), paket öğrencinin grubunu içermiyorsa `soru.paketYok`.
+- **Mobil:** Arena ve Harita yalnızca öğrencinin derslerini gösterir.
+- **Havuz cron:** yalnızca satılan paketlerin grupları, bir çalıştırmada en fazla 10 soru.
+- **Yükleme:** müfredat artık her "Supabase'e yükle" çalıştırmasında yüklenir/güncellenir (demo verisinden bağımsız).
+- DB testleri: LGS öğrencisi yalnızca 6 LGS dersi; 12-SAY TYT + SAY AYT; 12-EA edebiyat var fizik yok; paket grubu kaldırılınca hiçbir ders yok; öğrenci kendi grubunu değiştiremez.

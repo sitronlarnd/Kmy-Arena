@@ -68,6 +68,10 @@ insert into public.sinif (id, dershane_id, sube_id, ad, sinav_turu, seviye) valu
   (app.sabit_uuid('sinif:R8'), app.sabit_uuid('dershane:rakip'), app.sabit_uuid('sube:cankaya'), '8-R', 'LGS', 8)
 on conflict (id) do nothing;
 
+-- YKS alanları (demo dershane Pro paketiyle LGS + YKS)
+update public.sinif set yks_alani = 'SAY' where id = app.sabit_uuid('sinif:12SAY');
+update public.sinif set yks_alani = 'EA' where id = app.sabit_uuid('sinif:12EA');
+
 -- ── Hesaplar ──
 do $$
 declare

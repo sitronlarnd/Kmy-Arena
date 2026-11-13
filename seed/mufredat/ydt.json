@@ -1,0 +1,150 @@
+{
+ "_not": "Kaynak: scripts/mufredat_veri.py (elle düzenleme; o dosyayı düzenleyip yeniden üret). Faz 0 kodları (M.8.*, F.8.*, T.8.*, İTA.8.*, DKAB.8.*, E8.*, TYT.M.*, TYT.T.*) korunur; diğerleri platform kodudur, resmî MEB kodu değildir.",
+ "sinav_turu": "YDT",
+ "dersler": [
+  {
+   "kod": "ydt_ingilizce",
+   "ad": "İngilizce",
+   "ozellik": "ceviklik",
+   "uniteler": [
+    {
+     "kod": "YDT.ING.01",
+     "ad": "Kelime ve Dil Bilgisi",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "YDT.ING.01.01",
+       "aciklama": "Bağlama uygun kelime ve deyimi seçer (vocabulary).",
+       "on_kosullar": []
+      },
+      {
+       "kod": "YDT.ING.01.02",
+       "aciklama": "Zamanları (tenses) bağlama uygun kullanır.",
+       "on_kosullar": [
+        "YDT.ING.01.01"
+       ]
+      },
+      {
+       "kod": "YDT.ING.01.03",
+       "aciklama": "Kipleri (modals) bağlama uygun kullanır.",
+       "on_kosullar": [
+        "YDT.ING.01.02"
+       ]
+      },
+      {
+       "kod": "YDT.ING.01.04",
+       "aciklama": "Edilgen yapıyı (passive) kullanır.",
+       "on_kosullar": [
+        "YDT.ING.01.03"
+       ]
+      },
+      {
+       "kod": "YDT.ING.01.05",
+       "aciklama": "Koşul cümlelerini (if clauses) kullanır.",
+       "on_kosullar": [
+        "YDT.ING.01.04"
+       ]
+      },
+      {
+       "kod": "YDT.ING.01.06",
+       "aciklama": "Sıfat ve isim cümleciklerini (relative, noun clauses) kullanır.",
+       "on_kosullar": [
+        "YDT.ING.01.05"
+       ]
+      },
+      {
+       "kod": "YDT.ING.01.07",
+       "aciklama": "Fiilimsi yapılarını (gerund, infinitive) kullanır.",
+       "on_kosullar": [
+        "YDT.ING.01.06"
+       ]
+      },
+      {
+       "kod": "YDT.ING.01.08",
+       "aciklama": "Bağlaç ve geçiş ifadelerini (conjunctions, transitions) kullanır.",
+       "on_kosullar": [
+        "YDT.ING.01.07"
+       ]
+      },
+      {
+       "kod": "YDT.ING.01.09",
+       "aciklama": "Edat ve öbek fiilleri (prepositions, phrasal verbs) kullanır.",
+       "on_kosullar": [
+        "YDT.ING.01.08"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "YDT.ING.02",
+     "ad": "Okuma ve Anlama",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "YDT.ING.02.01",
+       "aciklama": "Boşluk doldurma (cloze test) sorularını çözer.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "YDT.ING.02.02",
+       "aciklama": "Cümle tamamlama sorularını çözer.",
+       "on_kosullar": [
+        "YDT.ING.02.01"
+       ]
+      },
+      {
+       "kod": "YDT.ING.02.03",
+       "aciklama": "Okuma parçasından çıkarım yapar (reading comprehension).",
+       "on_kosullar": [
+        "YDT.ING.02.02"
+       ]
+      },
+      {
+       "kod": "YDT.ING.02.04",
+       "aciklama": "Paragraf tamamlama ve anlam bütünlüğünü bozan cümleyi bulur.",
+       "on_kosullar": [
+        "YDT.ING.02.03"
+       ]
+      },
+      {
+       "kod": "YDT.ING.02.05",
+       "aciklama": "Diyalog tamamlama sorularını çözer.",
+       "on_kosullar": [
+        "YDT.ING.02.04"
+       ]
+      },
+      {
+       "kod": "YDT.ING.02.06",
+       "aciklama": "Verilen cümleye en yakın anlamlı cümleyi bulur (restatement).",
+       "on_kosullar": [
+        "YDT.ING.02.05"
+       ]
+      }
+     ]
+    },
+    {
+     "kod": "YDT.ING.03",
+     "ad": "Çeviri",
+     "sinif_duzeyi": 12,
+     "kazanimlar": [
+      {
+       "kod": "YDT.ING.03.01",
+       "aciklama": "İngilizceden Türkçeye en uygun çeviriyi seçer.",
+       "on_kosullar": []
+      },
+      {
+       "kod": "YDT.ING.03.02",
+       "aciklama": "Türkçeden İngilizceye en uygun çeviriyi seçer.",
+       "on_kosullar": [
+        "YDT.ING.03.01"
+       ]
+      }
+     ]
+    }
+   ],
+   "alanlar": [
+    "DIL"
+   ]
+  }
+ ]
+}

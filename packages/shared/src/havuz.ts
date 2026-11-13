@@ -30,6 +30,12 @@ export const HAVUZ_AYARLARI = {
   duelloMinTaze: 4,
   /** Hata bildirimi oranı bu eşiği geçerse soru incelemeye düşer */
   hataOraniEsigi: 0.05,
+  /** Cron: son 7 günde çözülen kazanımlarda bant başına hedef */
+  aktifHedef: 8,
+  /** Cron: satılan paketlerdeki diğer kazanımların kolay bantlarında (1-2) hedef */
+  sogukHedef: 2,
+  /** Cron: bir çalıştırmada (10 dk) üretilecek en fazla soru — token tüketim sınırı */
+  cronMaxSoru: 10,
 } as const;
 
 export interface HavuzSorusu {
