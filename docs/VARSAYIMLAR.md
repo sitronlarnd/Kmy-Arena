@@ -59,3 +59,7 @@ Belirsiz kalan noktalarda en makul varsayım yapıldı ve buraya yazıldı.
 29. **Oyun kataloğu** (rozet, görev, eşya) `packages/shared` içinde tek kaynak; veritabanı yalnızca kodları tutar. Fiyat/ödül değerlerinin Merkez Panelden değiştirilmesi Faz 6'da.
 30. **Seri ve hafta** Europe/Istanbul saatine göre; hafta pazartesi başlar. Sezon 1, 2026-11-02 haftasıyla başlar.
 31. **KMYAI hız sınırı:** istekler arası en az 3 sn (platform geneli). Saatte en fazla ~1200 istek; havuz cron'u 10 dakikada en fazla 4 soru üretir. CLIProxy kapasitesine göre `uygulama_ayari.ai_istek_araligi_ms` değiştirilebilir.
+32. **Düello cevapları beceri puanını (θ) değiştirmez**; yalnız Kupa, XP ve ilerleme sayaçlarını etkiler (hız baskısı ölçümü bozmasın diye).
+33. **Gerçek zaman:** Realtime yalnız "değişti" dürtüsü taşır; durum her zaman sunucudan okunur (yoklama 1 sn). Bu, anahtar sızıntısını ve istemci hilesini önler.
+34. **Sınıf turnuvası** (şartnamede öğretmen başlatır) Faz 6 öğretmen paneliyle birlikte yapılacak.
+35. **Bir öğrencinin aynı anda tek aktif düellosu** olur; kuyruk isteği varsa mevcut düelloya yönlendirir.

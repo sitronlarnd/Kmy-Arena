@@ -24,7 +24,7 @@ export async function POST(istek: Request, baglam: { params: Promise<{ islem: st
         if (!merkez && !(rol ?? []).length) throw new IstemciHatasi("panel.yetkisiz", 403);
         if (!merkez || !dershane) dershane = (ku?.dershane_id as string | null) ?? dershane;
       }
-      if (!dershane) throw new IstemciHatasi("ortak.hata");
+      if (!dershane || !/^[0-9a-f-]{36}$/i.test(dershane)) throw new IstemciHatasi("ortak.hata", 400);
       await canliHemenBaslat(dershane);
       return json({ tamam: true });
     }

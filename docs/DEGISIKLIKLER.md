@@ -7,7 +7,7 @@
 | 0 | Altyapı: monorepo, uygulama iskeletleri, Supabase şema + RLS + RBAC, davet kodu, özellik bayrakları, seed, CI | **Tamamlandı** |
 | 1 | Çekirdek soru döngüsü: üretim + doğrulama hattı, havuz, soru ekranı (LaTeX), Elo, tespit sınavı, XP/Altın, çözüm, hata defteri, konu haritası, AI Merkezi temel | **Tamamlandı** |
 | 2 | Oyun katmanı: karakter, seri, görevler, 40 rozet, mağaza, lig, sıralamalar, kart albümü | **Tamamlandı** |
-| 3 | Düello ve Canlı Soru Saati (Supabase Realtime) | |
+| 3 | Düello ve Canlı Soru Saati (Supabase Realtime) | **Tamamlandı** |
 | 4 | Klanlar, boss, klan savaşı | |
 | 5 | Topluluk soru-cevap, Sokratik asistan, fotoğraftan çöz | |
 | 6 | Öğretmen, Dershane Kurucu, Veli, Merkez panelleri | |
@@ -191,3 +191,21 @@ Tamamı `.env.example` içinde.
 ### Bilinçli kapsam dışı (sonraki fazlar)
 
 - Canlı Soru Saati ve Hızlı Tur → Faz 3; birlikte çalışma odası, "geçen haftaki sen" grafiği, haftalık gelişim kartı, tematik etkinlikler, akıllı geri dönüş bildirimleri, 45 dk mola önerisi → Faz 5-7; dershanenin tanımladığı gerçek sezon ödülleri → Faz 6 (dershane paneli); ekonomi değerlerinin panelden düzenlenmesi → Faz 6.
+
+## Faz 3 — Düello ve Canlı Soru Saati (2026-11-13)
+
+**Veritabanı (0017_duello.sql):** `duello`, `duello_tur`, `duello_kuyruk`, `duello_inceleme`, `canli_oturum`, `canli_cevap`. Tüm durum değişiklikleri `sistem_duello_*` / `sistem_canli_*` (SECURITY DEFINER, yalnız service_role) üzerinden. Sunucusuz durum makinesi: her istekte `app.duello_ilerlet` süresi dolan turları kapatır (cron gerekmez).
+
+**Kurallar:** 5 tur; tur açılışı sunucu saatine göre planlanır, soru metni açılış anına kadar gönderilmez, cevap anahtarı tur kapanmadan hiçbir yanıtta yok. Adil süre = alış − min(RTT/2, 250 ms). İlk doğru turu alır, yanlış cevap oyuncuyu o turda kilitler. Tur arası 8 sn. 15 sn kopma turu kaybettirir, ikinci kopma hükmen yenilgi. Derecelide sekme/arka plan değişimi turu kaybettirir. Kupa Elo (K=32, asenkronda yarım), aynı rakiple tekrarlı Kupa aktarımı tespiti, insanüstü hız → inceleme listesi. 3 galibiyet serisi +50 Altın; düello rozetleri açıldı.
+
+**Modlar:** dereceli kuyruk (±150 → ±300 Kupa → şubeler arası), arkadaş daveti (6 haneli kod), robot (ekranda açıkça "Robot"), asenkron (24 saat), rövanş, 8 hazır tepki.
+
+**Canlı Soru Saati:** dershane ayarındaki saatte (varsayılan 19:30) 5 soru × 60 sn; ilk 10 doğru bonus XP/Altın, şube sıralaması. Yönetim: `POST /api/canli/baslat {dershaneId}` (CRON_SECRET veya kurucu/öğretmen) 1 dk sonra başlatır.
+
+**API:** `/api/duello/{kuyruk,kuyruktan-cik,robot,davet,katil,asenkron,durum,cevap,sekme,tepki,rovans,gecmis}`, `/api/canli/{durum,cevap,baslat}`. Supabase Realtime `duello:{id}` kanalına veri içermeyen dürtü + 1 sn yoklama yedeği.
+
+**Mobil:** Düello sekmesi (modlar, ders seçimi, geçmiş), `duello/[id]` oyun ekranı (sunucu saat senkronu), `canli` ekranı ve Arena kartı.
+
+**Canlı doğrulama:** iki cihazda soruyu görme farkı 22 ms (hedef ≤300 ms); ilk doğru kuralı, tepki, robot, dereceli eşleşme, sekme uyarısı, Canlı Soru Saati cevap/409 çalışıyor; anahtar açık turda `null`.
+
+**Elle test:** iki demo öğrenciyle (ör. ogrenci06/07, 8. sınıf) giriş → Düello → biri "Davet et", diğeri kodla katılır.
