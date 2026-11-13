@@ -27,6 +27,9 @@ const MENU: Record<PanelAdi, Array<{ yol: string; ad: string; ikon: string } | {
     { yol: "/merkez", ad: "Genel bakış", ikon: "◎" },
     { yol: "/merkez/ai", ad: "AI Merkezi", ikon: "✦" },
     { yol: "/merkez/bayraklar", ad: "Özellik bayrakları", ikon: "⚑" },
+    { bolum: "Satış" },
+    { yol: "/merkez/dershaneler", ad: "Dershaneler", ikon: "▦" },
+    { yol: "/merkez/teklifler", ad: "Teklifler ve pilotlar", ikon: "✉" },
   ],
 };
 

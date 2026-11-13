@@ -54,6 +54,18 @@ const ISLER: Record<string, Is> = {
     if (error) throw error;
     return { silinen: data };
   },
+  // Her gece: silme talebinin üzerinden 30 gün geçen hesaplar kalıcı silinir (auth → kullanıcı → bağlı veriler)
+  "hesap-sil": async () => {
+    const s = servisIstemcisi();
+    const sinir = new Date(Date.now() - 30 * 86_400_000).toISOString();
+    const { data } = await s.from("kullanici").select("id").lt("silinme_talebi", sinir).limit(50);
+    let silinen = 0;
+    for (const k of data ?? []) {
+      const { error } = await s.auth.admin.deleteUser(k.id as string);
+      if (!error) silinen++;
+    }
+    return { silinen };
+  },
   // Elle (demo/pilot): savaşı hemen başlat (bitiş yine Pazar 21:00), en az 2 üyeli klanlar
   "klan-savas-hemen": async () => {
     const { data, error } = await servisIstemcisi().rpc("sistem_klan_savas_esle", {

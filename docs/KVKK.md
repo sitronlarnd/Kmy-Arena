@@ -32,5 +32,9 @@ kazanım ve anonim istatistik gider. Teknik önlemler:
 
 - TCKN, adres, okul adı istenmez. Diğer öğrencilere yalnızca takma ad ve karakter görünür.
 - 18 yaş altı öğrencide veli açık rızası gelene kadar sosyal özellikler kapalıdır.
-- Hesap silme uygulama içinden; 30 gün içinde kişisel veriler silinir, istatistikler anonimleştirilir (Faz 6-7).
+- Hesap silme uygulama içinden (Profil → Hesabımı sil, iki adımlı onay). Talep `kullanici.silinme_talebi` ile kaydedilir ve denetim günlüğüne yazılır; kullanıcı hemen çıkış yapar. 30 gün sonra `hesap-sil` gece işi Supabase Auth hesabını ve ona bağlı kişisel kayıtları siler (cascade). Dershane düzeyindeki toplu istatistikler kişiyle ilişkilendirilemez biçimde kalır. 30 gün içinde dershane yöneticisine başvurularak talep geri alınabilir.
+- Fotoğraftan çöz: fotoğraf yalnızca istek sırasında bellekte işlenir, hiçbir yerde saklanmaz. Görsel önce yüz, kimlik/kişisel bilgi ve uygunsuz içerik açısından kontrol edilir; bunlardan biri varsa okunmadan reddedilir. AI sağlayıcısına öğrenci kimliği gönderilmez.
+- Topluluk görselleri özel (public olmayan) depoda tutulur, yalnızca kısa süreli imzalı bağlantıyla ve yalnızca görme yetkisi olanlara gösterilir; aynı görsel denetiminden geçer.
+- Rehberlik bildirimi: asistan veya toplulukta destek gerektirebilecek ifadeler (kendine zarar vb.) algılanırsa AI'ya gönderilmez; öğrenciye destek hatları gösterilir ve yalnızca dershanenin rehber öğretmenine/yöneticisine `rehberlik_bildirim` düşer. Bildirim içeriği öğrencinin kendi yazdığı metinle sınırlıdır, AI yorumu içermez.
+- Teklif formu (tanıtım sitesi): yalnızca dershane ve yetkili iletişim bilgisi alınır, öğrenci verisi alınmaz; IP başına saatte 5 gönderim sınırı.
 - Saklama: asistan sohbetleri 180 gün, topluluk içerikleri lisans süresince, denetim kayıtları 2 yıl.

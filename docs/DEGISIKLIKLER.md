@@ -232,3 +232,33 @@ Tamamı `.env.example` içinde.
 **Canlı doğrulama:** küfürlü ad 400, koşulsuz kurma 409, açık klana katılım + rozet, başvuru → lider onayı, davetli klana davetsiz katılım 409, hazır mesaj, serbest kapalı 409, savaş eşleşmesi (2 savaş), cevap sonrası savaş etkisi 12,52 ve hak düşüşü, görev ilerlemesi.
 
 **Elle test:** ogrenci01 (Kartallar lideri) ile giriş → Klan → Sohbet; ogrenci15 ile giriş → Klan → Kartallar'a katıl.
+
+## Faz 5 — Topluluk, Sokratik asistan, fotoğraftan çöz (2026-11-13)
+
+**Veritabanı (0019):** `topluluk_soru`, `topluluk_cevap`, `asistan_oturum`, `asistan_mesaj`, `rehberlik_bildirim`; `sistem_topluluk_*`, `sistem_asistan_*`, `sistem_rehberlik_bildir`. Boss kazanım seçimi düzeltildi; AI görev modelleri (asistan, görsel okuma, topluluk değerlendirme → claude-haiku-5-5).
+
+**Kurallar:** Topluluk soruları sınıf/şube/dershane görünürlüğüyle; ilk kabul edilen cevap 50 XP + 20 Altın, sonrakiler 20 XP; günlük 300 XP ve 10 soru sınırı; 15 dk sonra AI ipucu, 2 saatte cevap yoksa AI tam çözüm (öğretmen onay kuyruğu). Asistan yalnız cevaplanmış soruda, cevabı söylemeden kademeli ipucu; günde 40 mesaj. Fotoğraftan çöz günde 15; fotoğraf saklanmaz; yüz/kişisel bilgi/uygunsuz içerik reddedilir; sonuç: kazanım + çözüm + "benzer 2 soru". Destek gerektiren ifadelerde AI çağrılmaz, rehberliğe bildirim gider. KMYAI 401/403'te 10 dk devre kesici.
+
+**Mobil:** Topluluk (akış, sor, detay), asistan, fotoğraf ekranları; soru sonucunda "Asistana sor".
+
+**Durum:** AI'sız akışlar canlıda doğrulandı; asistan / fotoğraf / topluluk AI canlı testi KMYAI anahtarı yeniden eklenince yapılacak.
+
+## Tasarım yenilemesi (2026-11-13)
+
+Emoji tabanlı arayüz kaldırıldı: lucide ikonları, özgün SVG karakter/boss/amblem/rozet çizimleri, Reanimated animasyonları (giriş, bas-büyü, konfeti, uçan ödül, seviye/rozet kutlaması), Nunito yazı tipi, koyu oyun teması ve gradyanlar. Panel CSS'i baştan yazıldı (kenar menü, metrik kartları, ısı haritası, grafikler).
+
+## Faz 6 — Öğretmen, dershane ve veli panelleri (2026-11-14)
+
+**Veritabanı (0020, 0021):** `odev`, `odev_atama`, `rehberlik_not`, `duyuru`; `app.risk` (bırakma riski: hareketsizlik, düşen doğruluk, geciken ödev, hiç başlamamış); `panel_*` fonksiyonları (her biri yetkiyi kendi içinde denetler), `odevlerim`, `duyurularim`, `veli_ozet`.
+
+**Öğretmen:** sınıflarım, sınıf analizi (öğrenci × kazanım ısı haritası, en çok yanlış yapılan kazanımlar ve şıklar), öğrenci 360°, ödev (uyarlamalı/sabit zorluk, tek tıkla zayıf konulara), bekleyenler (topluluk onayı, hata bildirimleri), duyuru.
+**Dershane:** genel bakış (aktiflik, şube karşılaştırma), öğrenciler (risk), öğretmen kullanımı, rehberlik (risk listesi, notlar, bildirimler), ayarlar (klan onayı, serbest sohbet, logo/renk).
+**Öğrenci/veli:** Arena'da ödev ve duyuru kartları, `odev` modu ile ödev ilerlemesi; veli hesabı doğrudan veli ekranına (haftalık özet, ödev, seri).
+
+## Faz 7 — Tanıtım sitesi, satış ve mağaza hazırlığı (2026-11-14)
+
+- **Tanıtım sitesi** (`apps/landing`): tek sayfa (sorun, çözüm, özellikler, öğretmen/yönetici faydaları, KVKK, SSS, fiyat "teklif alın"), canlı telefon maketi, 30 gün ücretsiz pilot / teklif formu.
+- **`POST /api/teklif`:** herkese açık; doğrulama, gizli bal küpü alanı, IP başına saatte 5; `teklif` tablosuna yazar, `RESEND_API_KEY` + `SAHIP_EPOSTA` varsa sana ve dershaneye e-posta.
+- **Merkez panel:** Teklifler ve pilotlar (huni, durum, sonraki adım tarihi, "bugün aranacak"); Dershaneler (lisans durumu, koltuk, bitiş, 30 gün kullanım); yazdırılabilir **pilot raporu** (aktif öğrenci, çözülen soru, süre, ilk→son hafta doğruluk, ustalık, günlük grafik).
+- **Hesap silme:** mobil Profil → Hesabımı sil (`POST /api/hesap/sil`), 30 gün sonra `hesap-sil` gece işi (00:45) Auth hesabını siler.
+- **Belgeler:** `docs/MAGAZA.md` (mağaza metinleri, ekran görüntüsü listesi, inceleme notları), KVKK güncellemesi, README (uygulamalar, demo sınıfları, EAS adımları).

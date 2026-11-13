@@ -68,3 +68,10 @@ Belirsiz kalan noktalarda en makul varsayım yapıldı ve buraya yazıldı.
 38. **Savaşa giriş** için klanın en az 5 üyesi olmalı; tek kalan klan o hafta eşleşmez. Canlı klan düellosu (Pazar 20:00 bayrak yarışı), dershane takımı / aylık dershaneler arası turnuva ve dershane sezon ödülleri Faz 6 panelleriyle birlikte yapılacak.
 39. **Klan adı onayı** varsayılan olarak otomatik filtreyle yapılır; dershane `ayarlar.klan_onayi` açarsa öğretmen onayı beklenir. Öğretmenin sınıf bazlı klan kurması ve onay ekranı Faz 6 öğretmen panelinde.
 40. **Moderasyon filtresi** kelime listesi + kalıp tabanlıdır (Türkçe normalizasyon, leet, harf tekrarı). Görsel moderasyonu Faz 5'te (fotoğraf yükleme ile) eklenecek.
+41. **Topluluk AI** ön değerlendirmesi isteği bekletmemek için `after()` ile yanıt sonrası çalışır; KMYAI kapalıysa cevap öğretmen/öğrenci kabulüne kalır, hiçbir akış AI'ya bağımlı değildir.
+42. **Risk puanı** basit kurallarla (0-100): 7+ gün hareketsizlik, son hafta doğruluk düşüşü, geciken ödev, hiç başlamamış. Makine öğrenmesi modeli yerine açıklanabilir kurallar seçildi; nedenler panelde metin olarak görünür.
+43. **Push bildirimleri ve sessiz saatler** henüz yok (Expo Notifications + mağaza kimlik bilgileri gerekiyor); uygulama içi kartlar kullanılıyor.
+44. **Veliye haftalık e-posta** ertelendi (e-posta sağlayıcısı alan adı doğrulaması ve AI özet metni gerekiyor); veli şimdilik uygulamadaki veli ekranını görür.
+45. **Öğretmenin sınıf klanı kurması, sınıf turnuvası, dershaneler arası turnuva ve dershane sezon ödülleri** ertelendi; mevcut klan/düello altyapısının üzerine eklenebilir.
+46. **Fiyat** tanıtım sitesinde gösterilmez ("Teklif alın"); öğrenci başı aylık lisans varsayıldı. Ödeme alma (iyzico vb.) kapsam dışı; lisans durumu Merkez panelinden elle yönetilir.
+47. **Hesap silme** 30 gün bekletmeli (yanlışlıkla silmeye karşı); bu sürede hesap kapalıdır, geri alma dershane yöneticisi aracılığıyla.

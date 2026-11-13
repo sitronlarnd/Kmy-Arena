@@ -90,7 +90,28 @@ Fonksiyon bölgesi `fra1` (Frankfurt) — veritabanıyla aynı bölge. Mobil der
 | Öğrenci | `ogrenci01@…` – `ogrenci40@demo.kmyarena.demo` |
 | Veli | `veli01@demo.kmyarena.demo` |
 
+Sınıflar: `ogrenci01-10` Kadıköy 8-A (LGS), `11-20` 12-SAY (YKS), `21-30` Üsküdar 8-B (LGS), `31-40` 12-EA (YKS). `03_klan_demo.sql` ile Kartallar, Yıldızlar, Fırtına ve Bilgeler klanları (7'şer üye; ogrenci01 Kartallar lideri) eklenir.
+
 Davet kodları: `DEMA8AKD` (8-A öğrenci), `DEMTYTKD` (12-SAY öğrenci), `DEMHCRTM` (öğretmen).
+
+## Uygulamalar
+
+| Uygulama | Adres | Kim |
+|---|---|---|
+| Mobil (iOS/Android/Web) | Expo, `apps/mobile` | Öğrenci, veli |
+| Öğretmen paneli | `panel/ogretmen` | Öğretmen |
+| Dershane paneli | `panel/dershane` | Kurucu, müdür, rehber |
+| Merkez paneli | `panel/merkez` | Sahip ve ekip (müfredat, AI, bayraklar, dershaneler, teklifler, pilot raporu) |
+| Tanıtım sitesi | `apps/landing` | Dershane yöneticileri (teklif / 30 gün pilot formu → Merkez › Teklifler) |
+
+## Mağaza derlemesi (EAS)
+
+1. `npm i -g eas-cli && eas login` (Expo hesabı).
+2. `cd apps/mobile && eas init` — proje kimliği `app.json`'a yazılır. Paket kimliği `cloud.kmyai.arena`.
+3. EAS ortam değişkenleri: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `EXPO_PUBLIC_API_URL` (gizli anahtar **asla** `EXPO_PUBLIC_` olmaz).
+4. İç test: `eas build -p android --profile onizleme` (APK) / `eas build -p ios --profile onizleme`.
+5. Mağaza: `eas build -p all --profile magaza`, ardından `eas submit -p ios --profile magaza` ve `eas submit -p android --profile magaza`.
+6. Mağaza metinleri, ekran görüntüsü listesi ve inceleme notları: `docs/MAGAZA.md`.
 
 ## Güvenlik ilkeleri (özet)
 

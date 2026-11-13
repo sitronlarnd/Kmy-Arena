@@ -548,6 +548,9 @@ export const tr = {
     asama: "Aşama {n}/4",
   },
   profil: {
+    hesabiSil: "Hesabımı sil",
+    silmeOnay: "Eminim, hesabımı sil",
+    silmeAciklama: "Hesabını silersen hemen kapanır; 30 gün sonra tüm kişisel verilerin kalıcı olarak silinir. Bu sürede dershanene başvurarak geri alabilirsin.",
     seviye: "Seviye",
     toplamCevap: "Çözülen soru",
     dogruOrani: "Doğru oranı",

@@ -11,6 +11,7 @@
     { "path": "/api/cron/klan-savas-esle", "schedule": "0 6 * * 4" },
     { "path": "/api/cron/klan-savas-kapat", "schedule": "5 18 * * 0" },
     { "path": "/api/cron/topluluk-ai", "schedule": "*/5 * * * *" },
-    { "path": "/api/cron/asistan-temizle", "schedule": "30 0 * * *" }
+    { "path": "/api/cron/asistan-temizle", "schedule": "30 0 * * *" },
+    { "path": "/api/cron/hesap-sil", "schedule": "45 0 * * *" }
   ]
 }
