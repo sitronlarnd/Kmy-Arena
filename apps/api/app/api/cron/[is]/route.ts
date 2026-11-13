@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ortam } from "@/lib/ortam";
+import { havuzDoldurIsi, kalibrasyonIsi } from "@/lib/isler";
 import { servisIstemcisi } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,11 @@ const ISLER: Record<string, Is> = {
     if (error) throw error;
     return { bolum: data };
   },
+  "havuz-doldur": async () => {
+    const o = await havuzDoldurIsi(270_000);
+    return { dogrulanan: o.dogrulanan, reddedilen: o.reddedilen, atilmaOrani: o.atilmaOrani, ciftSayisi: o.raporlar.length, sureMs: o.sureMs };
+  },
+  kalibrasyon: async () => kalibrasyonIsi(),
 };
 
 export async function GET(istek: Request, baglam: { params: Promise<{ is: string }> }): Promise<NextResponse> {

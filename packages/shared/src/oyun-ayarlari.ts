@@ -52,6 +52,26 @@ export const OYUN_AYARLARI = {
     seriDondurucuFiyat: 200,
     seriDondurucuMax: 2,
   },
+  tekrar: {
+    /** Hata defterindeki soru bu günler sonra yeniden sorulur; doğruysa sonraki aralığa geçer */
+    araliklarGun: [1, 3, 7, 21] as readonly number[],
+  },
+  tespit: {
+    /** Ders başına uyarlamalı tespit sınavı soru sayısı (şartname: 8-12) */
+    soruSayisi: 10,
+    /** Bilgi en yüksek E ≈ 0,5'te: tespit soruları buna göre seçilir */
+    hedefBasari: 0.5,
+    /** Tespit θ'su için büyük ve azalan K: hızlı yakınsama */
+    kBaslangic: 160,
+    kAzalma: 0.8,
+    kMin: 40,
+  },
+  antrenman: {
+    /** Hızlı antrenman oturumu */
+    soruSayisi: 10,
+    /** Sunucuda ölçülen süre ile istemcinin bildirdiği süre arasında kabul edilen fark */
+    sureToleransMs: 2000,
+  },
   seri: {
     gunlukHedefSoru: 10,
     rozetGunleri: [7, 30, 100] as readonly number[],

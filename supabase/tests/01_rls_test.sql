@@ -363,4 +363,123 @@ do $$ begin
   perform test.dogrula(not exists (select 1 from public.ai_gorev_ayari where model_birincil not like 'claude-%' or model_yedek not like 'claude-%'), 'Claude dışı model var');
 end $$;
 
+\echo '▶ 12. Soru döngüsü: seçim, cevap işleme, yarış kontrolü, hata defteri, tespit'
+do $$
+declare
+  o uuid := app.sabit_uuid('kullanici:ogrenci02@demo.kmyarena.demo');
+  kz uuid := app.sabit_uuid('kazanim:M.8.1.2.1');
+  r jsonb; r2 jsonb; s1 uuid; s2 uuid; t uuid; hd uuid;
+  n integer;
+begin
+  -- Seviye eğrisi TS ile aynı (seviyeIcinXp: 2→100, 3→303)
+  perform test.dogrula(app.xpden_seviye(0) = 1 and app.xpden_seviye(99) = 1 and app.xpden_seviye(100) = 2
+    and app.xpden_seviye(302) = 2 and app.xpden_seviye(303) = 3, 'seviye eğrisi TS ile uyuşmuyor');
+
+  r := public.sistem_soru_sec(o, kz, 3, 'antrenman');
+  s1 := (r -> 'soru' ->> 'id')::uuid;
+  perform test.dogrula(s1 is not null, 'soru seçilemedi');
+  perform test.dogrula((r -> 'soru' ->> 'zorluk')::numeric = 3, 'hedefe en yakın soru seçilmedi');
+  r2 := public.sistem_soru_sec(o, kz, 3, 'antrenman');
+  s2 := (r2 -> 'soru' ->> 'id')::uuid;
+  perform test.dogrula(s2 is distinct from s1, 'aynı soru aynı öğrenciye ikinci kez seçildi');
+
+  -- Yarış: θ değişmişse reddedilir
+  begin
+    perform public.sistem_cevap_isle(jsonb_build_object('kullanici_id', o, 'soru_id', s1, 'dogru_mu', true,
+      'secilen', 'A', 'sure_ms', 30000, 'theta_once', 1234, 'theta_sonra', 1250, 'beklenen', 0.5,
+      'xp', 10, 'altin', 2, 'ustalik', 'kesfedilmedi', 'ozellik', 'zeka'));
+    raise exception 'TEST BAŞARISIZ: yarış kontrolü çalışmadı';
+  exception when others then
+    perform test.dogrula(sqlerrm = 'beceri.yarisma', 'beklenmeyen hata: ' || sqlerrm);
+  end;
+
+  r := public.sistem_cevap_isle(jsonb_build_object('kullanici_id', o, 'soru_id', s1, 'dogru_mu', true,
+    'secilen', 'A', 'sure_ms', 30000, 'theta_once', 1000, 'theta_sonra', 1012.5, 'beklenen', 0.69,
+    'xp', 150, 'altin', 2, 'ustalik', 'kesfedilmedi', 'ozellik', 'zeka'));
+  perform test.dogrula((r ->> 'xp_toplam')::int = 150 and (r ->> 'seviye')::int = 2 and (r ->> 'seviye_atladi')::boolean, 'ilerleme yanlış: ' || r::text);
+  perform test.dogrula((select theta from public.beceri where kullanici_id = o and kazanim_id = kz) = 1012.5, 'beceri yazılmadı');
+  perform test.dogrula((select (ozellik_puanlari ->> 'zeka')::int from public.ogrenci_ilerleme where kullanici_id = o) = 1, 'özellik puanı');
+  begin
+    perform public.sistem_cevap_isle(jsonb_build_object('kullanici_id', o, 'soru_id', s1, 'dogru_mu', true,
+      'secilen', 'A', 'sure_ms', 1, 'theta_once', 1012.5, 'theta_sonra', 1020, 'beklenen', 0.5,
+      'xp', 999, 'altin', 99, 'ustalik', 'kesfedilmedi'));
+    raise exception 'TEST BAŞARISIZ: aynı soru iki kez cevaplandı';
+  exception when others then
+    perform test.dogrula(sqlerrm = 'soru.zatenCevaplandi', 'beklenmeyen hata: ' || sqlerrm);
+  end;
+
+  -- Yanlış → hata defteri; tekrar doğru → aşama ilerler
+  r := public.sistem_cevap_isle(jsonb_build_object('kullanici_id', o, 'soru_id', s2, 'dogru_mu', false,
+    'secilen', 'B', 'sure_ms', 40000, 'theta_once', 1012.5, 'theta_sonra', 990, 'beklenen', 0.6,
+    'xp', 0, 'altin', 0, 'ustalik', 'kesfedilmedi', 'tekrar_araliklari_gun', '[1,3,7,21]'::jsonb));
+  perform test.dogrula(r ->> 'hata_defteri' = 'eklendi', 'yanlış cevap deftere düşmedi');
+  select id into hd from public.hata_defteri where kullanici_id = o and soru_id = s2;
+  perform test.dogrula((select sonraki_tekrar from public.hata_defteri where id = hd) > now() + interval '23 hours', 'ilk tekrar 1 gün sonra olmalı');
+  perform test.dogrula((select son10 from public.beceri where kullanici_id = o and kazanim_id = kz) = '{1,0}'::smallint[], 'son10 yanlış');
+
+  insert into public.soru (id, kaynak, kazanim_id, sinav_turu, soru_tipi, zorluk, govde_md, siklar, dogru, durum)
+  values (app.sabit_uuid('soru:test-tekrar'), 'ai', kz, 'LGS', 'islem', 4, 'x', '{"A":"1","B":"2","C":"3","D":"4"}', 'C', 'dogrulandi');
+  r := public.sistem_soru_sec(o, kz, 4, 'tekrar', hd);
+  perform test.dogrula((r -> 'soru' ->> 'id')::uuid = app.sabit_uuid('soru:test-tekrar'), 'tekrar sorusu seçilmedi');
+  r := public.sistem_cevap_isle(jsonb_build_object('kullanici_id', o, 'soru_id', app.sabit_uuid('soru:test-tekrar'), 'dogru_mu', true,
+    'secilen', 'C', 'sure_ms', 20000, 'theta_once', 990, 'theta_sonra', 1000, 'beklenen', 0.6,
+    'xp', 10, 'altin', 2, 'ustalik', 'kesfedilmedi', 'tekrar_araliklari_gun', '[1,3,7,21]'::jsonb));
+  perform test.dogrula(r ->> 'hata_defteri' = 'ilerledi', 'tekrar aşaması ilerlemedi');
+  perform test.dogrula((select asama from public.hata_defteri where id = hd) = 1
+    and (select sonraki_tekrar from public.hata_defteri where id = hd) > now() + interval '71 hours', 'ikinci tekrar 3 gün sonra olmalı');
+
+  -- Tespit: hedef soru sayısına ulaşınca biter, dersin çözülmemiş kazanımları tespit θ'sını alır
+  insert into public.tespit_oturumu (dershane_id, kullanici_id, ders_id, hedef_soru)
+  values (app.sabit_uuid('dershane:demo'), app.sabit_uuid('kullanici:ogrenci03@demo.kmyarena.demo'), app.sabit_uuid('ders:lgs_matematik'), 4)
+  returning id into t;
+  for n in 1..4 loop
+    insert into public.soru (id, kaynak, kazanim_id, sinav_turu, soru_tipi, zorluk, govde_md, siklar, dogru, durum)
+    values (app.sabit_uuid('soru:test-tespit' || n), 'ai', kz, 'LGS', 'islem', 5, 'x', '{"A":"1","B":"2","C":"3","D":"4"}', 'A', 'dogrulandi');
+    r := public.sistem_soru_sec(app.sabit_uuid('kullanici:ogrenci03@demo.kmyarena.demo'), kz, 5, 'tespit', null, t);
+    r := public.sistem_cevap_isle(jsonb_build_object('kullanici_id', app.sabit_uuid('kullanici:ogrenci03@demo.kmyarena.demo'),
+      'soru_id', (r -> 'soru' ->> 'id')::uuid, 'dogru_mu', true, 'secilen', 'A', 'sure_ms', 30000,
+      'theta_once', coalesce((select theta from public.beceri where kullanici_id = app.sabit_uuid('kullanici:ogrenci03@demo.kmyarena.demo') and kazanim_id = kz), 1000),
+      'theta_sonra', 1000 + n * 20, 'beklenen', 0.5, 'xp', 10, 'altin', 2, 'ustalik', 'kesfedilmedi', 'tespit_theta', 1000 + n * 60));
+  end loop;
+  perform test.dogrula((r ->> 'tespit_bitti')::boolean, 'tespit bitmedi');
+  perform test.dogrula((select theta from public.beceri b join public.kazanim k on k.id = b.kazanim_id
+    where b.kullanici_id = app.sabit_uuid('kullanici:ogrenci03@demo.kmyarena.demo') and k.kod = 'M.8.1.1.1') = 1240, 'tespit θ kazanımlara yayılmadı');
+  perform test.dogrula((select theta from public.beceri where kullanici_id = app.sabit_uuid('kullanici:ogrenci03@demo.kmyarena.demo') and kazanim_id = kz) = 1080,
+    'çözülmüş kazanımın θ değeri tespitle ezildi');
+end $$;
+
+begin;
+select test.oturum('ogrenci02@demo.kmyarena.demo');
+set local role authenticated;
+do $$ begin
+  begin
+    perform public.sistem_soru_sec(auth.uid(), app.sabit_uuid('kazanim:M.8.1.2.1'), 3, 'antrenman');
+    raise exception 'TEST BAŞARISIZ: istemci soru seçim fonksiyonunu çağırdı';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform public.sistem_cevap_isle('{}'::jsonb);
+    raise exception 'TEST BAŞARISIZ: istemci cevap işleme fonksiyonunu çağırdı';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    update public.ogrenci_ilerleme set xp = 999999 where kullanici_id = auth.uid();
+    raise exception 'TEST BAŞARISIZ: istemci XP yazdı';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    update public.soru_gosterim set ipucu_sayisi = 0 where kullanici_id = auth.uid();
+    raise exception 'TEST BAŞARISIZ: istemci ipucu sayacını sıfırladı';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    perform 1 from public.uretim_kilidi;
+    raise exception 'TEST BAŞARISIZ: istemci üretim kilidini okudu';
+  exception when insufficient_privilege then null;
+  end;
+  perform test.dogrula((select count(*) from public.ogrenci_ilerleme) = 1, 'öğrenci başkasının ilerlemesini görüyor');
+  perform test.dogrula((select count(*) from public.hata_defterim()) = 1, 'hata defterim yanlış');
+end $$;
+rollback;
+
 \echo '✔ Tüm veritabanı testleri geçti'

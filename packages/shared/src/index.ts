@@ -4,3 +4,5 @@ export * from "./formuller";
 export * from "./rbac";
 export * from "./ozellik-bayraklari";
 export * from "./havuz";
+export * from "./soru-dongusu";
+export * from "./api-tipleri";
