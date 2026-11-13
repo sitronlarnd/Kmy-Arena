@@ -114,7 +114,7 @@ export default async function AiMerkezi() {
 
       <section className="kart tam">
         <h3>Görev bazlı model ayarları</h3>
-        <p>Değişiklik yeni sürüm olarak yayınlanır; uygulamalar en geç 1 dakikada yeni ayarı kullanır. Yalnızca Claude modelleri.</p>
+        <p>Değişiklik yeni sürüm olarak yayınlanır; uygulamalar en geç 1 dakikada yeni ayarı kullanır. Model adları KMYAI\'deki adlarıyla yazılır.</p>
         <div style={{ overflowX: "auto", marginTop: 12 }}>
           <table className="tablo">
             <thead>

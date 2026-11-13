@@ -65,6 +65,50 @@ export interface CevapYaniti {
   sayilmadi: boolean;
   hataDefteri: "eklendi" | "ilerledi" | "temizlendi" | "basa_dondu" | null;
   tespitBitti: boolean;
+  /** Faz 2: oyun katmanı sonuçları */
+  oyun: CevapOyunSonucu;
+}
+
+export interface CevapOyunSonucu {
+  gunlukSoru: number;
+  gunlukHedef: number;
+  /** Günlük hedef bu cevapla tamamlandı */
+  hedefTamam: boolean;
+  seriGun: number;
+  seriDurum: "artti" | "donduruldu" | "sifirlandi" | "basladi" | null;
+  tamamlananGorevler: Array<{ kod: string; baslik: string; xp: number; altin: number }>;
+  yeniRozetler: string[];
+}
+
+export interface OyunGorevi {
+  id: string;
+  kod: string;
+  tur: "gunluk" | "haftalik";
+  baslik: string;
+  hedef: number;
+  ilerleme: number;
+  xp: number;
+  altin: number;
+  tamamlandi: boolean;
+}
+
+export interface OyunDurumu {
+  karakter: { tur: string; kostum: string | null; cerceve: string | null; arka_plan: string | null; duello_efekti: string | null; unvan: string | null } | null;
+  xp: number;
+  altin: number;
+  seviye: number;
+  seri: number;
+  seriTehlikede: boolean;
+  enUzunSeri: number;
+  dondurucu: number;
+  gunlukSoru: number;
+  gunlukHedef: number;
+  ligAdim: number;
+  haftalikXp: number;
+  gorevler: OyunGorevi[];
+  rozetler: string[];
+  envanter: string[];
+  ozellikler: Record<string, number>;
 }
 
 export interface IpucuYaniti {

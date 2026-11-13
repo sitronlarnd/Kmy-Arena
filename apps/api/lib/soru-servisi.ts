@@ -27,6 +27,7 @@ import { arkaPlanIhtiyaci, havuzuDoldur } from "./havuz";
 import { IstemciHatasi } from "./http";
 import type { Kullanici } from "./kimlik";
 import { kmyai, kmyaiErisilebilir } from "./kmyai";
+import { cevapSonrasiOyun } from "./oyun-servisi";
 import { servisIstemcisi } from "./supabase";
 
 interface SoruSatiri {
@@ -353,6 +354,7 @@ export async function cevapVer(k: Kullanici, istek: CevapIstegi, deneme = 0): Pr
       ozellik: kz.ozellik,
       tekrar_araliklari_gun: a.tekrar.araliklarGun,
       tespit_theta: tespitTheta,
+      zorluk,
     },
   });
   if (h2) {
@@ -362,8 +364,27 @@ export async function cevapVer(k: Kullanici, istek: CevapIstegi, deneme = 0): Pr
   }
   const d = sonucDb as {
     xp_toplam: number; altin_toplam: number; seviye: number; seviye_atladi: boolean; seri: number;
-    hata_defteri: CevapYaniti["hataDefteri"]; tespit_bitti: boolean;
+    hata_defteri: CevapYaniti["hataDefteri"]; tespit_bitti: boolean; ustalik_once: Ustalik;
+    gunluk: Parameters<typeof cevapSonrasiOyun>[2];
   };
+  // Oyun katmanı (görev, rozet) cevabı asla bozmaz: hata olursa loglanır, cevap yine döner.
+  let oyun: CevapYaniti["oyun"];
+  try {
+    oyun = await cevapSonrasiOyun(
+      k,
+      {
+        dogru: sonuc === "dogru", zorluk, kazanimId: kz.id, ipucuSayisi: g.ipucu_sayisi as number, baglam: g.baglam as string,
+        hataDefteri: d.hata_defteri, ustalikOnce: d.ustalik_once, ustalikSonra: h.ustalik, ardisik: d.seri,
+      },
+      d.gunluk,
+    );
+  } catch (hata) {
+    console.error("oyun katmanı işlenemedi", hata);
+    oyun = {
+      gunlukSoru: d.gunluk?.gunluk_soru ?? 0, gunlukHedef: d.gunluk?.gunluk_hedef ?? 10, hedefTamam: Boolean(d.gunluk?.hedef_tamam),
+      seriGun: d.gunluk?.seri_gun ?? 0, seriDurum: d.gunluk?.seri_durum ?? null, tamamlananGorevler: [], yeniRozetler: [],
+    };
+  }
   return {
     sonuc,
     dogru: soru.dogru,
@@ -382,6 +403,7 @@ export async function cevapVer(k: Kullanici, istek: CevapIstegi, deneme = 0): Pr
     sayilmadi: !h.sayildi,
     hataDefteri: d.hata_defteri,
     tespitBitti: d.tespit_bitti,
+    oyun,
   };
 }
 

@@ -356,12 +356,13 @@ do $$ begin
 end $$;
 rollback;
 
-\echo '▶ 11. AI modelleri kararlaştırılan Claude modelleri'
+\echo '▶ 11. AI modelleri: üretici ve doğrulayıcı kararlaştırılan, farklı aileden modeller'
 do $$ begin
-  perform test.dogrula((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_uretim' and durum = 'yayinda') = 'claude-sonnet-5-5', 'üretici modeli');
+  perform test.dogrula((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_uretim' and durum = 'yayinda') = 'gemini-3.6-flash', 'üretici modeli');
   perform test.dogrula(not exists (select 1 from public.ai_gorev_ayari where durum = 'yayinda' and 'claude-sonnet-4-6' in (model_birincil, coalesce(model_yedek, ''))), 'sonnet-4-6 yayında');
-  perform test.dogrula((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_dogrulama' and durum = 'yayinda') = 'claude-sonnet-5-5', 'doğrulayıcı modeli');
-  perform test.dogrula(not exists (select 1 from public.ai_gorev_ayari where model_birincil not like 'claude-%' or coalesce(model_yedek, 'claude-') not like 'claude-%'), 'Claude dışı model var');
+  perform test.dogrula((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_dogrulama' and durum = 'yayinda') = 'claude-haiku-5-5', 'doğrulayıcı modeli');
+  perform test.dogrula(split_part((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_uretim' and durum = 'yayinda'), '-', 1)
+    <> split_part((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_dogrulama' and durum = 'yayinda'), '-', 1), 'üretici ve doğrulayıcı aynı aileden');
 end $$;
 
 \echo '▶ 12. Soru döngüsü: seçim, cevap işleme, yarış kontrolü, hata defteri, tespit'
@@ -526,5 +527,105 @@ do $$ begin
 end $$;
 rollback;
 
+\echo '▶ 14. Oyun katmanı: seri, ödül/lig, görev, rozet, mağaza, lig kapanışı'
+do $$
+declare
+  o uuid := app.sabit_uuid('kullanici:ogrenci04@demo.kmyarena.demo');
+  o2 uuid := app.sabit_uuid('kullanici:ogrenci06@demo.kmyarena.demo');
+  r jsonb; g uuid; n integer; v_hafta date := app.hafta_basi(app.bugun());
+begin
+  insert into public.ogrenci_ilerleme (kullanici_id, dershane_id, gunluk_hedef, altin)
+  values (o, app.sabit_uuid('dershane:demo'), 3, 500), (o2, app.sabit_uuid('dershane:demo'), 3, 0);
+
+  -- Seri: hedefe ulaşınca başlar, ertesi gün artar, boşlukta dondurucu harcanır, yetmezse sıfırlanır
+  perform app.seri_isle(o); perform app.seri_isle(o); r := app.seri_isle(o);
+  perform test.dogrula(r ->> 'seri_durum' = 'basladi' and (r ->> 'seri_gun')::int = 1, 'seri başlamadı: ' || r::text);
+  r := app.seri_isle(o);
+  perform test.dogrula(r ->> 'seri_durum' is null and (r ->> 'gunluk_soru')::int = 4, 'aynı gün ikinci kez işlendi');
+  update public.ogrenci_ilerleme set seri_son_gun = app.bugun() - 1, gunluk_gun = app.bugun() - 1 where kullanici_id = o;
+  perform app.seri_isle(o); perform app.seri_isle(o); r := app.seri_isle(o);
+  perform test.dogrula(r ->> 'seri_durum' = 'artti' and (r ->> 'seri_gun')::int = 2, 'seri artmadı');
+  update public.ogrenci_ilerleme set seri_son_gun = app.bugun() - 3, gunluk_gun = app.bugun() - 3, seri_dondurucu = 2 where kullanici_id = o;
+  perform app.seri_isle(o); perform app.seri_isle(o); r := app.seri_isle(o);
+  perform test.dogrula(r ->> 'seri_durum' = 'donduruldu' and (r ->> 'seri_gun')::int = 3
+    and (select seri_dondurucu from public.ogrenci_ilerleme where kullanici_id = o) = 0, 'dondurucu çalışmadı');
+  update public.ogrenci_ilerleme set seri_son_gun = app.bugun() - 3, gunluk_gun = app.bugun() - 3 where kullanici_id = o;
+  perform app.seri_isle(o); perform app.seri_isle(o); r := app.seri_isle(o);
+  perform test.dogrula(r ->> 'seri_durum' = 'sifirlandi' and (r ->> 'seri_gun')::int = 1
+    and (select onceki_seri from public.ogrenci_ilerleme where kullanici_id = o) = 3, 'seri sıfırlanmadı');
+
+  -- Seriyi geri kazan görevi kırılan seriyi geri verir
+  insert into public.kullanici_gorev (dershane_id, kullanici_id, gorev_kod, tur, donem, baslik, hedef, odul_xp, odul_altin)
+  values (app.sabit_uuid('dershane:demo'), o, 'seri_geri_kazan', 'gunluk', app.bugun(), 'x', 6, 30, 30) returning id into g;
+  r := public.sistem_gorev_ilerlet(o, jsonb_build_array(jsonb_build_object('id', g, 'ilerleme', 6)));
+  perform test.dogrula(jsonb_array_length(r) = 1 and (select seri_gun from public.ogrenci_ilerleme where kullanici_id = o) = 4, 'seri geri kazanılmadı');
+  perform test.dogrula((select altin from public.ogrenci_ilerleme where kullanici_id = o) = 530, 'görev ödülü verilmedi');
+  r := public.sistem_gorev_ilerlet(o, jsonb_build_array(jsonb_build_object('id', g, 'ilerleme', 6)));
+  perform test.dogrula(jsonb_array_length(r) = 0, 'görev ödülü iki kez verildi');
+
+  -- Ödül → lig grubuna otomatik katılım ve haftalık XP
+  perform app.odul_ver(o, 40, 0);
+  perform app.odul_ver(o2, 10, 0);
+  perform test.dogrula((select xp from public.lig_uyelik where kullanici_id = o and hafta = v_hafta) = 70, 'lig XP');
+  perform test.dogrula((select grup_id from public.lig_uyelik where kullanici_id = o) = (select grup_id from public.lig_uyelik where kullanici_id = o2), 'aynı kademe aynı gruba düşmedi');
+
+  -- Rozet: bir kez verilir, Altın ödülü eklenir
+  r := public.sistem_rozet_ver(o, '[{"kod":"ilk_soru","altin":20},{"kod":"seri_3","altin":30}]');
+  perform test.dogrula(jsonb_array_length(r) = 2 and (select altin from public.ogrenci_ilerleme where kullanici_id = o) = 580, 'rozet ödülü');
+  r := public.sistem_rozet_ver(o, '[{"kod":"ilk_soru","altin":20}]');
+  perform test.dogrula(jsonb_array_length(r) = 0, 'rozet iki kez verildi');
+
+  -- Mağaza
+  perform test.dogrula(public.sistem_satin_al(o, 'cerceve_altin', 300, false, 2::smallint) = 280, 'satın alma');
+  begin perform public.sistem_satin_al(o, 'cerceve_altin', 10, false, 2::smallint); raise exception 'TEST BAŞARISIZ: aynı eşya iki kez';
+  exception when others then perform test.dogrula(sqlerrm = 'magaza.zatenVar', sqlerrm); end;
+  begin perform public.sistem_satin_al(o2, 'cerceve_mor', 100, false, 2::smallint); raise exception 'TEST BAŞARISIZ: Altın yetmeden alındı';
+  exception when others then perform test.dogrula(sqlerrm = 'magaza.yetersizAltin', sqlerrm); end;
+  perform public.sistem_satin_al(o, 'seri_dondurucu', 100, true, 2::smallint);
+  perform public.sistem_satin_al(o, 'seri_dondurucu', 100, true, 2::smallint);
+  begin perform public.sistem_satin_al(o, 'seri_dondurucu', 10, true, 2::smallint); raise exception 'TEST BAŞARISIZ: 3. dondurucu';
+  exception when others then perform test.dogrula(sqlerrm = 'magaza.dondurucuDolu', sqlerrm); end;
+  perform test.dogrula((select altin from public.ogrenci_ilerleme where kullanici_id = o) = 80, 'Altın düşmedi');
+
+  -- Metrikler
+  r := public.sistem_oyun_metrikleri(o);
+  perform test.dogrula((r ->> 'envanter')::int = 1 and (r ->> 'ders_sayisi')::int = 6, 'metrikler: ' || r::text);
+
+  -- Lig kapanışı: küçük grupta birinci yükselir, kimse düşmez
+  r := public.sistem_lig_kapat(v_hafta);
+  -- (grupta önceki testlerin öğrencileri de var; < 10 kişi → yalnızca en yüksek XP yükselir, düşen yok)
+  perform test.dogrula((select count(*) from public.lig_uyelik u where u.grup_id = (select grup_id from public.lig_uyelik where kullanici_id = o) and u.sonuc = 'yukseldi') = 1
+    and (select i.lig_adim from public.lig_uyelik u join public.ogrenci_ilerleme i on i.kullanici_id = u.kullanici_id
+         where u.grup_id = (select grup_id from public.lig_uyelik where kullanici_id = o) and u.sira = 1) = 2
+    and (select sonuc from public.lig_uyelik where kullanici_id = o2) = 'kaldi'
+    and not exists (select 1 from public.lig_uyelik where sonuc = 'dustu'), 'lig kapanışı yanlış');
+  select sum(lig_adim) into n from public.ogrenci_ilerleme;
+  r := public.sistem_lig_kapat(v_hafta);
+  perform test.dogrula((r ->> 'grup')::int = 0 and (select sum(lig_adim) from public.ogrenci_ilerleme) = n, 'lig iki kez kapandı');
+  update public.lig_uyelik set sonuc = null, sira = null where hafta = v_hafta;
+  update public.lig_grubu set kapandi = null where hafta = v_hafta;
+end $$;
+
+begin;
+select test.oturum('ogrenci04@demo.kmyarena.demo');
+set local role authenticated;
+do $$ begin
+  perform test.dogrula((select count(*) from public.lig_grubum()) >= 2 and (select bool_or(ben) from public.lig_grubum()), 'lig_grubum');
+  perform test.dogrula((select count(*) from public.siralama('dershane', 'hafta')) >= 2, 'dershane sıralaması');
+  perform test.dogrula(not exists (select 1 from public.siralama('dershane', 'tum') where takma_ad is null), 'sıralamada takma ad yok');
+  begin perform 1 from public.siralama('dershaneler', 'hafta'); raise exception 'TEST BAŞARISIZ: kapalı dershaneler arası sıralama';
+  exception when others then perform test.dogrula(sqlerrm = 'siralama.kapali', sqlerrm); end;
+  begin insert into public.envanter (kullanici_id, esya_kod, dershane_id) values (auth.uid(), 'x', app.dershane_id()); raise exception 'TEST BAŞARISIZ: istemci envantere yazdı';
+  exception when insufficient_privilege then null; end;
+  begin insert into public.kullanici_rozet (kullanici_id, rozet_kod, dershane_id) values (auth.uid(), 'x', app.dershane_id()); raise exception 'TEST BAŞARISIZ: istemci rozet yazdı';
+  exception when insufficient_privilege then null; end;
+  begin update public.kullanici_gorev set ilerleme = 999 where kullanici_id = auth.uid(); raise exception 'TEST BAŞARISIZ: istemci görev ilerletti';
+  exception when insufficient_privilege then null; end;
+  begin perform public.sistem_satin_al(auth.uid(), 'x', 0, false, 2::smallint); raise exception 'TEST BAŞARISIZ: istemci satın alma fonksiyonu';
+  exception when insufficient_privilege then null; end;
+end $$;
+rollback;
+
 \echo '✔ Tüm veritabanı testleri geçti'
+
 

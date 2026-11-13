@@ -13,12 +13,13 @@ import {
 describe("Görev ayarları", () => {
   it("ortam değişkeni yoksa kararlaştırılan Claude modelleri kullanılır", () => {
     const a = ortamdanVarsayilanlar({});
-    assert.equal(a.soru_uretim.modelBirincil, "claude-sonnet-5-5");
-    assert.equal(a.soru_dogrulama.modelBirincil, "claude-sonnet-5-5");
+    assert.equal(a.soru_uretim.modelBirincil, "gemini-3.6-flash");
+    assert.equal(a.soru_dogrulama.modelBirincil, "claude-haiku-5-5");
     assert.equal(a.asistan.modelBirincil, "claude-sonnet-5-5");
     assert.equal(a.gorsel_okuma.modelBirincil, "claude-sonnet-5-5");
     assert.equal(a.veli_raporu.modelBirincil, "claude-sonnet-5-5");
-    assert.equal(a.soru_uretim.modelYedek, "claude-haiku-4-5");
+    assert.equal(a.soru_uretim.modelYedek, "claude-haiku-5-5");
+    assert.equal(a.ogretmen_soru_uretim.modelBirincil, "claude-sonnet-5-5");
     assert.equal(a.soru_uretim.zamanAsimiMs, 90000);
     assert.equal(a.asistan.zamanAsimiMs, 30000);
     assert.equal(a.asistan.yenidenDeneme, 2);
@@ -54,7 +55,7 @@ describe("Kişisel veri filtresi", () => {
   });
 });
 
-const ayar = { ...ortamdanVarsayilanlar({}).soru_uretim, yenidenDeneme: 2 };
+const ayar = { ...ortamdanVarsayilanlar({}).soru_uretim, modelBirincil: "claude-sonnet-5-5", modelYedek: "claude-haiku-4-5", yenidenDeneme: 2 };
 const istek = (ek: Partial<CagriIstegi> = {}): CagriIstegi => ({
   gorev: "soru_uretim",
   ayar,

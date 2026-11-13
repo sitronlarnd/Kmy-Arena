@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ortam } from "@/lib/ortam";
 import { havuzDoldurIsi, kalibrasyonIsi } from "@/lib/isler";
+import { bugunIst, haftaBasi } from "@/lib/oyun-servisi";
 import { servisIstemcisi } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +27,15 @@ const ISLER: Record<string, Is> = {
     return { dogrulanan: o.dogrulanan, reddedilen: o.reddedilen, atilmaOrani: o.atilmaOrani, ciftSayisi: o.raporlar.length, sureMs: o.sureMs };
   },
   kalibrasyon: async () => kalibrasyonIsi(),
+  // Pazartesi 00:10 (İstanbul): geçen haftanın lig gruplarını kapat, yükselme/düşme, sezon sonu ödülü
+  "lig-kapat": async () => {
+    const buHafta = haftaBasi(bugunIst());
+    const gecen = new Date(`${buHafta}T00:00:00Z`);
+    gecen.setUTCDate(gecen.getUTCDate() - 7);
+    const { data, error } = await servisIstemcisi().rpc("sistem_lig_kapat", { p_hafta: gecen.toISOString().slice(0, 10) });
+    if (error) throw error;
+    return data as Record<string, unknown>;
+  },
 };
 
 export async function GET(istek: Request, baglam: { params: Promise<{ is: string }> }): Promise<NextResponse> {

@@ -37,9 +37,9 @@ export async function ayarYayinla(form: FormData): Promise<void> {
   if (!(AI_GOREVLERI as readonly string[]).includes(gorev)) throw new Error("Bilinmeyen görev");
   const birincil = String(form.get("model_birincil") ?? "").trim();
   const yedek = String(form.get("model_yedek") ?? "").trim();
-  // Karar #4: yalnızca Claude modelleri
+  // KMYAI'deki model adı (ör. gemini-3.6-flash, claude-haiku-5-5)
   for (const m of [birincil, yedek].filter(Boolean)) {
-    if (!/^claude-[a-z0-9.-]+$/.test(m)) throw new Error(`Yalnızca Claude modelleri kullanılabilir: ${m}`);
+    if (!/^[a-z0-9][a-z0-9._:/-]{1,80}$/i.test(m)) throw new Error(`Geçersiz model adı: ${m}`);
   }
   await yayinla(
     gorev,
