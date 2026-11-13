@@ -2,8 +2,7 @@ import type { NextResponse } from "next/server";
 import { mufredatGetir } from "@/lib/ayarlar";
 import { govdeOku, guvenli, IstemciHatasi, json, onUcus } from "@/lib/http";
 import { ciftleriDoldur } from "@/lib/isler";
-import { kimlikDogrula, merkezYetkisiVar } from "@/lib/kimlik";
-import { ortam } from "@/lib/ortam";
+import { yonetimYetkisi } from "@/lib/yonetim-yetki";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -17,12 +16,7 @@ export const OPTIONS = onUcus;
  */
 export async function POST(istek: Request): Promise<NextResponse> {
   return guvenli(async () => {
-    const gizli = ortam().CRON_SECRET;
-    const baslik = istek.headers.get("authorization") ?? "";
-    if (!(gizli && baslik === `Bearer ${gizli}`)) {
-      const k = await kimlikDogrula(istek);
-      if (!(await merkezYetkisiVar(k.id, "merkez.ai_yonet"))) throw new IstemciHatasi("panel.yetkisiz", 403);
-    }
+    await yonetimYetkisi(istek, "merkez.ai_yonet");
     const g = await govdeOku(istek);
     const m = await mufredatGetir();
     let kazanimlar = [...m.kazanimlar.values()];
