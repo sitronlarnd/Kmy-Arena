@@ -31,11 +31,11 @@ export interface GorevAyari {
 export type OrtamDegiskenleri = Readonly<Record<string, string | undefined>>;
 
 const VARSAYILAN_MODELLER = {
-  uretici: "claude-sonnet-4-6",
+  uretici: "claude-sonnet-5-5",
   dogrulayici: "claude-sonnet-5-5",
-  asistan: "claude-sonnet-4-6",
-  gorsel: "claude-sonnet-4-6",
-  veliRaporu: "claude-sonnet-4-6",
+  asistan: "claude-sonnet-5-5",
+  gorsel: "claude-sonnet-5-5",
+  veliRaporu: "claude-sonnet-5-5",
   yedek: "claude-haiku-4-5",
 } as const;
 
@@ -69,7 +69,8 @@ export function ortamdanVarsayilanlar(env: OrtamDegiskenleri): Record<AiGorevi, 
     soru_uretim: { ...ayar(m.uretici, 0.8, 2500, uretimMs), yenidenDeneme: Math.min(deneme, 1) },
     // Doğrulayıcı da yedeğe düşerse doğrulama gücü azalır; yedek olarak
     // yine güçlü model kalır, haiku'ya düşülmez.
-    soru_dogrulama: { ...ayar(m.dogrulayici, 0, 2500, uretimMs), modelYedek: m.uretici, yenidenDeneme: Math.min(deneme, 1) },
+    // Doğrulayıcıya ulaşılamazsa daha zayıf bir modele düşülmez: soru atılır, sonra yeniden üretilir.
+    soru_dogrulama: { ...ayar(m.dogrulayici, 0, 2500, uretimMs), modelYedek: "", yenidenDeneme: Math.min(deneme, 1) },
     asistan: ayar(m.asistan, 0.4, 900, asistanMs),
     gorsel_okuma: ayar(m.gorsel, 0, 1500, asistanMs),
     topluluk_degerlendirme: ayar(m.yedek, 0, 400, 20_000),

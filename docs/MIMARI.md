@@ -27,7 +27,7 @@
 
 ```
 Vercel Cron (havuz-doldur) ─► her (kazanım, zorluk bandı) için stok kontrolü (uretimIhtiyaci)
-   └─► gerekirse KMYAI üretici (claude-sonnet-4-6) ─► doğrulayıcı (claude-sonnet-5-5, anahtarı görmeden)
+   └─► gerekirse KMYAI üretici (claude-sonnet-5-5) ─► doğrulayıcı (claude-sonnet-5-5, anahtarı görmeden)
          └─► kalite filtreleri + mathjs ─► soru.durum = 'dogrulandi'
 Öğrenci "Soru Çöz" ─► API: görmediği, doğrulanmış, hedef bantta soru (önce kullanılmış olanlar)
    └─► soru_gosterim (PK: kullanıcı+soru) ─► cevap ─► Elo güncelleme ─► 20+ cevapta kalibrasyon

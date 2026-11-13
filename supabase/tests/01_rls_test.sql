@@ -358,9 +358,10 @@ rollback;
 
 \echo '▶ 11. AI modelleri kararlaştırılan Claude modelleri'
 do $$ begin
-  perform test.dogrula((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_uretim' and durum = 'yayinda') = 'claude-sonnet-4-6', 'üretici modeli');
+  perform test.dogrula((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_uretim' and durum = 'yayinda') = 'claude-sonnet-5-5', 'üretici modeli');
+  perform test.dogrula(not exists (select 1 from public.ai_gorev_ayari where durum = 'yayinda' and 'claude-sonnet-4-6' in (model_birincil, coalesce(model_yedek, ''))), 'sonnet-4-6 yayında');
   perform test.dogrula((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_dogrulama' and durum = 'yayinda') = 'claude-sonnet-5-5', 'doğrulayıcı modeli');
-  perform test.dogrula(not exists (select 1 from public.ai_gorev_ayari where model_birincil not like 'claude-%' or model_yedek not like 'claude-%'), 'Claude dışı model var');
+  perform test.dogrula(not exists (select 1 from public.ai_gorev_ayari where model_birincil not like 'claude-%' or coalesce(model_yedek, 'claude-') not like 'claude-%'), 'Claude dışı model var');
 end $$;
 
 \echo '▶ 12. Soru döngüsü: seçim, cevap işleme, yarış kontrolü, hata defteri, tespit'

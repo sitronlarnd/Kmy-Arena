@@ -13,11 +13,11 @@ import {
 describe("Görev ayarları", () => {
   it("ortam değişkeni yoksa kararlaştırılan Claude modelleri kullanılır", () => {
     const a = ortamdanVarsayilanlar({});
-    assert.equal(a.soru_uretim.modelBirincil, "claude-sonnet-4-6");
+    assert.equal(a.soru_uretim.modelBirincil, "claude-sonnet-5-5");
     assert.equal(a.soru_dogrulama.modelBirincil, "claude-sonnet-5-5");
-    assert.equal(a.asistan.modelBirincil, "claude-sonnet-4-6");
-    assert.equal(a.gorsel_okuma.modelBirincil, "claude-sonnet-4-6");
-    assert.equal(a.veli_raporu.modelBirincil, "claude-sonnet-4-6");
+    assert.equal(a.asistan.modelBirincil, "claude-sonnet-5-5");
+    assert.equal(a.gorsel_okuma.modelBirincil, "claude-sonnet-5-5");
+    assert.equal(a.veli_raporu.modelBirincil, "claude-sonnet-5-5");
     assert.equal(a.soru_uretim.modelYedek, "claude-haiku-4-5");
     assert.equal(a.soru_uretim.zamanAsimiMs, 90000);
     assert.equal(a.asistan.zamanAsimiMs, 30000);
@@ -80,7 +80,7 @@ describe("KmyaiIstemci", () => {
         url = String(u);
         govde = String(init?.body);
         yetki = new Headers(init?.headers).get("authorization") ?? "";
-        return basarili("claude-sonnet-4-6");
+        return basarili("claude-sonnet-5-5");
       },
       logla: (l) => void loglar.push(l),
     });
@@ -110,7 +110,7 @@ describe("KmyaiIstemci", () => {
       },
     });
     const r = await k.tamamla(istek());
-    assert.deepEqual(modeller, ["claude-sonnet-4-6", "claude-sonnet-4-6", "claude-sonnet-4-6", "claude-haiku-4-5"]);
+    assert.deepEqual(modeller, ["claude-sonnet-5-5", "claude-sonnet-5-5", "claude-sonnet-5-5", "claude-haiku-4-5"]);
     assert.equal(r.yedekKullanildi, true);
     assert.equal(loglar.filter((l) => !l.basarili).length, 3);
   });
@@ -126,7 +126,7 @@ describe("KmyaiIstemci", () => {
       },
     });
     await k.tamamla(istek());
-    assert.deepEqual(modeller, ["claude-sonnet-4-6", "claude-haiku-4-5"]);
+    assert.deepEqual(modeller, ["claude-sonnet-5-5", "claude-haiku-4-5"]);
 
     const k2 = new KmyaiIstemci({ baseUrl: "https://x", apiKey: "a", fetch: async () => new Response("", { status: 401 }) });
     await assert.rejects(k2.tamamla(istek()), /401/);

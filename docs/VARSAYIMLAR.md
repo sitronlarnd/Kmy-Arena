@@ -10,7 +10,7 @@ Belirsiz kalan noktalarda en makul varsayım yapıldı ve buraya yazıldı.
 | 1 | Soru havuzu | "Soru havuzu yok", soru gösterildikten sonra bir daha kimseye sunulmaz | AI sürekli üretir; doğrulanmış her soru **platform geneli havuza** girer ve farklı öğrencilere tekrar sunulur. Aynı öğrenci aynı soruyu asla iki kez görmez (`soru_gosterim` birincil anahtarı). Düelloda yalnızca taze/az kullanılmış sorular (`HAVUZ_AYARLARI`). Zorluk 20+ cevapla yeniden kalibre edilir (`olculmusZorluk`). Üretim yalnızca havuz yetmediğinde tetiklenir. Hedef: AI maliyetinde %90+ düşüş. |
 | 2 | Kapsam | Prototip, demo için minimum fazlar | Faz 0-7'nin tamamı, her faz çalışır ve test edilmiş biter. |
 | 3 | Altyapı | Fastify + Socket.IO + Redis + BullMQ, Docker Compose, tek sunucu | **Sunucusuz:** Vercel Pro (Expo web, Next.js paneller, tanıtım, API) + Supabase Cloud Pro Frankfurt. Ayrıntı aşağıda. |
-| 4 | AI modelleri | Üretici ve doğrulayıcı farklı model aileleri | Yalnızca Claude: üretici `claude-sonnet-4-6`, doğrulayıcı `claude-sonnet-5-5`, asistan/görsel/veli raporu `claude-sonnet-4-6`, yedek `claude-haiku-4-5`. Model adları ortam değişkeninden ve Merkez Panelden (`ai_gorev_ayari`) değişir. |
+| 4 | AI modelleri | Üretici ve doğrulayıcı farklı model aileleri | Yalnızca Claude: üretici ve doğrulayıcı `claude-sonnet-5-5`, asistan/görsel/veli raporu `claude-sonnet-5-5`, yedek `claude-haiku-4-5`; **claude-sonnet-4-6 kullanılmaz** (proje sahibi kararı, 2026-11-13). Doğrulayıcının yedeği yok: ulaşılamazsa soru atılır. Model adları ortam değişkeninden ve Merkez Panelden (`ai_gorev_ayari`) değişir. |
 | 5 | Satış | Teklif formu + pilot butonu | "30 gün ücretsiz pilot" ana satış aracı; pilot sonunda dershaneye otomatik etki raporu (Faz 7, Vercel Cron). |
 
 ## Sunucusuz mimaride bileşen karşılıkları
@@ -28,7 +28,7 @@ Belirsiz kalan noktalarda en makul varsayım yapıldı ve buraya yazıldı.
 
 ## Diğer varsayımlar
 
-1. **Doğrulayıcı aynı aileden (Claude).** PDF farklı aile istiyordu. Riski azaltmak için: doğrulayıcı daha güçlü model, cevap anahtarını görmeden çözer, sıcaklık 0; matematik/fende sayısal sonuç sunucuda mathjs ile ayrıca kontrol edilir (Faz 1).
+1. **Doğrulayıcı aynı aileden, 2026-11-13'ten beri aynı model (`claude-sonnet-5-5`).** PDF farklı aile istiyordu. Bağımsızlık şöyle korunur: ayrı çağrı, ayrı prompt, doğrulayıcı cevap anahtarını ve çözümü GÖRMEDEN soruyu baştan çözer, sıcaklık 0 (üretici 0,8); sayısal sonuç sunucuda mathjs ile, biçim ve şık kuralları kodla ayrıca denetlenir. Hata bildirimi oranı izlenir (Merkez Panel); yükselirse doğrulayıcı farklı bir modele alınabilir.
 2. **AI soruları platform genelidir** (`soru.dershane_id` boş). Öğretmen soruları dershaneye aittir ve günlük akışa girmez.
 3. **Öğretmenin dershane geneli akademik okuma yetkisi yoktur.** Öğrenci verisine yalnızca atandığı sınıflar üzerinden erişir (PDF: "atanmadığı sınıfların bireysel verisini göremez"). Testlerde yakalanan bir hata üzerine düzeltildi.
 4. **Merkez Panel işlemleri** sunucuda service role ile, yetki kontrolü ve denetim kaydıyla yapılır; RLS'te merkez ekibine genel istisna yoktur.
