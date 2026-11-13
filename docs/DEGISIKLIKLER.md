@@ -111,6 +111,10 @@ Tamamı `.env.example` içinde.
 | Sahte süre (25 sn bildirildi, gerçekte 1 sn) | Sunucu ölçümüne sıkıştırıldı, puana sayılmadı ✔ |
 | Gerçek KMYAI ile üretim | İlk deneme: sonnet-4-6 20 sn'de zaman aşımı, doğrulayıcı 1200 token'da kesildi → düzeltildi (0009, doğrulama promptu v2, kesik JSON toleransı) |
 | Düzeltme sonrası üretim testi | 6 sorudan 4 doğrulandı (atılma %33); doğrulayıcı gerçek hataları yakaladı: yanlış anahtar, soru metninde tekrar eden şıklar → üretim promptu v2 ve kalite filtresi eklendi |
+| KMYAI hız sınırı | 9 paralel istekte HTTP 429 → örnek başına 4 eşzamanlı istek, Retry-After'a uyan bekleme |
+| Model kararı | claude-sonnet-4-6 kaldırıldı (proje sahibi kararı, 0010); üretici ve doğrulayıcı claude-sonnet-5-5 |
+| sonnet-5-5 ilk test | 23 sorudan 10 doğrulandı: 8'i 2500 token sınırında kesildi, 4'ü karşılaştırmalı sayısal ifade yüzünden yanlışlıkla atıldı → 4000 token (0011), üretim promptu v3, sayısal kontrol düzeltmesi |
+| **sonnet-5-5 son test** | **18 sorudan 16 doğrulandı (atılma %11), soru başına ~21 sn; üretim ~2,3k giriş + ~2,1k çıkış, doğrulama ~0,85k + ~0,4k token** |
 
 ### Açık kalanlar
 

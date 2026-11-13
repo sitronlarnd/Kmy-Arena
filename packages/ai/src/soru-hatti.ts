@@ -192,20 +192,37 @@ export function kaliteKontrolu(s: UretilenSoru, istek: UretimIstegi): string[] {
 
 // ── Sayısal kontrol (mathjs) ─────────────────────────────────────────
 
-function sayiyaCevir(metin: string): number | null {
-  const temiz = metin
-    .replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g, "($1)/($2)")
-    .replace(/\\cdot|\\times/g, "*")
-    .replace(/[${}\\]/g, "")
-    .replace(/(\d)\.(\d{3})(?!\d)/g, "$1$2") // Türkçe binlik ayırıcı
-    .replace(/(\d),(\d)/g, "$1.$2") // Türkçe ondalık virgül
-    .trim();
+function hesapla(ifade: string): number | null {
   try {
-    const d: unknown = evaluate(temiz);
+    const d: unknown = evaluate(ifade);
     return typeof d === "number" && Number.isFinite(d) ? d : null;
   } catch {
     return null;
   }
+}
+
+/**
+ * Metindeki sayıyı okur. "5.348" hem ondalık (5,348) hem binlik (5348) olabilir;
+ * iki yorum da aday olarak döner. Türkçe ondalık virgül desteklenir.
+ */
+function sayiAdaylari(metin: string): number[] {
+  const temel = metin
+    .replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g, "($1)/($2)")
+    .replace(/\\sqrt\{([^}]*)\}/g, "sqrt($1)")
+    .replace(/\\cdot|\\times/g, "*")
+    .replace(/[${}\\]/g, "")
+    .trim();
+  const adaylar = [
+    temel.replace(/(\d),(\d)/g, "$1.$2"),
+    temel.replace(/(\d)\.(\d{3})(?!\d)/g, "$1$2").replace(/(\d),(\d)/g, "$1.$2"),
+  ];
+  return [...new Set(adaylar)].map(hesapla).filter((x): x is number => x !== null);
+}
+
+/** Beyan edilen değerin ondalık hanesi kadar yuvarlama toleransı. */
+function tolerans(metin: string): number {
+  const hane = /[.,](\d+)(?!.*\d)/.exec(metin)?.[1]?.length ?? 0;
+  return Math.max(1e-9, 0.5 * 10 ** -hane);
 }
 
 /**
@@ -216,13 +233,16 @@ export function sayisalKontrol(s: UretilenSoru): { gecti: boolean; neden?: strin
   if (!s.sayisalKontrol) return null;
   // Karşılaştırma ifadeleri ("55 % 11 == 0") sayı değil doğru/yanlış verir: denetlenemez, doğrulayıcıya bırakılır.
   if (/[=<>!]|\b(and|or|not)\b/.test(s.sayisalKontrol.ifade)) return null;
-  const hesap = sayiyaCevir(s.sayisalKontrol.ifade);
-  const beyan = sayiyaCevir(s.sayisalKontrol.sonuc);
-  if (hesap === null || beyan === null) return null; // hesaplanamayan ifade: doğrulayıcıya bırak
-  const esit = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(a), Math.abs(b));
-  if (!esit(hesap, beyan)) return { gecti: false, neden: `ifade ${hesap}, beyan edilen sonuç ${beyan}` };
-  const sik = sayiyaCevir(s.siklar[s.dogru] ?? "");
-  if (sik !== null && !esit(sik, hesap)) return { gecti: false, neden: `doğru şık ${sik}, hesap ${hesap} (ifade: ${s.sayisalKontrol.ifade.slice(0, 80)})` };
+  const hesap = hesapla(s.sayisalKontrol.ifade.replace(/(\d),(\d)/g, "$1.$2"));
+  const beyan = sayiAdaylari(s.sayisalKontrol.sonuc);
+  if (hesap === null || beyan.length === 0) return null; // hesaplanamayan ifade: doğrulayıcıya bırak
+  const uyar = (adaylar: number[], metin: string) => adaylar.some((a) => Math.abs(a - hesap) <= Math.max(tolerans(metin), 1e-6 * Math.abs(hesap)));
+  if (!uyar(beyan, s.sayisalKontrol.sonuc)) return { gecti: false, neden: `ifade ${hesap}, beyan edilen sonuç ${s.sayisalKontrol.sonuc}` };
+  const sikMetni = s.siklar[s.dogru] ?? "";
+  const sik = sayiAdaylari(sikMetni);
+  if (sik.length > 0 && !uyar(sik, sikMetni)) {
+    return { gecti: false, neden: `doğru şık ${sikMetni.slice(0, 40)}, hesap ${hesap} (ifade: ${s.sayisalKontrol.ifade.slice(0, 80)})` };
+  }
   return { gecti: true };
 }
 

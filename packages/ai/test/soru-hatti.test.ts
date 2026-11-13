@@ -123,6 +123,13 @@ describe("Sayısal kontrol (mathjs)", () => {
     const s = uretilenSoruyuCoz(JSON.stringify({ ...iyiSoru, sayisal_kontrol: { ifade: "72 % 8 == 0", sonuc: "1" } }), istek);
     assert.equal(sayisalKontrol(s), null);
   });
+  it("yuvarlanmış ondalık sonuç ve belirsiz nokta kabul edilir", () => {
+    const s = uretilenSoruyuCoz(
+      JSON.stringify({ ...iyiSoru, siklar: { ...iyiSoru.siklar, C: "$5{,}35$" }, sayisal_kontrol: { ifade: "sqrt(28.6)", sonuc: "5.348" } }),
+      istek,
+    );
+    assert.deepEqual(sayisalKontrol(s), { gecti: true });
+  });
   it("Türkçe ondalık ve kesir yazımı", () => {
     const s = uretilenSoruyuCoz(
       JSON.stringify({ ...iyiSoru, siklar: { ...iyiSoru.siklar, C: "$\\frac{1}{4}$" }, sayisal_kontrol: { ifade: "1/4", sonuc: "0,25" } }),
