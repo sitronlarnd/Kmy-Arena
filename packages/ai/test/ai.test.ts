@@ -11,10 +11,10 @@ import {
 } from "../src/index";
 
 describe("Görev ayarları", () => {
-  it("ortam değişkeni yoksa kararlaştırılan Claude modelleri kullanılır", () => {
+  it("ortam değişkeni yoksa kararlaştırılan modeller kullanılır", () => {
     const a = ortamdanVarsayilanlar({});
-    assert.equal(a.soru_uretim.modelBirincil, "claude-haiku-5-5");
-    assert.equal(a.soru_dogrulama.modelBirincil, "claude-haiku-5-5");
+    assert.equal(a.soru_uretim.modelBirincil, "mimo-v2.6-flash");
+    assert.equal(a.soru_dogrulama.modelBirincil, "gpt-6-luna");
     assert.equal(a.asistan.modelBirincil, "claude-haiku-5-5");
     assert.equal(a.gorsel_okuma.modelBirincil, "claude-haiku-5-5");
     assert.equal(a.veli_raporu.modelBirincil, "claude-sonnet-5-5");

@@ -4,7 +4,7 @@
  * Öncelik: dershane > paket > genel (Merkez Panel, `ai_gorev_ayari` tablosu)
  *          > ortam değişkenleri > koddaki varsayılan.
  * Model adları kodda sabit DEĞİLDİR; ortam değişkeninden ve Merkez Panelden
- * değiştirilebilir. Üretici ve doğrulayıcı claude-haiku-5-5 (karar #4, 2026-11-13).
+ * değiştirilebilir. Üretici mimo-v2.6-flash, doğrulayıcı gpt-6-luna (karar, 2026-11-14).
  */
 
 export const AI_GOREVLERI = [
@@ -31,8 +31,8 @@ export interface GorevAyari {
 export type OrtamDegiskenleri = Readonly<Record<string, string | undefined>>;
 
 const VARSAYILAN_MODELLER = {
-  uretici: "claude-haiku-5-5",
-  dogrulayici: "claude-haiku-5-5",
+  uretici: "mimo-v2.6-flash",
+  dogrulayici: "gpt-6-luna",
   ogretmen: "claude-sonnet-5-5",
   // Maliyet kararı (2026-11-13): asistan ve görsel okuma da Haiku 5.5; AI Merkezinden değiştirilebilir.
   asistan: "claude-haiku-5-5",
@@ -76,7 +76,7 @@ export function ortamdanVarsayilanlar(env: OrtamDegiskenleri): Record<AiGorevi, 
     soru_dogrulama: { ...ayar(m.dogrulayici, 0, 2500, uretimMs), modelYedek: "", yenidenDeneme: Math.min(deneme, 1) },
     asistan: ayar(m.asistan, 0.4, 900, asistanMs),
     gorsel_okuma: ayar(m.gorsel, 0, 2000, 45_000),
-    topluluk_degerlendirme: ayar(m.dogrulayici, 0, 600, 30_000),
+    topluluk_degerlendirme: ayar(m.asistan, 0, 600, 30_000),
     moderasyon: ayar(m.yedek, 0, 200, 20_000),
     veli_raporu: ayar(m.veliRaporu, 0.5, 600, asistanMs),
     ogretmen_soru_uretim: ayar(m.ogretmen, 0.7, 4000, uretimMs),
