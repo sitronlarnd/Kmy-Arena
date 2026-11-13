@@ -450,6 +450,77 @@ begin
 end;
 $$;
 
+-- Boss seçimi: karışık (LGS+YKS) klanda çoğunluğun konusu öne çıksın
+/** Haftanın klan görevlerini ve boss'unu hazırlar (yoksa). */
+create or replace function app.klan_hafta_hazirla(p_klan uuid)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_hafta date := app.hafta_basi(app.bugun());
+  v_klan public.klan;
+  v_uye integer;
+  v_kazanim uuid;
+  v_ozellik text;
+  v_unite text;
+begin
+  if exists (select 1 from public.boss where klan_id = p_klan and hafta = v_hafta)
+     and exists (select 1 from public.klan_gorev where klan_id = p_klan and hafta = v_hafta) then
+    return;
+  end if;
+  select * into v_klan from public.klan where id = p_klan;
+  if not found then return; end if;
+  select count(*) into v_uye from public.klan_uyelik where klan_id = p_klan;
+  v_uye := greatest(v_uye, 1);
+
+  insert into public.klan_gorev (klan_id, hafta, kod, hedef, odul_altin) values
+    (p_klan, v_hafta, 'toplam_soru', greatest(150, v_uye * 50), 100),
+    (p_klan, v_hafta, 'herkes_30', v_uye, 150)
+  on conflict do nothing;
+
+  if exists (select 1 from public.boss where klan_id = p_klan and hafta = v_hafta) then return; end if;
+
+  -- Canavar: en çok üyenin çalıştığı kazanımlar arasından ortalama en zayıfı
+  select b.kazanim_id into v_kazanim
+  from public.beceri b join public.klan_uyelik u on u.kullanici_id = b.kullanici_id
+  where u.klan_id = p_klan and b.cozulen > 0
+  group by b.kazanim_id
+  having count(distinct b.kullanici_id) >= least(2, v_uye)
+  order by count(distinct b.kullanici_id) desc, avg(b.theta)
+  limit 1;
+  -- Veri yoksa: liderin derslerinden rastgele bir kazanım
+  if v_kazanim is null then
+    select k.id into v_kazanim
+    from public.kazanim k join public.unite un on un.id = k.unite_id
+    where un.ders_id in (
+      select d.id from public.klan_uyelik u, lateral public.sistem_ogrenci_dersleri(u.kullanici_id) d
+      where u.klan_id = p_klan)
+    order by random() limit 1;
+  end if;
+  if v_kazanim is null then return; end if;
+
+  select d.ozellik, un.ad into v_ozellik, v_unite
+  from public.kazanim k join public.unite un on un.id = k.unite_id join public.ders d on d.id = un.ders_id
+  where k.id = v_kazanim;
+
+  insert into public.boss (dershane_id, klan_id, hafta, kazanim_id, ad, emoji, can, kalan_can, bitis)
+  values (
+    v_klan.dershane_id, p_klan, v_hafta, v_kazanim,
+    left(v_unite, 40) || ' ' || case v_ozellik
+      when 'zeka' then 'Ejderi' when 'enerji' then 'Golemi' when 'bilgelik' then 'Sfenksi'
+      when 'strateji' then 'Krakeni' else 'Grifonu' end,
+    case v_ozellik when 'zeka' then '🐉' when 'enerji' then '🗿' when 'bilgelik' then '🦁'
+      when 'strateji' then '🐙' else '🦅' end,
+    greatest(300, v_uye * 60), greatest(300, v_uye * 60),
+    (v_hafta + 7)::timestamp at time zone 'Europe/Istanbul'
+  )
+  on conflict do nothing;
+end;
+$$;
+
+
 -- ── Asistan ──
 
 /** Günlük sayaçlar (İstanbul günü): öğrenci mesajı ve fotoğraf oturumu */

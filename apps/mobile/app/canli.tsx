@@ -91,12 +91,12 @@ export default function Canli() {
         <>
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <Text style={{ color: tema.soluk }}>{t("canli.soru", { n: aktifSoru.sira })}</Text>
-            <Text style={{ color: tema.metin, fontWeight: "800" }}>⏱ {Math.max(0, Math.ceil((Date.parse(aktifSoru.acilis) + o.sure_sn * 1000 - simdi) / 1000))}</Text>
+            <Text style={{ color: tema.metin, fontWeight: "800" }}>{Math.max(0, Math.ceil((Date.parse(aktifSoru.acilis) + o.sure_sn * 1000 - simdi) / 1000))}</Text>
           </View>
           <Kart><MatematikMetni md={aktifSoru.soru.govde_md} renk={tema.metin} boyut={BOYUT.soruMetni} /></Kart>
           {aktifSoru.ben ? (
             <Text style={{ color: aktifSoru.ben.dogru ? tema.dogru : tema.yanlis, fontWeight: "700" }}>
-              {aktifSoru.ben.dogru ? (aktifSoru.ben.derece && aktifSoru.ben.derece <= 10 ? t("canli.bonus") : t("canli.derece", { n: aktifSoru.ben.derece ?? 0 })) : "❌"}
+              {aktifSoru.ben.dogru ? (aktifSoru.ben.derece && aktifSoru.ben.derece <= 10 ? t("canli.bonus") : t("canli.derece", { n: aktifSoru.ben.derece ?? 0 })) : t("canli.yanlis")}
             </Text>
           ) : (
             <View style={{ gap: 10 }}>
@@ -116,7 +116,7 @@ export default function Canli() {
           <Text style={{ color: tema.metin, fontWeight: "800" }}>{t("canli.sonuc")}</Text>
           {o.sorular.filter((s) => s.dogru).map((s) => (
             <View key={s.sira} style={{ gap: 2 }}>
-              <Text style={{ color: tema.metin }}>{t("canli.soru", { n: s.sira })} · {s.dogru} {s.ben ? (s.ben.dogru ? "✅" : "❌") : ""}</Text>
+              <Text style={{ color: tema.metin }}>{t("canli.soru", { n: s.sira })} · {s.dogru} {s.ben ? (s.ben.dogru ? t("canli.dogruKisa") : t("canli.yanlisKisa")) : ""}</Text>
               {s.ilk10 && <Text style={{ color: tema.soluk, fontSize: 12 }}>{t("canli.ilk10")}: {s.ilk10.map((x) => x.takma_ad).join(", ")}</Text>}
             </View>
           ))}

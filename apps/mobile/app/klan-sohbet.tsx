@@ -1,4 +1,5 @@
 import { hazirMesaj, KLAN_HAZIR_MESAJLAR, type Sik } from "@kmy/shared";
+import { Flag } from "lucide-react-native";
 import { t, type MetinAnahtari } from "@kmy/shared/i18n";
 import { Stack } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -93,7 +94,7 @@ export default function KlanSohbet() {
               </Kart>
               {!m.benim && (
                 <Pressable onPress={() => void sikayet(m.id)} accessibilityRole="button">
-                  <Text style={{ color: tema.soluk, fontSize: 11 }}>⚑ {t("klan.sikayet")}</Text>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}><Flag size={11} color={tema.soluk} /><Text style={{ color: tema.soluk, fontSize: 11 }}>{t("klan.sikayet")}</Text></View>
                 </Pressable>
               )}
             </View>

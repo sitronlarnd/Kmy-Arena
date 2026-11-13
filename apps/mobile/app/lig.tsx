@@ -1,4 +1,5 @@
 import { LIG_KADEMELERI, ligAdimi } from "@kmy/shared";
+import { Trophy } from "lucide-react-native";
 import { t } from "@kmy/shared/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
@@ -66,7 +67,7 @@ export default function Lig() {
     <Ekran baslik={t("oyun.lig")}>
       <Stack.Screen options={{ headerShown: true, title: t("oyun.lig"), headerStyle: { backgroundColor: tema.yuzey }, headerTintColor: tema.metin }} />
       <Kart stil={{ borderColor: lig.renk }}>
-        <Text style={{ color: lig.renk, fontSize: 22, fontWeight: "800" }}>🏆 {lig.ad}</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}><Trophy size={26} color={lig.renk} fill={`${lig.renk}44`} /><Text style={{ color: lig.renk, fontSize: 24, fontWeight: "900" }}>{lig.ad}</Text></View>
         <Text style={{ color: tema.metin }}>{t("oyun.ligHafta", { xp: oyun?.haftalikXp ?? 0 })}</Text>
         <Text style={{ color: tema.soluk, fontSize: 13 }}>{t("oyun.ligAciklama")}</Text>
         <View style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}>

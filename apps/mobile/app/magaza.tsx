@@ -3,13 +3,15 @@ import { t, type MetinAnahtari } from "@kmy/shared/i18n";
 import { Stack, router } from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
-import { Avatar } from "@/bilesenler/Avatar";
+import { Coins, Snowflake, Sparkles, Zap } from "lucide-react-native";
+import { Avatar } from "@/bilesenler/sanat";
+import { IkonKutu } from "@/bilesenler/ui";
 import { Dugme } from "@/bilesenler/Dugme";
 import { Ekran } from "@/bilesenler/Ekran";
 import { Kart } from "@/bilesenler/Kart";
 import { api, ApiHatasi } from "@/lib/api";
 import { useOyun, useOyunYenile } from "@/lib/oyun";
-import { BOYUT, useTema } from "@/lib/tema";
+import { BOYUT, useTema, OYUN } from "@/lib/tema";
 
 const GRUPLAR: Array<{ tur: EsyaTuru; anahtar: MetinAnahtari }> = [
   { tur: "kostum", anahtar: "oyun.kostum" },
@@ -50,7 +52,7 @@ export default function Magaza() {
         <View style={{ flexDirection: "row", gap: 14, alignItems: "center" }}>
           <Avatar tur={kar?.tur} seviye={oyun?.seviye} cerceve={kar?.cerceve} arkaPlan={kar?.arka_plan} kostum={kar?.kostum} boyut={72} />
           <View style={{ flex: 1, gap: 4 }}>
-            <Text style={{ color: tema.metin, fontSize: 18, fontWeight: "800" }}>🪙 {oyun?.altin ?? 0}</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}><Coins size={22} color={OYUN.altin} fill={`${OYUN.altin}55`} /><Text style={{ color: tema.metin, fontSize: 22, fontWeight: "900" }}>{oyun?.altin ?? 0}</Text></View>
             <Text style={{ color: tema.soluk, fontSize: 13 }}>{t("oyun.magazaAciklama")}</Text>
           </View>
         </View>
@@ -64,7 +66,7 @@ export default function Magaza() {
         if (!d) return null;
         return (
           <Kart>
-            <Text style={{ color: tema.metin, fontWeight: "700" }}>{d.emoji} {d.ad} · {t("oyun.dondurucu", { n: oyun?.dondurucu ?? 0 })}/2</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}><IkonKutu ikon={Snowflake} renk={OYUN.buz} /><Text style={{ color: tema.metin, fontWeight: "700", flex: 1 }}>{d.ad} · {t("oyun.dondurucu", { n: oyun?.dondurucu ?? 0 })}/2</Text></View>
             <Dugme baslik={t("oyun.satinAl", { fiyat: d.fiyat })} yukleniyor={mesgul === d.kod} onPress={() => void islem(d.kod, "/api/oyun/satin-al", { kod: d.kod })} />
           </Kart>
         );
@@ -80,8 +82,13 @@ export default function Magaza() {
               const kilitli = Boolean(e.minSeviye && (oyun?.seviye ?? 1) < e.minSeviye);
               return (
                 <View key={e.kod} style={{ width: 160, padding: 12, gap: 6, borderRadius: BOYUT.yaricap, borderWidth: 2, borderColor: kusanili ? tema.vurgu : tema.kenar, backgroundColor: tema.yuzey }}>
-                  <View style={{ height: 40, borderRadius: 8, alignItems: "center", justifyContent: "center", backgroundColor: e.renk ?? tema.zemin }}>
-                    <Text style={{ fontSize: 24 }}>{e.emoji ?? ""}</Text>
+                  <View style={{ height: 76, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: tema.zemin }}>
+                    {g.tur === "duello_efekti" ? (
+                      e.kod === "efekt_yildirim" ? <Zap size={36} color={OYUN.altin} fill={`${OYUN.altin}55`} /> : <Sparkles size={36} color={OYUN.xp} />
+                    ) : (
+                      <Avatar tur={kar?.tur ?? "bilge_baykus"} boyut={64} aura={false}
+                        kostum={g.tur === "kostum" ? e.kod : null} cerceve={g.tur === "cerceve" ? e.kod : null} arkaPlan={g.tur === "arka_plan" ? e.kod : null} />
+                    )}
                   </View>
                   <Text style={{ color: tema.metin, fontWeight: "700" }}>{e.ad}</Text>
                   {var_ ? (
@@ -113,7 +120,7 @@ export default function Magaza() {
             <Dugme
               key={r.kod}
               ikincil={!aktif}
-              baslik={`${r.emoji} ${r.unvan ?? ""}`}
+              baslik={r.unvan ?? ""}
               pasif={!kar}
               yukleniyor={mesgul === r.kod}
               onPress={() => void islem(r.kod, "/api/oyun/kusan", { tur: "unvan", kod: aktif ? null : r.unvan })}

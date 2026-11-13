@@ -1,34 +1,38 @@
 import { ROZETLER } from "@kmy/shared";
 import { t } from "@kmy/shared/i18n";
 import { Stack } from "expo-router";
-import { Text, View } from "react-native";
+import { Coins } from "lucide-react-native";
+import { View } from "react-native";
+import Animated, { ZoomIn } from "react-native-reanimated";
 import { Ekran } from "@/bilesenler/Ekran";
+import { RozetMadalya } from "@/bilesenler/sanat";
+import { Cubuk, Etiket, Metin } from "@/bilesenler/ui";
 import { useOyun } from "@/lib/oyun";
-import { useTema } from "@/lib/tema";
+import { OYUN, useTema } from "@/lib/tema";
 
 export default function Rozetler() {
   const tema = useTema();
   const sahip = new Set(useOyun().data?.rozetler ?? []);
   const sirali = [...ROZETLER].sort((a, b) => Number(sahip.has(b.kod)) - Number(sahip.has(a.kod)));
   return (
-    <Ekran baslik={`${t("oyun.rozetler")} (${sahip.size}/${ROZETLER.length})`}>
-      <Stack.Screen options={{ headerShown: true, title: t("oyun.rozetler"), headerStyle: { backgroundColor: tema.yuzey }, headerTintColor: tema.metin }} />
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
-        {sirali.map((r) => {
+    <Ekran baslik={t("oyun.rozetler")} altBaslik={`${sahip.size} / ${ROZETLER.length}`}>
+      <Stack.Screen options={{ headerShown: false }} />
+      <Cubuk oran={sahip.size / ROZETLER.length} gradyan={["#C4A1FF", "#7C5CFA"]} parilti />
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12, justifyContent: "space-between" }}>
+        {sirali.map((r, i) => {
           const var_ = sahip.has(r.kod);
           return (
-            <View
+            <Animated.View
               key={r.kod}
+              entering={ZoomIn.delay(Math.min(i, 20) * 30).springify()}
               accessibilityLabel={`${r.ad}: ${r.aciklama}`}
-              style={{ width: 160, padding: 12, gap: 4, borderRadius: 12, borderWidth: 1, borderColor: var_ ? tema.vurgu : tema.kenar, backgroundColor: tema.yuzey, opacity: var_ ? 1 : 0.55 }}
+              style={{ width: "30%", minWidth: 100, flexGrow: 1, padding: 12, gap: 6, alignItems: "center", borderRadius: 20, borderWidth: 1, borderColor: var_ ? `${OYUN.xp}66` : tema.kenar, backgroundColor: tema.yuzey }}
             >
-              <Text style={{ fontSize: 30 }}>{var_ ? r.emoji : "🔒"}</Text>
-              <Text style={{ color: tema.metin, fontWeight: "700" }}>{r.ad}</Text>
-              <Text style={{ color: tema.soluk, fontSize: 12 }}>{r.aciklama}</Text>
-              <Text style={{ color: tema.soluk, fontSize: 11 }}>
-                {r.faz ? t("oyun.yakinda") : `+${r.altin} Altın${r.unvan ? ` · ${t("oyun.unvan")}: ${r.unvan}` : ""}`}
-              </Text>
-            </View>
+              <RozetMadalya kod={r.kod} kategori={r.kategori} boyut={64} kilitli={!var_} />
+              <Metin tur="kucuk" ortala numberOfLines={1}>{r.ad}</Metin>
+              <Metin tur="kucuk" soluk ortala numberOfLines={2} stil={{ fontSize: 11 }}>{r.aciklama}</Metin>
+              {r.faz ? <Etiket metin={t("oyun.yakinda")} renk={tema.soluk} /> : <Etiket metin={`+${r.altin}`} renk={OYUN.altinKoyu} ikon={Coins} />}
+            </Animated.View>
           );
         })}
       </View>

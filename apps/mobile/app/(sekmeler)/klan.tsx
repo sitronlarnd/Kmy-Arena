@@ -11,18 +11,22 @@ import {
 import { t, type MetinAnahtari } from "@kmy/shared/i18n";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useState, type ReactNode } from "react";
-import { Pressable, Text, View } from "react-native";
+import {
+  Anchor, Check, CheckCircle2, Coins, Crown, FlaskConical, Landmark, LogOut, MessageCircle, Mountain, Send, Shield, ShieldPlus, Swords, Target, Trophy, UserMinus, UserPlus, Users, type LucideIcon,
+} from "lucide-react-native";
+import { useState } from "react";
+import { Pressable, View } from "react-native";
 import { Alan } from "@/bilesenler/Alan";
 import { AmblemRozeti } from "@/bilesenler/AmblemRozeti";
-import { Avatar } from "@/bilesenler/Avatar";
-import { Dugme } from "@/bilesenler/Dugme";
 import { Ekran } from "@/bilesenler/Ekran";
-import { Kart } from "@/bilesenler/Kart";
+import { AMBLEM_IKONLARI, Avatar, Boss } from "@/bilesenler/sanat";
+import { Basilabilir, Bolum, Cip, Cubuk, Dugme, Etiket, IkonKutu, Kart, Metin } from "@/bilesenler/ui";
 import { api, ApiHatasi } from "@/lib/api";
 import { useOyunYenile } from "@/lib/oyun";
 import { useMufredat } from "@/lib/sorgular";
-import { useTema } from "@/lib/tema";
+import { GRADYAN, OYUN, useTema } from "@/lib/tema";
+
+const BOLGE_IKON: Record<string, LucideIcon> = { mat: Landmark, fen: FlaskConical, turkce: Mountain, sosyal: Shield, ingilizce: Anchor };
 
 type Rol = "lider" | "yardimci" | "uye";
 interface KlanOzet { id: string; ad: string; slogan: string | null; amblem: Amblem; seviye: number; kupa: number; katilim_turu: string; uye_sayisi: number; basvurdum: boolean }
@@ -49,24 +53,6 @@ interface Durum {
 }
 
 const KA = OYUN_AYARLARI.klan;
-
-function Cubuk({ oran, renk }: { oran: number; renk: string }) {
-  const tema = useTema();
-  return (
-    <View style={{ height: 10, borderRadius: 5, backgroundColor: tema.kenar, overflow: "hidden" }}>
-      <View style={{ width: `${Math.round(Math.min(1, Math.max(0, oran)) * 100)}%`, height: 10, backgroundColor: renk }} />
-    </View>
-  );
-}
-
-function Cip({ secili, onPress, children }: { secili: boolean; onPress: () => void; children: ReactNode }) {
-  const tema = useTema();
-  return (
-    <Pressable onPress={onPress} accessibilityState={{ selected: secili }} style={{ minHeight: 40, minWidth: 40, paddingHorizontal: 10, justifyContent: "center", alignItems: "center", borderRadius: 20, borderWidth: 2, borderColor: secili ? tema.vurgu : tema.kenar, backgroundColor: tema.yuzey }}>
-      {children}
-    </Pressable>
-  );
-}
 
 function sureMetni(ms: number): string {
   const dk = Math.max(0, Math.floor(ms / 60000));
@@ -115,12 +101,10 @@ export default function KlanSekmesi() {
     }
   };
 
-  const baslik = (m: string) => <Text style={{ color: tema.metin, fontWeight: "800", fontSize: 17 }}>{m}</Text>;
-
   if (!d) {
     return (
       <Ekran baslik={t("klan.baslik")}>
-        <Text style={{ color: tema.soluk }}>{q.isError ? t("ortak.hata") : t("ortak.yukleniyor")}</Text>
+        <Metin soluk>{q.isError ? t("ortak.hata") : t("ortak.yukleniyor")}</Metin>
       </Ekran>
     );
   }
@@ -129,90 +113,109 @@ export default function KlanSekmesi() {
   if (!d.uye) {
     const kurabilir = (d.seviye ?? 1) >= KA.kurmaMinSeviye && (d.son7_soru ?? 0) >= KA.kurmaMinSoru7Gun;
     return (
-      <Ekran baslik={t("klan.baslik")}>
-        <Text style={{ color: tema.soluk }}>{t("klan.aciklama")}</Text>
-        {hata && <Text style={{ color: tema.yanlis }}>{hata}</Text>}
-        {bilgi && <Text style={{ color: tema.dogru }}>{bilgi}</Text>}
+      <Ekran baslik={t("klan.baslik")} altBaslik={t("klan.aciklama")}>
+        {hata && <Metin renk={tema.yanlis}>{hata}</Metin>}
+        {bilgi && <Metin renk={tema.dogru}>{bilgi}</Metin>}
 
         {(d.davetler ?? []).length > 0 && (
-          <Kart>
-            {baslik(t("klan.davetler"))}
+          <Kart vurgu={OYUN.altin} sira={0}>
+            <Bolum baslik={t("klan.davetler")} ikon={UserPlus} />
             {(d.davetler ?? []).map((v) => (
               <View key={v.id} style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <AmblemRozeti a={v.amblem} boyut={36} />
-                <Text style={{ color: tema.metin, flex: 1, fontWeight: "700" }}>{v.ad}</Text>
-                <Dugme baslik={t("klan.kabul")} yukleniyor={mesgul === v.id} onPress={() => void yap(v.id, "/api/klan/basvuru-yanit", { id: v.id, kabul: true })} />
-                <Dugme ikincil baslik={t("klan.reddet")} onPress={() => void yap(v.id, "/api/klan/basvuru-yanit", { id: v.id, kabul: false })} />
+                <AmblemRozeti a={v.amblem} boyut={44} />
+                <Metin tur="altbaslik" stil={{ flex: 1 }}>{v.ad}</Metin>
+                <Dugme kucuk genis={false} ikon={Check} baslik={t("klan.kabul")} yukleniyor={mesgul === v.id} onPress={() => void yap(v.id, "/api/klan/basvuru-yanit", { id: v.id, kabul: true })} />
+                <Dugme kucuk genis={false} tur="hayalet" baslik={t("klan.reddet")} onPress={() => void yap(v.id, "/api/klan/basvuru-yanit", { id: v.id, kabul: false })} />
               </View>
             ))}
           </Kart>
         )}
 
-        <Kart>
-          {baslik(`🛡️ ${t("klan.kur")}`)}
-          <Text style={{ color: tema.soluk }}>
-            {t("klan.kurKosul", { seviye: KA.kurmaMinSeviye, soru: KA.kurmaMinSoru7Gun, benSeviye: d.seviye ?? 1, benSoru: d.son7_soru ?? 0 })}
-          </Text>
-          {!form ? (
-            <Dugme baslik={t("klan.kur")} pasif={!kurabilir} onPress={() => setForm(true)} />
-          ) : (
-            <>
-              <View style={{ alignItems: "center" }}><AmblemRozeti a={amblem} boyut={72} /></View>
-              <Alan etiket={t("klan.ad")} value={ad} onChangeText={setAd} maxLength={24} />
-              <Alan etiket={t("klan.slogan")} value={slogan} onChangeText={setSlogan} maxLength={60} />
-              <Text style={{ color: tema.soluk }}>{t("klan.kalkan")}</Text>
-              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-                {AMBLEM_KALKANLARI.filter((k) => k.seviye <= 1).map((k) => (
-                  <Cip key={k.kod} secili={amblem.kalkan === k.kod} onPress={() => setAmblem({ ...amblem, kalkan: k.kod })}><Text style={{ color: tema.metin }}>{k.ad}</Text></Cip>
-                ))}
-              </View>
-              <Text style={{ color: tema.soluk }}>{t("klan.simge")}</Text>
-              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-                {AMBLEM_SIMGELERI.filter((s) => s.seviye <= 1).map((s) => (
-                  <Cip key={s.kod} secili={amblem.simge === s.kod} onPress={() => setAmblem({ ...amblem, simge: s.kod })}><Text style={{ fontSize: 20 }}>{s.emoji}</Text></Cip>
-                ))}
-              </View>
-              <Text style={{ color: tema.soluk }}>{t("klan.renk")}</Text>
-              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-                {AMBLEM_RENKLERI.map((r) => (
-                  <Pressable key={r} onPress={() => setAmblem({ ...amblem, renk: r })} accessibilityLabel={r}
-                    style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: r, borderWidth: 3, borderColor: amblem.renk === r ? tema.metin : "transparent" }} />
-                ))}
-              </View>
-              <Text style={{ color: tema.soluk }}>{t("klan.katilimTuru")}</Text>
-              <View style={{ flexDirection: "row", gap: 8 }}>
-                {(["acik", "basvurulu", "davet"] as const).map((k) => (
-                  <Cip key={k} secili={katilim === k} onPress={() => setKatilim(k)}><Text style={{ color: tema.metin }}>{t(`klan.katilim_${k}`)}</Text></Cip>
-                ))}
-              </View>
-              <Dugme buyuk baslik={t("klan.olustur")} yukleniyor={mesgul === "kur"} pasif={ad.trim().length < 3}
-                onPress={() => void yap("kur", "/api/klan/kur", { ad, slogan, amblem, katilim }).then((ok) => ok && setForm(false))} />
-            </>
-          )}
+        <Kart gradyan={GRADYAN.vurgu} sira={1}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
+            <View style={{ width: 60, height: 60, borderRadius: 20, backgroundColor: "#ffffff26", alignItems: "center", justifyContent: "center" }}>
+              <ShieldPlus size={32} color="#fff" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Metin tur="altbaslik" renk="#fff">{t("klan.kur")}</Metin>
+              <Metin tur="kucuk" renk="#ffffffcc">{t("klan.kurKosul", { seviye: KA.kurmaMinSeviye, soru: KA.kurmaMinSoru7Gun, benSeviye: d.seviye ?? 1, benSoru: d.son7_soru ?? 0 })}</Metin>
+            </View>
+          </View>
+          {!form && <Dugme tur="altin" baslik={t("klan.kur")} pasif={!kurabilir} onPress={() => setForm(true)} />}
         </Kart>
 
-        <Kart>
-          {baslik(t("klan.klanlar"))}
-          {(d.klanlar ?? []).length === 0 && <Text style={{ color: tema.soluk }}>{t("klan.klanYok")}</Text>}
-          {(d.klanlar ?? []).map((k) => (
-            <View key={k.id} style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 6 }}>
-              <AmblemRozeti a={k.amblem} boyut={40} />
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: tema.metin, fontWeight: "700" }}>{k.ad}</Text>
-                <Text style={{ color: tema.soluk, fontSize: 12 }}>{t("klan.seviye", { n: k.seviye })} · {t("klan.uyeSayisi", { n: k.uye_sayisi })} · {t("klan.kupa", { n: k.kupa })}</Text>
-                {k.slogan && <Text style={{ color: tema.soluk, fontSize: 12, fontStyle: "italic" }}>“{k.slogan}”</Text>}
-              </View>
-              {k.basvurdum ? (
-                <Text style={{ color: tema.soluk, fontSize: 12 }}>{t("klan.basvuruldu")}</Text>
-              ) : k.katilim_turu === "davet" ? (
-                <Text style={{ color: tema.soluk, fontSize: 12 }}>{t("klan.davetli")}</Text>
-              ) : (
-                <Dugme baslik={k.katilim_turu === "acik" ? t("klan.katil") : t("klan.basvur")} yukleniyor={mesgul === k.id} pasif={k.uye_sayisi >= KA.uyeMax}
-                  onPress={() => void yap(k.id, "/api/klan/katil", { klanId: k.id }, k.katilim_turu === "acik" ? undefined : t("klan.basvuruldu"))} />
-              )}
+        {form && (
+          <Kart sira={2}>
+            <View style={{ alignItems: "center", paddingVertical: 6 }}><AmblemRozeti a={amblem} boyut={96} /></View>
+            <Alan etiket={t("klan.ad")} value={ad} onChangeText={setAd} maxLength={24} />
+            <Alan etiket={t("klan.slogan")} value={slogan} onChangeText={setSlogan} maxLength={60} />
+            <Metin tur="etiket" soluk>{t("klan.kalkan")}</Metin>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+              {AMBLEM_KALKANLARI.filter((k) => k.seviye <= 1).map((k) => (
+                <Cip key={k.kod} baslik={k.ad} secili={amblem.kalkan === k.kod} onPress={() => setAmblem({ ...amblem, kalkan: k.kod })} />
+              ))}
             </View>
-          ))}
-        </Kart>
+            <Metin tur="etiket" soluk>{t("klan.simge")}</Metin>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+              {AMBLEM_SIMGELERI.filter((s) => s.seviye <= 1).map((s) => {
+                const Ikon = AMBLEM_IKONLARI[s.kod] ?? Shield;
+                const secili = amblem.simge === s.kod;
+                return (
+                  <Basilabilir key={s.kod} onPress={() => setAmblem({ ...amblem, simge: s.kod })} secili={secili} etiket={s.kod}>
+                    <View style={{ width: 48, height: 48, borderRadius: 16, alignItems: "center", justifyContent: "center", borderWidth: 2, borderColor: secili ? amblem.renk : tema.kenar, backgroundColor: secili ? `${amblem.renk}33` : tema.yuzey2 }}>
+                      <Ikon size={22} color={secili ? amblem.renk : tema.soluk} />
+                    </View>
+                  </Basilabilir>
+                );
+              })}
+            </View>
+            <Metin tur="etiket" soluk>{t("klan.renk")}</Metin>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+              {AMBLEM_RENKLERI.map((r) => (
+                <Basilabilir key={r} onPress={() => setAmblem({ ...amblem, renk: r })} etiket={r} secili={amblem.renk === r}>
+                  <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: r, borderWidth: 3, borderColor: amblem.renk === r ? tema.metin : "transparent", alignItems: "center", justifyContent: "center" }}>
+                    {amblem.renk === r && <Check size={18} color="#fff" strokeWidth={3} />}
+                  </View>
+                </Basilabilir>
+              ))}
+            </View>
+            <Metin tur="etiket" soluk>{t("klan.katilimTuru")}</Metin>
+            <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
+              {(["acik", "basvurulu", "davet"] as const).map((k) => (
+                <Cip key={k} baslik={t(`klan.katilim_${k}`)} secili={katilim === k} onPress={() => setKatilim(k)} />
+              ))}
+            </View>
+            <Dugme buyuk ikon={ShieldPlus} baslik={t("klan.olustur")} yukleniyor={mesgul === "kur"} pasif={ad.trim().length < 3}
+              onPress={() => void yap("kur", "/api/klan/kur", { ad, slogan, amblem, katilim }).then((ok) => ok && setForm(false))} />
+          </Kart>
+        )}
+
+        <Bolum baslik={t("klan.klanlar")} ikon={Users} />
+        {(d.klanlar ?? []).length === 0 && <Metin soluk>{t("klan.klanYok")}</Metin>}
+        {(d.klanlar ?? []).map((k, i) => (
+          <Kart key={k.id} sira={3 + i} vurgu={k.amblem.renk}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+              <AmblemRozeti a={k.amblem} boyut={52} />
+              <View style={{ flex: 1, gap: 2 }}>
+                <Metin tur="altbaslik">{k.ad}</Metin>
+                {k.slogan && <Metin tur="kucuk" soluk numberOfLines={1}>“{k.slogan}”</Metin>}
+                <View style={{ flexDirection: "row", gap: 6, flexWrap: "wrap", marginTop: 4 }}>
+                  <Etiket metin={t("klan.seviye", { n: k.seviye })} renk={OYUN.xp} />
+                  <Etiket metin={t("klan.uyeSayisi", { n: k.uye_sayisi })} renk={tema.soluk} ikon={Users} />
+                  <Etiket metin={String(k.kupa)} renk={OYUN.kupa} ikon={Trophy} />
+                </View>
+              </View>
+            </View>
+            {k.basvurdum ? (
+              <Etiket metin={t("klan.basvuruldu")} renk={OYUN.altin} />
+            ) : k.katilim_turu === "davet" ? (
+              <Etiket metin={t("klan.davetli")} renk={tema.soluk} />
+            ) : (
+              <Dugme kucuk baslik={k.katilim_turu === "acik" ? t("klan.katil") : t("klan.basvur")} yukleniyor={mesgul === k.id} pasif={k.uye_sayisi >= KA.uyeMax}
+                onPress={() => void yap(k.id, "/api/klan/katil", { klanId: k.id }, k.katilim_turu === "acik" ? undefined : t("klan.basvuruldu"))} />
+            )}
+          </Kart>
+        ))}
       </Ekran>
     );
   }
@@ -225,76 +228,105 @@ export default function KlanSekmesi() {
   const buEsik = klanSeviyeEsigi(k.seviye);
   const s = d.savas;
   const simdi = Date.now();
-
   const boss = d.boss;
-  return (
-    <Ekran baslik={t("klan.baslik")}>
-      {hata && <Text style={{ color: tema.yanlis }}>{hata}</Text>}
-      {bilgi && <Text style={{ color: tema.dogru }}>{bilgi}</Text>}
 
-      <Kart>
-        <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
-          <AmblemRozeti a={k.amblem} boyut={64} />
-          <View style={{ flex: 1 }}>
-            <Text style={{ color: tema.metin, fontWeight: "800", fontSize: 20 }}>{k.ad}</Text>
-            <Text style={{ color: tema.soluk }}>{klanUnvani(k.seviye)} · {t("klan.seviye", { n: k.seviye })} · {t("klan.kupa", { n: k.kupa })}</Text>
-            {k.slogan && <Text style={{ color: tema.soluk, fontStyle: "italic" }}>“{k.slogan}”</Text>}
+  return (
+    <Ekran baslik={t("klan.baslik")} baslikGizli>
+      {hata && <Metin renk={tema.yanlis}>{hata}</Metin>}
+      {bilgi && <Metin renk={tema.dogru}>{bilgi}</Metin>}
+
+      {/* Klan başlığı: amblem renginden degrade */}
+      <Kart gradyan={[`${k.amblem.renk}`, "#141631"]} sira={0}>
+        <View style={{ flexDirection: "row", gap: 14, alignItems: "center" }}>
+          <AmblemRozeti a={k.amblem} boyut={80} />
+          <View style={{ flex: 1, gap: 4 }}>
+            <Metin tur="baslik" renk="#fff">{k.ad}</Metin>
+            <Metin tur="kucuk" renk="#ffffffcc">{klanUnvani(k.seviye)}</Metin>
+            {k.slogan && <Metin tur="kucuk" renk="#ffffffaa" stil={{ fontStyle: "italic" }}>“{k.slogan}”</Metin>}
           </View>
         </View>
-        <Cubuk oran={(k.katki_toplam - buEsik) / Math.max(1, sonrakiEsik - buEsik)} renk={k.amblem.renk} />
-        <Text style={{ color: tema.soluk, fontSize: 12 }}>{k.katki_toplam} / {sonrakiEsik}</Text>
-        {k.onay_durumu === "bekliyor" && <Text style={{ color: tema.soluk }}>{t("klan.onayBekliyor")}</Text>}
-        <Dugme ikincil baslik={`💬 ${t("klan.sohbet")}`} onPress={() => router.push("/klan-sohbet")} />
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          <Etiket metin={t("klan.seviye", { n: k.seviye })} renk="#fff" />
+          <Etiket metin={String(k.kupa)} renk={OYUN.altin} ikon={Trophy} />
+          <Etiket metin={String((d.uyeler ?? []).length)} renk="#fff" ikon={Users} />
+        </View>
+        <Cubuk oran={(k.katki_toplam - buEsik) / Math.max(1, sonrakiEsik - buEsik)} gradyan={GRADYAN.altin} parilti />
+        <Metin tur="kucuk" renk="#ffffffaa">{k.katki_toplam} / {sonrakiEsik}</Metin>
+        {k.onay_durumu === "bekliyor" && <Metin tur="kucuk" renk="#fff">{t("klan.onayBekliyor")}</Metin>}
+        <Dugme tur="ikincil" ikon={MessageCircle} baslik={t("klan.sohbet")} onPress={() => router.push("/klan-sohbet")} />
       </Kart>
 
-      {d.boss && (
-        <Kart stil={{ borderColor: d.boss.yenildi ? tema.dogru : "#E4572E" }}>
-          {baslik(`${d.boss.emoji} ${t("klan.boss")}: ${d.boss.ad}`)}
-          <Text style={{ color: tema.soluk }}>{d.boss.ders} · {d.boss.kazanim_kod} — {d.boss.kazanim}</Text>
-          <Cubuk oran={d.boss.kalan_can / Math.max(1, d.boss.can)} renk="#E4572E" />
-          <Text style={{ color: tema.metin }}>❤️ {d.boss.kalan_can} / {d.boss.can} · {t("klan.bossHasarim", { n: d.boss.hasarim })}</Text>
-          {d.boss.yenildi ? (
-            <Text style={{ color: tema.dogru, fontWeight: "700" }}>{t("klan.bossYenildiKart")}</Text>
+      {/* Boss */}
+      {boss && (
+        <Kart gradyan={boss.yenildi ? ["#12382A", "#141631"] : ["#3D1230", "#141631"]} sira={1}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <Boss ozellik={boss.ozellik} boyut={96} yenildi={boss.yenildi} />
+            <View style={{ flex: 1, gap: 4 }}>
+              <Metin tur="etiket" renk={OYUN.boss}>{t("klan.boss")}</Metin>
+              <Metin tur="altbaslik" renk="#fff">{boss.ad}</Metin>
+              <Metin tur="kucuk" renk="#ffffffaa" numberOfLines={2}>{boss.ders} · {boss.kazanim_kod}</Metin>
+            </View>
+          </View>
+          <Cubuk oran={boss.kalan_can / Math.max(1, boss.can)} gradyan={GRADYAN.boss} yukseklik={14} />
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Metin tur="kucuk" renk="#fff">{boss.kalan_can} / {boss.can}</Metin>
+            <Metin tur="kucuk" renk={OYUN.altin}>{t("klan.bossHasarim", { n: boss.hasarim })}</Metin>
+          </View>
+          {boss.yenildi ? (
+            <Etiket metin={t("klan.bossYenildiKart")} renk={tema.dogru} ikon={CheckCircle2} />
           ) : (
             <>
-              <Text style={{ color: tema.soluk, fontSize: 12 }}>{t("klan.bossAciklama", { ozellik: t(`profil.ozellik.${d.boss.ozellik}` as MetinAnahtari) })}</Text>
-              <Dugme baslik={`⚔️ ${t("klan.bossSaldir")}`} onPress={() => router.push({ pathname: "/soru", params: { mod: "antrenman", kazanimKodu: boss?.kazanim_kod ?? "", baslik: boss?.ad ?? "" } })} />
+              <Metin tur="kucuk" renk="#ffffffaa">{t("klan.bossAciklama", { ozellik: t(`profil.ozellik.${boss.ozellik}` as MetinAnahtari) })}</Metin>
+              <Dugme tur="ates" ikon={Swords} baslik={t("klan.bossSaldir")} onPress={() => router.push({ pathname: "/soru", params: { mod: "antrenman", kazanimKodu: boss.kazanim_kod, baslik: boss.ad } })} />
             </>
           )}
-          {d.boss.en_iyiler.length > 0 && (
-            <Text style={{ color: tema.soluk, fontSize: 12 }}>{d.boss.en_iyiler.map((x, i) => `${i + 1}. ${x.takma_ad} (${x.hasar})`).join("  ")}</Text>
+          {boss.en_iyiler.length > 0 && (
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+              {boss.en_iyiler.map((x, i) => (
+                <Etiket key={x.takma_ad} metin={`${i + 1}. ${x.takma_ad} · ${x.hasar}`} renk={i === 0 ? OYUN.altin : "#ffffffaa"} ikon={i === 0 ? Crown : undefined} />
+              ))}
+            </View>
           )}
         </Kart>
       )}
 
-      <Kart>
-        {baslik(`⚔️ ${t("klan.savas")}`)}
-        {!s && <Text style={{ color: tema.soluk }}>{t("klan.savasYok")}</Text>}
+      {/* Savaş */}
+      <Bolum baslik={t("klan.savas")} ikon={Swords} />
+      <Kart sira={2}>
+        {!s && <Metin soluk>{t("klan.savasYok")}</Metin>}
         {s && (
           <>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <AmblemRozeti a={k.amblem} boyut={32} />
-              <Text style={{ color: tema.metin, fontWeight: "800" }}>vs</Text>
-              <AmblemRozeti a={s.rakip.amblem} boyut={32} />
-              <Text style={{ color: tema.metin, flex: 1 }}>
-                {s.durum === "bitti"
-                  ? t("klan.savasBitti", { sonuc: s.berabere ? t("klan.berabere") : s.kazandik ? t("klan.kazandik") : t("klan.kaybettik") })
-                  : s.aktif
-                    ? t("klan.savasAktif", { ad: s.rakip.ad, sure: sureMetni(Date.parse(s.bitis) - simdi) })
-                    : t("klan.savasBekliyor", { ad: s.rakip.ad, zaman: new Date(s.baslangic).toLocaleString("tr-TR", { weekday: "long", hour: "2-digit", minute: "2-digit" }) })}
-              </Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <AmblemRozeti a={k.amblem} boyut={44} />
+              <Metin tur="altbaslik" renk={OYUN.altin}>VS</Metin>
+              <AmblemRozeti a={s.rakip.amblem} boyut={44} />
+              <View style={{ flex: 1 }}>
+                <Metin tur="altbaslik" numberOfLines={1}>{s.rakip.ad}</Metin>
+                <Metin tur="kucuk" soluk>
+                  {s.durum === "bitti"
+                    ? t("klan.savasBitti", { sonuc: s.berabere ? t("klan.berabere") : s.kazandik ? t("klan.kazandik") : t("klan.kaybettik") })
+                    : s.aktif
+                      ? t("klan.savasKalan", { sure: sureMetni(Date.parse(s.bitis) - simdi) })
+                      : t("klan.savasBaslar", { zaman: new Date(s.baslangic).toLocaleString("tr-TR", { weekday: "long", hour: "2-digit", minute: "2-digit" }) })}
+                </Metin>
+              </View>
             </View>
-            {s.aktif && <Text style={{ color: tema.metin, fontWeight: "700" }}>{t("klan.hakKalan", { n: s.hak_kalan })}</Text>}
-            <Text style={{ color: tema.soluk, fontSize: 12 }}>{t("klan.katilim", { ben: s.katilan_ben, rakip: s.katilan_rakip })}</Text>
+            <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
+              {s.aktif && <Etiket metin={t("klan.hakKalan", { n: s.hak_kalan })} renk={OYUN.ates} ikon={Target} />}
+              <Etiket metin={t("klan.katilim", { ben: s.katilan_ben, rakip: s.katilan_rakip })} renk={tema.soluk} ikon={Users} />
+            </View>
             {BOLGELER.map((b) => {
               const v = s.bolgeler?.[b.kod] ?? { ben: 0, rakip: 0 };
               const top = v.ben + v.rakip;
               const ders = dersler.find((x) => x.ozellik === b.ozellik);
+              const Ikon = BOLGE_IKON[b.kod] ?? Shield;
+              const bizim = v.ben > v.rakip;
               return (
-                <View key={b.kod} style={{ gap: 4, paddingVertical: 4 }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <Text style={{ color: tema.metin }}>{b.emoji} {b.ad}</Text>
-                    <Text style={{ color: v.ben > v.rakip ? tema.dogru : v.rakip > v.ben ? tema.yanlis : tema.soluk, fontWeight: "700" }}>{Math.round(v.ben)} – {Math.round(v.rakip)}</Text>
+                <View key={b.kod} style={{ gap: 6, paddingVertical: 6 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    <IkonKutu ikon={Ikon} renk={bizim ? k.amblem.renk : v.rakip > v.ben ? s.rakip.amblem.renk : tema.soluk} boyut={34} />
+                    <Metin stil={{ flex: 1 }}>{b.ad}</Metin>
+                    <Metin tur="altbaslik" renk={bizim ? tema.dogru : v.rakip > v.ben ? tema.yanlis : tema.soluk}>{Math.round(v.ben)} – {Math.round(v.rakip)}</Metin>
                   </View>
                   <View style={{ flexDirection: "row", height: 10, borderRadius: 5, overflow: "hidden", backgroundColor: tema.kenar }}>
                     <View style={{ flex: top > 0 ? v.ben : 1, backgroundColor: k.amblem.renk }} />
@@ -302,7 +334,7 @@ export default function KlanSekmesi() {
                   </View>
                   {s.aktif && s.hak_kalan > 0 && ders && (
                     <Pressable onPress={() => router.push({ pathname: "/soru", params: { mod: "antrenman", dersKodu: ders.kod, baslik: b.ad } })} accessibilityRole="button">
-                      <Text style={{ color: tema.vurgu, fontWeight: "700" }}>{t("klan.bolgeSaldir")} →</Text>
+                      <Metin tur="kucuk" renk={tema.vurgu}>{t("klan.bolgeSaldir")} →</Metin>
                     </Pressable>
                   )}
                 </View>
@@ -312,61 +344,72 @@ export default function KlanSekmesi() {
         )}
       </Kart>
 
-      <Kart>
-        {baslik(t("klan.gorevler"))}
+      <Bolum baslik={t("klan.gorevler")} ikon={Target} />
+      <Kart sira={3}>
         {(d.gorevler ?? []).map((g) => (
-          <View key={g.kod} style={{ gap: 4 }}>
-            <Text style={{ color: tema.metin }}>{g.tamamlandi ? "✅ " : ""}{t(`klan.gorev_${g.kod}`, { hedef: g.hedef })}</Text>
-            <Cubuk oran={g.ilerleme / Math.max(1, g.hedef)} renk={g.tamamlandi ? tema.dogru : tema.vurgu} />
-            <Text style={{ color: tema.soluk, fontSize: 12 }}>{g.ilerleme}/{g.hedef} · {t("klan.gorevOdul", { altin: g.odul_altin })}</Text>
+          <View key={g.kod} style={{ gap: 6 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              {g.tamamlandi ? <CheckCircle2 size={20} color={tema.dogru} /> : <Target size={20} color={tema.soluk} />}
+              <Metin stil={{ flex: 1 }}>{t(`klan.gorev_${g.kod}`, { hedef: g.hedef })}</Metin>
+              <Metin tur="kucuk" soluk>{g.ilerleme}/{g.hedef}</Metin>
+            </View>
+            <Cubuk oran={g.ilerleme / Math.max(1, g.hedef)} gradyan={g.tamamlandi ? GRADYAN.dogru : undefined} yukseklik={8} />
+            <Etiket metin={`+${g.odul_altin}`} renk={OYUN.altinKoyu} ikon={Coins} />
           </View>
         ))}
       </Kart>
 
       {yonetici && (d.basvurular ?? []).length > 0 && (
-        <Kart>
-          {baslik(t("klan.basvurular"))}
+        <Kart vurgu={OYUN.altin} sira={4}>
+          <Bolum baslik={t("klan.basvurular")} ikon={UserPlus} />
           {(d.basvurular ?? []).map((b) => (
             <View key={b.id} style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <Text style={{ color: tema.metin, flex: 1 }}>{b.takma_ad}</Text>
-              <Dugme baslik={t("klan.kabul")} yukleniyor={mesgul === b.id} onPress={() => void yap(b.id, "/api/klan/basvuru-yanit", { id: b.id, kabul: true })} />
-              <Dugme ikincil baslik={t("klan.reddet")} onPress={() => void yap(b.id, "/api/klan/basvuru-yanit", { id: b.id, kabul: false })} />
+              <Metin stil={{ flex: 1 }}>{b.takma_ad}</Metin>
+              <Dugme kucuk genis={false} ikon={Check} baslik={t("klan.kabul")} yukleniyor={mesgul === b.id} onPress={() => void yap(b.id, "/api/klan/basvuru-yanit", { id: b.id, kabul: true })} />
+              <Dugme kucuk genis={false} tur="hayalet" baslik={t("klan.reddet")} onPress={() => void yap(b.id, "/api/klan/basvuru-yanit", { id: b.id, kabul: false })} />
             </View>
           ))}
         </Kart>
       )}
 
-      <Kart>
-        {baslik(`${t("klan.uyeler")} (${(d.uyeler ?? []).length}/${KA.uyeMax})`)}
-        {(d.uyeler ?? []).map((u) => (
+      <Bolum baslik={`${t("klan.uyeler")} · ${(d.uyeler ?? []).length}/${KA.uyeMax}`} ikon={Users} />
+      <Kart sira={5}>
+        {(d.uyeler ?? []).map((u, i) => (
           <View key={u.kullanici_id}>
-            <Pressable onPress={() => setSecili(secili === u.kullanici_id ? null : u.kullanici_id)} style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 4 }}>
-              <Avatar tur={u.karakter} seviye={u.seviye} boyut={36} />
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: tema.metin, fontWeight: u.ben ? "800" : "600" }}>{u.takma_ad}{u.rol !== "uye" ? ` · ${t(`klan.rol_${u.rol}`)}` : ""}</Text>
-                <Text style={{ color: tema.soluk, fontSize: 12 }}>{t("klan.haftalik", { n: u.haftalik_katki })} · Σ {u.toplam_katki}</Text>
+            <Basilabilir onPress={() => setSecili(secili === u.kullanici_id ? null : u.kullanici_id)} etiket={u.takma_ad} olcek={0.98}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 6 }}>
+                <Metin tur="kucuk" soluk stil={{ width: 18 }}>{i + 1}</Metin>
+                <Avatar tur={u.karakter} seviye={u.seviye} boyut={40} aura={false} />
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                    <Metin tur={u.ben ? "altbaslik" : "govde"} stil={{ fontSize: 15 }}>{u.takma_ad}</Metin>
+                    {u.rol === "lider" && <Crown size={14} color={OYUN.altin} fill={OYUN.altin} />}
+                    {u.rol === "yardimci" && <Shield size={14} color={OYUN.buz} />}
+                  </View>
+                  <Metin tur="kucuk" soluk>{t("klan.haftalik", { n: u.haftalik_katki })} · Σ {u.toplam_katki}</Metin>
+                </View>
               </View>
-            </Pressable>
+            </Basilabilir>
             {secili === u.kullanici_id && yonetici && !u.ben && (
-              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, paddingBottom: 6 }}>
-                {d.rolum === "lider" && u.rol === "uye" && <Dugme ikincil baslik={t("klan.yardimciYap")} onPress={() => void yap("y", "/api/klan/yonet", { hedef: u.kullanici_id, islem: "yardimci_yap" })} />}
-                {d.rolum === "lider" && u.rol === "yardimci" && <Dugme ikincil baslik={t("klan.uyeYap")} onPress={() => void yap("y", "/api/klan/yonet", { hedef: u.kullanici_id, islem: "uye_yap" })} />}
-                {d.rolum === "lider" && <Dugme ikincil baslik={t("klan.liderYap")} onPress={() => void yap("y", "/api/klan/yonet", { hedef: u.kullanici_id, islem: "lider_devret" })} />}
-                {(d.rolum === "lider" || u.rol === "uye") && <Dugme ikincil baslik={t("klan.cikar")} onPress={() => void yap("y", "/api/klan/yonet", { hedef: u.kullanici_id, islem: "cikar" })} />}
+              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, paddingBottom: 8 }}>
+                {d.rolum === "lider" && u.rol === "uye" && <Dugme kucuk genis={false} tur="ikincil" ikon={Shield} baslik={t("klan.yardimciYap")} onPress={() => void yap("y", "/api/klan/yonet", { hedef: u.kullanici_id, islem: "yardimci_yap" })} />}
+                {d.rolum === "lider" && u.rol === "yardimci" && <Dugme kucuk genis={false} tur="ikincil" baslik={t("klan.uyeYap")} onPress={() => void yap("y", "/api/klan/yonet", { hedef: u.kullanici_id, islem: "uye_yap" })} />}
+                {d.rolum === "lider" && <Dugme kucuk genis={false} tur="ikincil" ikon={Crown} baslik={t("klan.liderYap")} onPress={() => void yap("y", "/api/klan/yonet", { hedef: u.kullanici_id, islem: "lider_devret" })} />}
+                {(d.rolum === "lider" || u.rol === "uye") && <Dugme kucuk genis={false} tur="hayalet" ikon={UserMinus} baslik={t("klan.cikar")} onPress={() => void yap("y", "/api/klan/yonet", { hedef: u.kullanici_id, islem: "cikar" })} />}
               </View>
             )}
           </View>
         ))}
         {yonetici && (
-          <>
-            <Alan etiket={t("klan.davetEt")} value={davetAd} onChangeText={setDavetAd} autoCapitalize="none" />
-            <Dugme ikincil baslik={t("klan.davetGonder")} pasif={davetAd.trim().length < 3} yukleniyor={mesgul === "davet"}
+          <View style={{ flexDirection: "row", gap: 8, alignItems: "flex-end" }}>
+            <View style={{ flex: 1 }}><Alan etiket={t("klan.davetEt")} value={davetAd} onChangeText={setDavetAd} autoCapitalize="none" /></View>
+            <Dugme genis={false} ikon={Send} baslik={t("klan.davetGonder")} pasif={davetAd.trim().length < 3} yukleniyor={mesgul === "davet"}
               onPress={() => void yap("davet", "/api/klan/davet", { takmaAd: davetAd }, t("klan.davetGonderildi")).then((ok) => ok && setDavetAd(""))} />
-          </>
+          </View>
         )}
       </Kart>
 
-      <Dugme ikincil baslik={ayrilOnay ? t("klan.ayrilOnay") : t("klan.ayril")} yukleniyor={mesgul === "ayril"}
+      <Dugme tur={ayrilOnay ? "tehlike" : "hayalet"} ikon={LogOut} baslik={ayrilOnay ? t("klan.ayrilOnay") : t("klan.ayril")} yukleniyor={mesgul === "ayril"}
         onPress={() => (ayrilOnay ? void yap("ayril", "/api/klan/ayril", {}).then(() => setAyrilOnay(false)) : setAyrilOnay(true))} />
     </Ekran>
   );

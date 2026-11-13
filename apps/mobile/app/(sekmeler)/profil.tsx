@@ -1,65 +1,101 @@
 import { OZELLIKLER } from "@kmy/shared";
 import { t } from "@kmy/shared/i18n";
 import { router } from "expo-router";
-import { Text, View } from "react-native";
-import { Avatar } from "@/bilesenler/Avatar";
-import { Dugme } from "@/bilesenler/Dugme";
+import { Award, BookOpen, Brain, Coins, Compass, LogOut, Palette, ShoppingBag, Sparkles, Target, Wind, Zap, type LucideIcon } from "lucide-react-native";
+import { View } from "react-native";
 import { Ekran } from "@/bilesenler/Ekran";
-import { Kart } from "@/bilesenler/Kart";
+import { Avatar } from "@/bilesenler/sanat";
+import { Basilabilir, Bolum, Cubuk, Dugme, Etiket, Halka, IkonKutu, Kart, Metin } from "@/bilesenler/ui";
 import { useOturum } from "@/lib/oturum";
 import { useOyun } from "@/lib/oyun";
 import { useIlerleme } from "@/lib/sorgular";
 import { supabase } from "@/lib/supabase";
-import { BOYUT, useTema } from "@/lib/tema";
+import { GRADYAN, OYUN, useTema } from "@/lib/tema";
+
+const OZ: Record<string, { ikon: LucideIcon; renk: readonly [string, string] }> = {
+  zeka: { ikon: Brain, renk: ["#A78BFA", "#7C3AED"] },
+  enerji: { ikon: Zap, renk: ["#FFB36B", "#FF6A3D"] },
+  bilgelik: { ikon: BookOpen, renk: ["#5EEAD4", "#0D9488"] },
+  strateji: { ikon: Compass, renk: ["#7DB4FF", "#3B5BDB"] },
+  ceviklik: { ikon: Wind, renk: ["#FF8FC8", "#DB2777"] },
+};
 
 export default function Profil() {
   const tema = useTema();
   const { profil, dershane } = useOturum();
   const i = useIlerleme().data;
   const oyun = useOyun().data;
-  const oran = i && i.toplam_cevap > 0 ? Math.round((i.toplam_dogru / i.toplam_cevap) * 100) : 0;
-  const enCok = Math.max(1, ...OZELLIKLER.map((o) => i?.ozellik_puanlari[o] ?? 0));
+  const oran = i && i.toplam_cevap > 0 ? i.toplam_dogru / i.toplam_cevap : 0;
+  const enCok = Math.max(10, ...OZELLIKLER.map((o) => i?.ozellik_puanlari[o] ?? 0));
   return (
     <Ekran baslik={t("sekmeler.profil")}>
-      <View style={{ flexDirection: "row", gap: 14, alignItems: "center" }}>
-        {oyun && <Avatar tur={oyun.karakter?.tur} seviye={oyun.seviye} cerceve={oyun.karakter?.cerceve} arkaPlan={oyun.karakter?.arka_plan} kostum={oyun.karakter?.kostum} boyut={72} />}
-        <View style={{ gap: 2 }}>
-          <Text style={{ color: tema.metin, fontSize: 20, fontWeight: "700" }}>{profil?.takma_ad ?? "-"}</Text>
-          {oyun?.karakter?.unvan && <Text style={{ color: tema.vurgu, fontWeight: "600" }}>{oyun.karakter.unvan}</Text>}
+      <Kart gradyan={["#2A1F6B", tema.yuzey]} sira={0}>
+        <View style={{ alignItems: "center", gap: 8 }}>
+          <Basilabilir onPress={() => router.push("/karakter")} etiket={t("oyun.karakter")}>
+            <Avatar tur={oyun?.karakter?.tur} seviye={oyun?.seviye} cerceve={oyun?.karakter?.cerceve} arkaPlan={oyun?.karakter?.arka_plan} kostum={oyun?.karakter?.kostum} boyut={112} />
+          </Basilabilir>
+          <Metin tur="baslik">{profil?.takma_ad ?? "-"}</Metin>
+          {oyun?.karakter?.unvan && <Etiket metin={oyun.karakter.unvan} renk={OYUN.xp} ikon={Award} />}
+          <Metin tur="kucuk" soluk>{dershane?.ad ?? ""}</Metin>
         </View>
-      </View>
-      <Text style={{ color: tema.soluk, fontSize: BOYUT.govde }}>{dershane?.ad ?? ""}</Text>
+      </Kart>
+
       {profil?.tur === "ogrenci" && i && (
         <>
-          <Kart>
-            <Text style={{ color: tema.metin, fontSize: 18, fontWeight: "800" }}>{t("arena.seviye", { n: i.seviye })} · {i.xp} {t("arena.xp")} · 🪙 {i.altin}</Text>
-            <Text style={{ color: tema.soluk }}>{t("profil.toplamCevap")}: {i.toplam_cevap} · {t("profil.dogruOrani")}: %{oran}</Text>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            {[
+              { ikon: Sparkles, renk: OYUN.xp, deger: String(i.seviye), ad: t("profil.seviye") },
+              { ikon: Target, renk: tema.dogru, deger: String(i.toplam_cevap), ad: t("profil.toplamCevap") },
+              { ikon: Coins, renk: OYUN.altin, deger: String(i.altin), ad: t("oyun.altin") },
+            ].map((x, j) => (
+              <View key={x.ad} style={{ flex: 1 }}>
+                <Kart sira={1 + j} ic={12}>
+                  <IkonKutu ikon={x.ikon} renk={x.renk} boyut={36} />
+                  <Metin tur="sayi">{x.deger}</Metin>
+                  <Metin tur="kucuk" soluk numberOfLines={1}>{x.ad}</Metin>
+                </Kart>
+              </View>
+            ))}
+          </View>
+          <Kart sira={4}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
+              <Halka oran={oran} boyut={84} kalinlik={9} gradyan={GRADYAN.dogru}>
+                <Metin tur="altbaslik">%{Math.round(oran * 100)}</Metin>
+              </Halka>
+              <View style={{ flex: 1 }}>
+                <Metin tur="altbaslik">{t("profil.dogruOrani")}</Metin>
+                <Metin tur="kucuk" soluk>{t("soru.dogruSayisi", { dogru: i.toplam_dogru, toplam: i.toplam_cevap })}</Metin>
+              </View>
+            </View>
           </Kart>
-          <Kart>
-            <Text style={{ color: tema.metin, fontWeight: "700" }}>{t("profil.ozellikler")}</Text>
+          <Bolum baslik={t("profil.ozellikler")} ikon={Sparkles} />
+          <Kart sira={5}>
             {OZELLIKLER.map((o) => {
               const p = i.ozellik_puanlari[o] ?? 0;
+              const z = OZ[o] ?? { ikon: Sparkles, renk: GRADYAN.vurgu };
               return (
-                <View key={o} style={{ gap: 4 }}>
-                  <Text style={{ color: tema.metin }}>{t(`profil.ozellik.${o}`)} · {p}</Text>
-                  <View style={{ height: 8, borderRadius: 4, backgroundColor: tema.kenar, overflow: "hidden" }}>
-                    <View style={{ width: `${Math.round((p / enCok) * 100)}%`, height: 8, backgroundColor: tema.vurgu }} />
+                <View key={o} style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+                  <IkonKutu ikon={z.ikon} renk={z.renk[1]} boyut={38} />
+                  <View style={{ flex: 1, gap: 4 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                      <Metin>{t(`profil.ozellik.${o}`)}</Metin>
+                      <Metin tur="kucuk" soluk>{p}</Metin>
+                    </View>
+                    <Cubuk oran={p / enCok} gradyan={z.renk} yukseklik={8} />
                   </View>
                 </View>
               );
             })}
           </Kart>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+            <Dugme kucuk genis={false} tur="ikincil" ikon={Award} baslik={`${t("oyun.rozetler")} · ${oyun?.rozetler.length ?? 0}`} onPress={() => router.push("/rozetler")} />
+            <Dugme kucuk genis={false} tur="ikincil" ikon={Sparkles} baslik={t("oyun.album")} onPress={() => router.push("/album")} />
+            <Dugme kucuk genis={false} tur="ikincil" ikon={ShoppingBag} baslik={t("oyun.magaza")} onPress={() => router.push("/magaza")} />
+            <Dugme kucuk genis={false} tur="ikincil" ikon={Palette} baslik={t("oyun.karakterSec")} onPress={() => router.push("/karakter")} />
+          </View>
         </>
       )}
-      {profil?.tur === "ogrenci" && (
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
-          <Dugme ikincil baslik={`🎖️ ${t("oyun.rozetler")} (${oyun?.rozetler.length ?? 0})`} onPress={() => router.push("/rozetler")} />
-          <Dugme ikincil baslik={`🃏 ${t("oyun.album")}`} onPress={() => router.push("/album")} />
-          <Dugme ikincil baslik={`🛍️ ${t("oyun.magaza")}`} onPress={() => router.push("/magaza")} />
-          <Dugme ikincil baslik={`🦉 ${t("oyun.karakterSec")}`} onPress={() => router.push("/karakter")} />
-        </View>
-      )}
-      <Dugme ikincil baslik={t("giris.cikisYap")} onPress={() => void supabase.auth.signOut()} />
+      <Dugme tur="hayalet" ikon={LogOut} baslik={t("giris.cikisYap")} onPress={() => void supabase.auth.signOut()} />
     </Ekran>
   );
 }

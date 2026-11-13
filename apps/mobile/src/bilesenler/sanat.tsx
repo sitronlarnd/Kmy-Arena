@@ -276,7 +276,9 @@ export function Amblem({ a, boyut = 48 }: { a: { kalkan: string; simge: string; 
         <Path d={KALKAN_YOLU[a.kalkan] ?? KALKAN_YOLU.klasik} fill={`url(#${id})`} stroke={a.kalkan === "tacli" || a.kalkan === "yildizli" || a.kalkan === "kanatli" ? "#FFC53D" : "#ffffff55"} strokeWidth={3} />
         <Path d="M50 12 L82 21 L82 34 Q50 26 18 34 L18 21 Z" fill="#ffffff22" />
       </Svg>
-      <Ikon size={boyut * 0.42} color="#fff" fill="#ffffff33" strokeWidth={2.2} />
+      <View style={{ position: "absolute", inset: 0, alignItems: "center", justifyContent: "center" }}>
+        <Ikon size={boyut * 0.42} color="#fff" fill="#ffffff33" strokeWidth={2.2} />
+      </View>
     </View>
   );
 }
@@ -317,7 +319,34 @@ export function RozetMadalya({ kod, kategori, boyut = 64, kilitli }: { kod: stri
         <Polygon points="50,14 81,32 81,68 50,86 19,68 19,32" fill="#00000022" />
         <Path d="M12 30 L50 8 L88 30 L88 40 Q50 22 12 40 Z" fill="#ffffff26" />
       </Svg>
-      <Ikon size={boyut * 0.4} color="#fff" strokeWidth={2.4} />
+      <View style={{ position: "absolute", inset: 0, alignItems: "center", justifyContent: "center" }}>
+        <Ikon size={boyut * 0.4} color="#fff" strokeWidth={2.4} />
+      </View>
     </View>
+  );
+}
+
+/** Robot rakip (açıkça robot olduğu belli). */
+export function RobotAvatar({ boyut = 64 }: { boyut?: number }) {
+  return (
+    <Svg width={boyut} height={boyut} viewBox="0 0 100 100" accessibilityLabel="Robot">
+      <Defs>
+        <RadialGradient id="robotZemin" cx="50%" cy="35%" r="70%">
+          <Stop offset="0" stopColor="#3B4A7A" />
+          <Stop offset="1" stopColor="#1A2142" />
+        </RadialGradient>
+      </Defs>
+      <Circle cx={50} cy={50} r={48} fill="url(#robotZemin)" stroke="#5CC8FF" strokeWidth={4} />
+      <Path d="M50 14 L50 24" stroke="#9FB4E8" strokeWidth={3} />
+      <Circle cx={50} cy={12} r={4} fill="#FF5C72" />
+      <Rect x={24} y={24} width={52} height={44} rx={14} fill="#C9D6F2" />
+      <Rect x={30} y={32} width={40} height={20} rx={10} fill="#1A2142" />
+      <Circle cx={41} cy={42} r={5} fill="#5CC8FF" />
+      <Circle cx={59} cy={42} r={5} fill="#5CC8FF" />
+      <Rect x={38} y={57} width={24} height={5} rx={2.5} fill="#7A89B5" />
+      <Rect x={18} y={38} width={6} height={14} rx={3} fill="#9FB4E8" />
+      <Rect x={76} y={38} width={6} height={14} rx={3} fill="#9FB4E8" />
+      <Rect x={32} y={70} width={36} height={16} rx={8} fill="#9FB4E8" />
+    </Svg>
   );
 }
