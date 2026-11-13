@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "pnpm install --frozen-lockfile=false",
+  "regions": ["fra1"],
+  "crons": [
+    { "path": "/api/cron/cevap-bolumu", "schedule": "0 3 25 * *" }
+  ]
+}

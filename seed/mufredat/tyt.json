@@ -1,0 +1,48 @@
+{
+  "_not": "BAŞLANGIÇ ÖRNEĞİ. Tam ÖSYM/MEB kapsamı (TYT, AYT, YDT) Faz 1'de eklenecek.",
+  "sinav_turu": "TYT",
+  "dersler": [
+    {
+      "kod": "tyt_matematik",
+      "ad": "Temel Matematik",
+      "ozellik": "zeka",
+      "uniteler": [
+        {
+          "kod": "TYT.M.1",
+          "ad": "Temel Kavramlar ve Sayılar",
+          "sinif_duzeyi": 12,
+          "kazanimlar": [
+            { "kod": "TYT.M.1.1", "aciklama": "Sayı kümelerini ve temel kavramları kullanarak işlem yapar.", "on_kosullar": [] },
+            { "kod": "TYT.M.1.2", "aciklama": "Bölünebilme kurallarını kullanarak problem çözer.", "on_kosullar": ["TYT.M.1.1"] },
+            { "kod": "TYT.M.1.3", "aciklama": "Rasyonel ve ondalık sayılarla işlem yapar.", "on_kosullar": ["TYT.M.1.1"] }
+          ]
+        },
+        {
+          "kod": "TYT.M.2",
+          "ad": "Problemler",
+          "sinif_duzeyi": 12,
+          "kazanimlar": [
+            { "kod": "TYT.M.2.1", "aciklama": "Sayı ve kesir problemlerini çözer.", "on_kosullar": ["TYT.M.1.3"] },
+            { "kod": "TYT.M.2.2", "aciklama": "Yüzde, kâr-zarar ve faiz problemlerini çözer.", "on_kosullar": ["TYT.M.2.1"] }
+          ]
+        }
+      ]
+    },
+    {
+      "kod": "tyt_turkce",
+      "ad": "Türkçe",
+      "ozellik": "bilgelik",
+      "uniteler": [
+        {
+          "kod": "TYT.T.1",
+          "ad": "Paragraf",
+          "sinif_duzeyi": 12,
+          "kazanimlar": [
+            { "kod": "TYT.T.1.1", "aciklama": "Paragrafta ana düşünceyi belirler.", "on_kosullar": [] },
+            { "kod": "TYT.T.1.2", "aciklama": "Paragrafta yardımcı düşünceleri ve anlatım biçimlerini belirler.", "on_kosullar": ["TYT.T.1.1"] }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+:root {
+  --vurgu: #5b5bf0;
+  --zemin: #f6f7fb;
+  --yuzey: #ffffff;
+  --metin: #1b1d29;
+  --soluk: #6b6f80;
+  --kenar: #e4e6ef;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --zemin: #11121a; --yuzey: #1b1d29; --metin: #f1f2f6; --soluk: #a0a3b5; --kenar: #2b2e3d; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--zemin); color: var(--metin); }
+a { color: var(--vurgu); }
+.kabuk { min-height: 100vh; }
+.ust { display: flex; gap: 16px; align-items: center; padding: 12px 24px; background: var(--yuzey); border-bottom: 1px solid var(--kenar); }
+.ust span { color: var(--soluk); flex: 1; }
+.icerik { padding: 24px; display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.kart { background: var(--yuzey); border: 1px solid var(--kenar); border-radius: 12px; padding: 16px; }
+.kart h3 { margin: 0 0 8px; font-size: 16px; }
+.kart p { margin: 0; color: var(--soluk); font-size: 14px; }
+.giris { max-width: 360px; margin: 12vh auto; background: var(--yuzey); border: 1px solid var(--kenar); border-radius: 16px; padding: 28px; display: grid; gap: 12px; }
+.giris input { padding: 12px; border-radius: 8px; border: 1px solid var(--kenar); font-size: 16px; background: var(--zemin); color: var(--metin); }
+.giris button { padding: 12px; border: 0; border-radius: 8px; background: var(--vurgu); color: #fff; font-size: 16px; cursor: pointer; min-height: 44px; }
+.hata { color: #c62828; font-size: 14px; }

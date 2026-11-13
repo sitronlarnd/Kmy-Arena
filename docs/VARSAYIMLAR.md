@@ -1,0 +1,47 @@
+# Varsayımlar ve şartnameden sapmalar
+
+Şartname (PDF) ile proje sahibinin sonradan aldığı kararlar çeliştiğinde **kararlar geçerlidir**.
+Belirsiz kalan noktalarda en makul varsayım yapıldı ve buraya yazıldı.
+
+## Proje sahibinin kararları (PDF'i geçersiz kılar)
+
+| # | Konu | PDF | Karar / uygulama |
+|---|---|---|---|
+| 1 | Soru havuzu | "Soru havuzu yok", soru gösterildikten sonra bir daha kimseye sunulmaz | AI sürekli üretir; doğrulanmış her soru **platform geneli havuza** girer ve farklı öğrencilere tekrar sunulur. Aynı öğrenci aynı soruyu asla iki kez görmez (`soru_gosterim` birincil anahtarı). Düelloda yalnızca taze/az kullanılmış sorular (`HAVUZ_AYARLARI`). Zorluk 20+ cevapla yeniden kalibre edilir (`olculmusZorluk`). Üretim yalnızca havuz yetmediğinde tetiklenir. Hedef: AI maliyetinde %90+ düşüş. |
+| 2 | Kapsam | Prototip, demo için minimum fazlar | Faz 0-7'nin tamamı, her faz çalışır ve test edilmiş biter. |
+| 3 | Altyapı | Fastify + Socket.IO + Redis + BullMQ, Docker Compose, tek sunucu | **Sunucusuz:** Vercel Pro (Expo web, Next.js paneller, tanıtım, API) + Supabase Cloud Pro Frankfurt. Ayrıntı aşağıda. |
+| 4 | AI modelleri | Üretici ve doğrulayıcı farklı model aileleri | Yalnızca Claude: üretici `claude-sonnet-4-6`, doğrulayıcı `claude-sonnet-5-5`, asistan/görsel/veli raporu `claude-sonnet-4-6`, yedek `claude-haiku-4-5`. Model adları ortam değişkeninden ve Merkez Panelden (`ai_gorev_ayari`) değişir. |
+| 5 | Satış | Teklif formu + pilot butonu | "30 gün ücretsiz pilot" ana satış aracı; pilot sonunda dershaneye otomatik etki raporu (Faz 7, Vercel Cron). |
+
+## Sunucusuz mimaride bileşen karşılıkları
+
+| PDF'teki bileşen | Yerine |
+|---|---|
+| Fastify oyun/AI sunucusu | `apps/api` (Vercel fonksiyonları) + Postgres fonksiyonları |
+| Socket.IO düello odaları | Supabase Realtime (Broadcast + Presence). İstemci yalnızca **dinler**; cevaplar HTTP ile API'ye gider, kontrol ve puanlama sunucuda yapılır, sonucu sunucu yayınlar. `packages/realtime` soyutlaması sayesinde 500 eşzamanlı bağlantı aşılınca ayrı küçük bir sunucuya geçiş yalnızca yeni bir sağlayıcı yazmayı gerektirir. |
+| Redis AI soru tamponu | `soru` tablosu (havuz) + kısmi indeksler |
+| Redis eşleştirme kuyruğu | Postgres tablosu + `FOR UPDATE SKIP LOCKED` (Faz 3) |
+| Redis sıralama (sorted set) | Postgres sorguları / gerektiğinde materialized view (Faz 2) |
+| Redis oran sınırlama | Postgres tabanlı sayaç (Faz 1) |
+| BullMQ işleri | Vercel Cron (`apps/api/vercel.json`) + Supabase pg_cron |
+| Docker Compose | Yok; yerel geliştirme `supabase start` ile |
+
+## Diğer varsayımlar
+
+1. **Doğrulayıcı aynı aileden (Claude).** PDF farklı aile istiyordu. Riski azaltmak için: doğrulayıcı daha güçlü model, cevap anahtarını görmeden çözer, sıcaklık 0; matematik/fende sayısal sonuç sunucuda mathjs ile ayrıca kontrol edilir (Faz 1).
+2. **AI soruları platform genelidir** (`soru.dershane_id` boş). Öğretmen soruları dershaneye aittir ve günlük akışa girmez.
+3. **Öğretmenin dershane geneli akademik okuma yetkisi yoktur.** Öğrenci verisine yalnızca atandığı sınıflar üzerinden erişir (PDF: "atanmadığı sınıfların bireysel verisini göremez"). Testlerde yakalanan bir hata üzerine düzeltildi.
+4. **Merkez Panel işlemleri** sunucuda service role ile, yetki kontrolü ve denetim kaydıyla yapılır; RLS'te merkez ekibine genel istisna yoktur.
+5. **Rehber öğretmen** Faz 0'da dershane genelinde görür. Öğrenci bazlı atama (`risk_skoru.atanan_rehber`) Faz 6'da daraltılır.
+6. **Zorluk ölçeği:** PDF formülüyle (d = 800 + 130 × (zorluk − 1)) başlangıç θ = 1000 olan öğrenci için E = 0,70 hedefi zorluk ≈ 1'e denk gelir; yani tespit sınavı yapılmadan herkes en kolay sorudan başlar. Başlangıç θ'yı tespit sınavı belirleyecek (Faz 1). Gerekirse `zorlukTabanPuan` Merkez Panelden ayarlanabilir.
+7. **Seviye eğrisi** PDF'te yoktu: seviye L için toplam XP = 100 × (L − 1)^1,6.
+8. **Davet kodu:** 8 karakter, karışan karakterler (I, O, 0, 1) yok, varsayılan 30 gün geçerli.
+9. **Veli onayı:** 18 yaş ve üstü öğrenci ile personel/veliler için otomatik verilir; 18 altı öğrencide veli onaylayana kadar sosyal özellikler kapalı.
+10. **Hedef yaş beyanı 13+.** 7. sınıf öğrencileri (12-13 yaş) için durum avukat ve mağaza politikalarıyla netleştirilecek.
+11. **Müfredat** Faz 0'da başlangıç örneğidir (22 kazanım). Tam MEB/ÖSYM listesi Faz 1'de aynı JSON biçiminde eklenecek; kodlar MEB programıyla doğrulanmalı.
+12. **Seed:** Deneme sonuçları, klanlar ve düello kayıtları ilgili tabloların geldiği fazlarda eklenir.
+13. **Test aracı:** Birim testleri Node'un yerleşik `node:test`'i ile yazıldı (ek bağımlılık yok), `tsx` ile çalışır.
+14. **Next.js 16:** Oturum yenileme `middleware.ts` yerine yeni adıyla `proxy.ts` içinde.
+15. **Expo paket sürümleri:** `expo` ~57.0.0 sabit; diğer `expo-*` paketleri ilk kurulumda `pnpm --filter @kmy/mobile surumleri-duzelt` ile SDK'ya uygun sürüme sabitlenir.
+16. **Takma ad filtresi** Faz 0'da yalnızca biçim denetimi (3-20 karakter, harf/rakam/nokta/alt çizgi). Küfür ve kişisel bilgi filtresi Faz 1'de.
+17. **Cevap tablosu** aylık bölümlenir; bölümler pg_cron (yoksa Vercel Cron) ile her ayın 25'inde bir sonraki ay için oluşturulur. Varsayılan bölüm güvenlik ağıdır.

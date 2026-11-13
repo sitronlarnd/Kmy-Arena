@@ -1,0 +1,6 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# Expo/React Native, hoisted node_modules ile en sorunsuz çalışır.
+nodeLinker: hoisted

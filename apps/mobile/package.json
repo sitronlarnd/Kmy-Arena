@@ -1,0 +1,38 @@
+{
+  "name": "@kmy/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "dev": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "build": "expo export --platform web",
+    "typecheck": "tsc --noEmit",
+    "surumleri-duzelt": "expo install --fix"
+  },
+  "dependencies": {
+    "@kmy/shared": "workspace:*",
+    "@react-native-async-storage/async-storage": "*",
+    "@supabase/supabase-js": "^2.80.0",
+    "@tanstack/react-query": "^5.90.0",
+    "expo": "~57.0.0",
+    "expo-constants": "*",
+    "expo-linking": "*",
+    "expo-router": "*",
+    "expo-status-bar": "*",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.0",
+    "react-native-safe-area-context": "*",
+    "react-native-screens": "*",
+    "react-native-url-polyfill": "^2.0.0",
+    "react-native-web": "^0.21.0",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "typescript": "^5.9.0"
+  }
+}

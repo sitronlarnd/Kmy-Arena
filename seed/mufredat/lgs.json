@@ -1,0 +1,119 @@
+{
+  "_not": "BAŞLANGIÇ ÖRNEĞİ. Tam MEB kazanım listesi Faz 1'de bu biçimde eklenecek; kodlar MEB öğretim programıyla doğrulanmalı.",
+  "sinav_turu": "LGS",
+  "dersler": [
+    {
+      "kod": "lgs_matematik",
+      "ad": "Matematik",
+      "ozellik": "zeka",
+      "uniteler": [
+        {
+          "kod": "M.8.1.1",
+          "ad": "Çarpanlar ve Katlar",
+          "sinif_duzeyi": 8,
+          "kazanimlar": [
+            { "kod": "M.8.1.1.1", "aciklama": "Verilen pozitif tam sayıların pozitif tam sayı çarpanlarını bulur ve üslü ifadelerin çarpımı şeklinde yazar.", "on_kosullar": [] },
+            { "kod": "M.8.1.1.2", "aciklama": "İki doğal sayının EBOB ve EKOK'unu hesaplar, ilgili problemleri çözer.", "on_kosullar": ["M.8.1.1.1"] },
+            { "kod": "M.8.1.1.3", "aciklama": "Verilen iki doğal sayının aralarında asal olup olmadığını belirler.", "on_kosullar": ["M.8.1.1.2"] }
+          ]
+        },
+        {
+          "kod": "M.8.1.2",
+          "ad": "Üslü İfadeler",
+          "sinif_duzeyi": 8,
+          "kazanimlar": [
+            { "kod": "M.8.1.2.1", "aciklama": "Tam sayıların, tam sayı kuvvetlerini hesaplar.", "on_kosullar": [] },
+            { "kod": "M.8.1.2.2", "aciklama": "Üslü ifadelerle ilgili temel kuralları anlar, birbirine denk ifadeler oluşturur.", "on_kosullar": ["M.8.1.2.1"] },
+            { "kod": "M.8.1.2.3", "aciklama": "Sayıların ondalık gösterimlerini 10'un tam sayı kuvvetlerini kullanarak çözümler.", "on_kosullar": ["M.8.1.2.2"] }
+          ]
+        },
+        {
+          "kod": "M.8.1.3",
+          "ad": "Kareköklü İfadeler",
+          "sinif_duzeyi": 8,
+          "kazanimlar": [
+            { "kod": "M.8.1.3.1", "aciklama": "Tam kare pozitif tam sayılarla bu sayıların karekökleri arasındaki ilişkiyi belirler.", "on_kosullar": ["M.8.1.2.1"] },
+            { "kod": "M.8.1.3.2", "aciklama": "Tam kare olmayan kareköklü bir ifadenin değerinin hangi iki doğal sayı arasında olduğunu belirler.", "on_kosullar": ["M.8.1.3.1"] }
+          ]
+        }
+      ]
+    },
+    {
+      "kod": "lgs_fen",
+      "ad": "Fen Bilimleri",
+      "ozellik": "enerji",
+      "uniteler": [
+        {
+          "kod": "F.8.1",
+          "ad": "Mevsimler ve İklim",
+          "sinif_duzeyi": 8,
+          "kazanimlar": [
+            { "kod": "F.8.1.1.1", "aciklama": "Mevsimlerin oluşumuna yönelik tahminlerde bulunur.", "on_kosullar": [] },
+            { "kod": "F.8.1.2.1", "aciklama": "İklim ve hava olayları arasındaki farkı açıklar.", "on_kosullar": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "kod": "lgs_turkce",
+      "ad": "Türkçe",
+      "ozellik": "bilgelik",
+      "uniteler": [
+        {
+          "kod": "T.8.3",
+          "ad": "Okuma",
+          "sinif_duzeyi": 8,
+          "kazanimlar": [
+            { "kod": "T.8.3.14", "aciklama": "Metinle ilgili sorular sorar ve cevaplar.", "on_kosullar": [] },
+            { "kod": "T.8.3.24", "aciklama": "Okuduğu metindeki ana fikri ve yardımcı fikirleri belirler.", "on_kosullar": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "kod": "lgs_inkilap",
+      "ad": "T.C. İnkılap Tarihi ve Atatürkçülük",
+      "ozellik": "strateji",
+      "uniteler": [
+        {
+          "kod": "İTA.8.1",
+          "ad": "Bir Kahraman Doğuyor",
+          "sinif_duzeyi": 8,
+          "kazanimlar": [
+            { "kod": "İTA.8.1.1", "aciklama": "Avrupa'daki gelişmelerin Osmanlı Devleti'ne etkilerini kavrar.", "on_kosullar": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "kod": "lgs_din",
+      "ad": "Din Kültürü ve Ahlak Bilgisi",
+      "ozellik": "strateji",
+      "uniteler": [
+        {
+          "kod": "DKAB.8.1",
+          "ad": "Kader İnancı",
+          "sinif_duzeyi": 8,
+          "kazanimlar": [
+            { "kod": "DKAB.8.1.1", "aciklama": "Evrendeki düzen ile kader arasında ilişki kurar.", "on_kosullar": [] }
+          ]
+        }
+      ]
+    },
+    {
+      "kod": "lgs_ingilizce",
+      "ad": "İngilizce",
+      "ozellik": "ceviklik",
+      "uniteler": [
+        {
+          "kod": "E8.1",
+          "ad": "Friendship",
+          "sinif_duzeyi": 8,
+          "kazanimlar": [
+            { "kod": "E8.1.R1", "aciklama": "Arkadaşlıkla ilgili kısa metinlerde belirli bilgileri bulur.", "on_kosullar": [] }
+          ]
+        }
+      ]
+    }
+  ]
+}

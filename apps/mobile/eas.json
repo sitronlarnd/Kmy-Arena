@@ -1,0 +1,9 @@
+{
+  "cli": { "version": ">= 16.0.0", "appVersionSource": "remote" },
+  "build": {
+    "gelistirme": { "developmentClient": true, "distribution": "internal" },
+    "onizleme": { "distribution": "internal", "android": { "buildType": "apk" } },
+    "magaza": { "autoIncrement": true, "android": { "buildType": "app-bundle" } }
+  },
+  "submit": { "magaza": {} }
+}

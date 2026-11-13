@@ -1,0 +1,37 @@
+# Supabase CLI yapılandırması (yerel geliştirme: `supabase start`)
+project_id = "kmy-arena"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 16
+
+[db.seed]
+enabled = true
+# 01: müfredat (canlıda da gerekir), 02: demo verisi (yalnızca demo/geliştirme)
+sql_paths = ["./seed/01_mufredat.sql", "./seed/02_demo.sql"]
+
+[realtime]
+enabled = true
+
+[auth]
+enabled = true
+site_url = "http://localhost:8081"
+additional_redirect_urls = ["http://localhost:3000", "kmyarena://"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true

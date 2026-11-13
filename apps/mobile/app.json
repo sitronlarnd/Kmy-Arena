@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "KMY Arena",
+    "slug": "kmy-arena",
+    "scheme": "kmyarena",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "cloud.kmyai.arena",
+      "supportsTablet": true,
+      "infoPlist": { "ITSAppUsesNonExemptEncryption": false }
+    },
+    "android": {
+      "package": "cloud.kmyai.arena",
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": ["expo-router"],
+    "experiments": { "typedRoutes": true }
+  }
+}
