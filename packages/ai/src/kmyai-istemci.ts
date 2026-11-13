@@ -135,7 +135,7 @@ export class KmyaiIstemci {
         // Hız sınırında (429) daha uzun bekle; sunucu Retry-After verdiyse ona uy.
         const hizSiniri = sonHata instanceof KmyaiHatasi && sonHata.durum === 429;
         const onerilen = sonHata instanceof KmyaiHatasi ? sonHata.tekrarSonraMs : null;
-        await this.#bekle(hizSiniri ? Math.max(onerilen ?? 0, 2000 * 2 ** (i - 1)) : 250 * 2 ** (i - 1));
+        await this.#bekle(hizSiniri ? Math.max(onerilen ?? 0, 5000 * 2 ** (i - 1)) : 3000 * 2 ** (i - 1));
       }
       try {
         return { ...(await this.#tekCagri(istek, adim.model)), yedekKullanildi: adim.yedek };

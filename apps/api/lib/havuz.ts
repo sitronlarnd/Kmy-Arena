@@ -126,7 +126,7 @@ export async function havuzuDoldur(kazanimId: string, bant: number, adet: number
         }
       }
     };
-    await Promise.all(Array.from({ length: Math.min(2, adet) }, isci));
+    await isci(); // tek tek: KMYAI'ye aynı anda tek istek
   } finally {
     await s.rpc("sistem_uretim_kilidi_birak", { p_kazanim: kazanimId, p_bant: bant, p_uretilen: rapor.dogrulanan, p_reddedilen: rapor.reddedilen });
   }

@@ -5,8 +5,19 @@ import { servisIstemcisi } from "./supabase";
 
 let istemci: KmyaiIstemci | null = null;
 
-/** Sunucu örneği başına eşzamanlı KMYAI isteği sınırı (hız sınırına takılmamak için). */
-const ESZAMANLI = 4;
+/** Sunucu örneği başına eşzamanlı KMYAI isteği: 1 (KMYAI/CLIProxy'yi yormamak için). */
+const ESZAMANLI = 1;
+/** Platform geneli sırada bu kadardan uzun bekleme gerekiyorsa istek atılmaz (hata). */
+const MAX_BEKLEME_MS = 120_000;
+
+/** Platform geneli sıra (veritabanı): istekler arasında en az ai_istek_araligi_ms. */
+async function siraBekle(): Promise<void> {
+  const { data, error } = await servisIstemcisi().rpc("sistem_ai_sira");
+  if (error) throw new KmyaiHatasi(`hız sırası alınamadı: ${error.message}`, null, false);
+  const ms = Number(data) || 0;
+  if (ms > MAX_BEKLEME_MS) throw new KmyaiHatasi("KMYAI sırası dolu", 429, false);
+  if (ms > 0) await new Promise((r) => setTimeout(r, ms));
+}
 let aktif = 0;
 const kuyruk: Array<() => void> = [];
 
@@ -14,6 +25,7 @@ async function sinirliFetch(girdi: RequestInfo | URL, init?: RequestInit): Promi
   if (aktif >= ESZAMANLI) await new Promise<void>((r) => kuyruk.push(r));
   aktif++;
   try {
+    await siraBekle();
     return await fetch(girdi, init);
   } finally {
     aktif--;
@@ -60,9 +72,10 @@ function devreKaydet(basarili: boolean, hata: string | null): void {
     return;
   }
   // Yalnızca erişim hataları sayılır (biçim/kalite reddi ve hız sınırı değil)
-  if (hata && /zaman aşımı|ağ hatası|HTTP 5\d\d/.test(hata)) {
+  if (hata && /zaman aşımı|ağ hatası|HTTP 5\d\d|HTTP 429/.test(hata)) {
     ardisikHata++;
-    if (ardisikHata >= 4) acikKadar = Date.now() + 120_000;
+    // 2 ardışık erişim/hız hatasında 5 dakika KMYAI'ye hiç istek gitmez
+    if (ardisikHata >= 2) acikKadar = Date.now() + 300_000;
   }
 }
 

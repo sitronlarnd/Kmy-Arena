@@ -18,7 +18,7 @@ export interface UretimOzeti {
 export async function ciftleriDoldur(
   ciftler: ReadonlyArray<{ kazanimId: string; bant: number; adet: number }>,
   butceMs: number,
-  eszamanli = 2,
+  eszamanli = 1,
 ): Promise<UretimOzeti> {
   const bas = Date.now();
   const raporlar: DoldurmaRaporu[] = [];

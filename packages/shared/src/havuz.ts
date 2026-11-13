@@ -35,7 +35,7 @@ export const HAVUZ_AYARLARI = {
   /** Cron: satılan paketlerdeki diğer kazanımların kolay bantlarında (1-2) hedef */
   sogukHedef: 2,
   /** Cron: bir çalıştırmada (10 dk) üretilecek en fazla soru — token tüketim sınırı */
-  cronMaxSoru: 10,
+  cronMaxSoru: 4,
 } as const;
 
 export interface HavuzSorusu {

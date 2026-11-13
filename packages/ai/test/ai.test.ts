@@ -166,7 +166,7 @@ describe("Hız sınırı (429)", () => {
       bekle: async (ms) => void beklemeler.push(ms),
       fetch: (async () => {
         n++;
-        if (n === 1) return new Response("{}", { status: 429, headers: { "retry-after": "3" } });
+        if (n === 1) return new Response("{}", { status: 429, headers: { "retry-after": "8" } });
         return new Response(JSON.stringify({ choices: [{ message: { content: "tamam" } }] }), { status: 200 });
       }) as unknown as typeof fetch,
     });
@@ -174,6 +174,6 @@ describe("Hız sınırı (429)", () => {
       gorev: "soru_uretim", ayar: ortamdanVarsayilanlar({}).soru_uretim, mesajlar: [{ role: "user", content: "x" }], baglam: { dershaneId: null, kullaniciId: null },
     });
     assert.equal(r.icerik, "tamam");
-    assert.deepEqual(beklemeler, [3000]);
+    assert.deepEqual(beklemeler, [8000]);
   });
 });
