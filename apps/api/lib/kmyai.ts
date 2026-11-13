@@ -5,6 +5,22 @@ import { servisIstemcisi } from "./supabase";
 
 let istemci: KmyaiIstemci | null = null;
 
+/** Sunucu örneği başına eşzamanlı KMYAI isteği sınırı (hız sınırına takılmamak için). */
+const ESZAMANLI = 4;
+let aktif = 0;
+const kuyruk: Array<() => void> = [];
+
+async function sinirliFetch(girdi: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  if (aktif >= ESZAMANLI) await new Promise<void>((r) => kuyruk.push(r));
+  aktif++;
+  try {
+    return await fetch(girdi, init);
+  } finally {
+    aktif--;
+    kuyruk.shift()?.();
+  }
+}
+
 /** Tek KMYAI adaptörü; her deneme ai_cagri_log'a yazılır. Anahtar yoksa null. */
 export function kmyai(): KmyaiIstemci | null {
   if (istemci) return istemci;
@@ -13,6 +29,7 @@ export function kmyai(): KmyaiIstemci | null {
   istemci = new KmyaiIstemci({
     baseUrl: e.KMYAI_BASE_URL,
     apiKey: e.KMYAI_API_KEY,
+    fetch: sinirliFetch,
     logla: async (k: AiCagriKaydi) => {
       const { error } = await servisIstemcisi().from("ai_cagri_log").insert({
         dershane_id: k.dershaneId,
@@ -42,8 +59,8 @@ function devreKaydet(basarili: boolean, hata: string | null): void {
     ardisikHata = 0;
     return;
   }
-  // Yalnızca erişim hataları sayılır (biçim/kalite reddi değil)
-  if (hata && /zaman aşımı|ağ hatası|HTTP 5\d\d|HTTP 429/.test(hata)) {
+  // Yalnızca erişim hataları sayılır (biçim/kalite reddi ve hız sınırı değil)
+  if (hata && /zaman aşımı|ağ hatası|HTTP 5\d\d/.test(hata)) {
     ardisikHata++;
     if (ardisikHata >= 4) acikKadar = Date.now() + 120_000;
   }

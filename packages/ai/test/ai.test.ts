@@ -154,3 +154,25 @@ describe("KmyaiIstemci", () => {
     assert.equal(cagrildi, false);
   });
 });
+
+describe("Hız sınırı (429)", () => {
+  it("429'da Retry-After kadar bekleyip yeniden dener", async () => {
+    const beklemeler: number[] = [];
+    let n = 0;
+    const istemci = new KmyaiIstemci({
+      baseUrl: "https://ornek.test",
+      apiKey: "k",
+      bekle: async (ms) => void beklemeler.push(ms),
+      fetch: (async () => {
+        n++;
+        if (n === 1) return new Response("{}", { status: 429, headers: { "retry-after": "3" } });
+        return new Response(JSON.stringify({ choices: [{ message: { content: "tamam" } }] }), { status: 200 });
+      }) as unknown as typeof fetch,
+    });
+    const r = await istemci.tamamla({
+      gorev: "soru_uretim", ayar: ortamdanVarsayilanlar({}).soru_uretim, mesajlar: [{ role: "user", content: "x" }], baglam: { dershaneId: null, kullaniciId: null },
+    });
+    assert.equal(r.icerik, "tamam");
+    assert.deepEqual(beklemeler, [3000]);
+  });
+});

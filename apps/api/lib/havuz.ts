@@ -69,7 +69,8 @@ async function kaydet(k: MufredatKazanimi, r: HatSonucu, promptSurumu: string): 
 
 /**
  * Bir (kazanım, bant) için `adet` doğrulanmış soru hedefiyle üretir.
- * Aynı anda tek üretici (veritabanı kilidi). Eşzamanlılık: 3 soru paralel.
+ * Aynı anda tek üretici (veritabanı kilidi). Eşzamanlılık: 2 soru paralel
+ * (KMYAI hız sınırı; ayrıca örnek başına toplam 4 istek sınırı var).
  * `butceMs` dolunca yeni soru başlatmaz.
  */
 export async function havuzuDoldur(kazanimId: string, bant: number, adet: number, butceMs = 240_000): Promise<DoldurmaRaporu> {
@@ -125,7 +126,7 @@ export async function havuzuDoldur(kazanimId: string, bant: number, adet: number
         }
       }
     };
-    await Promise.all(Array.from({ length: Math.min(3, adet) }, isci));
+    await Promise.all(Array.from({ length: Math.min(2, adet) }, isci));
   } finally {
     await s.rpc("sistem_uretim_kilidi_birak", { p_kazanim: kazanimId, p_bant: bant, p_uretilen: rapor.dogrulanan, p_reddedilen: rapor.reddedilen });
   }

@@ -66,11 +66,14 @@ export class KisiselVeriHatasi extends Error {
 export class KmyaiHatasi extends Error {
   readonly durum: number | null;
   readonly tekrarDenenebilir: boolean;
-  constructor(mesaj: string, durum: number | null, tekrarDenenebilir: boolean) {
+  /** 429 yanıtındaki Retry-After (ms) */
+  readonly tekrarSonraMs: number | null;
+  constructor(mesaj: string, durum: number | null, tekrarDenenebilir: boolean, tekrarSonraMs: number | null = null) {
     super(mesaj);
     this.name = "KmyaiHatasi";
     this.durum = durum;
     this.tekrarDenenebilir = tekrarDenenebilir;
+    this.tekrarSonraMs = tekrarSonraMs;
   }
 }
 
@@ -128,7 +131,12 @@ export class KmyaiIstemci {
       if (!adim) break;
       // Aynı modelde tekrar denenemez bir hata aldıysak kalan denemeleri atla.
       if (!adim.yedek && sonHata instanceof KmyaiHatasi && !sonHata.tekrarDenenebilir) continue;
-      if (i > 0 && !adim.yedek) await this.#bekle(250 * 2 ** (i - 1));
+      if (i > 0 && !adim.yedek) {
+        // Hız sınırında (429) daha uzun bekle; sunucu Retry-After verdiyse ona uy.
+        const hizSiniri = sonHata instanceof KmyaiHatasi && sonHata.durum === 429;
+        const onerilen = sonHata instanceof KmyaiHatasi ? sonHata.tekrarSonraMs : null;
+        await this.#bekle(hizSiniri ? Math.max(onerilen ?? 0, 2000 * 2 ** (i - 1)) : 250 * 2 ** (i - 1));
+      }
       try {
         return { ...(await this.#tekCagri(istek, adim.model)), yedekKullanildi: adim.yedek };
       } catch (h) {
@@ -175,7 +183,8 @@ export class KmyaiIstemci {
       });
       if (!yanit.ok) {
         const tekrar = yanit.status === 429 || yanit.status >= 500;
-        throw new KmyaiHatasi(`KMYAI HTTP ${yanit.status}`, yanit.status, tekrar);
+        const ra = Number(yanit.headers.get("retry-after"));
+        throw new KmyaiHatasi(`KMYAI HTTP ${yanit.status}`, yanit.status, tekrar, Number.isFinite(ra) && ra > 0 ? Math.min(ra * 1000, 30_000) : null);
       }
       const veri = (await yanit.json()) as ChatYaniti;
       const icerik = veri.choices?.[0]?.message?.content ?? "";

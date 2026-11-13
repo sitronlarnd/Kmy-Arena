@@ -31,7 +31,7 @@ export async function POST(istek: Request): Promise<NextResponse> {
     const adet = Math.min(10, Math.max(1, Number(g.adet) || 3));
     if (kazanimlar.length === 0) throw new IstemciHatasi("soru.kazanimYok", 404);
     const ciftler = kazanimlar.flatMap((k) => bantlar.map((bant) => ({ kazanimId: k.id, bant, adet })));
-    const ozet = await ciftleriDoldur(ciftler, 280_000, 3);
+    const ozet = await ciftleriDoldur(ciftler, 280_000, 2);
     return json({ ...ozet, istenenCift: ciftler.length, islenenCift: ozet.raporlar.length });
   });
 }
