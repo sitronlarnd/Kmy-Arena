@@ -28,7 +28,7 @@ a:hover { text-decoration: underline; }
 h1, h2, h3 { font-weight: 900; letter-spacing: -0.01em; margin: 0; }
 
 /* Kabuk: kenar çubuğu + içerik */
-.kabuk { min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; }
+.kabuk { min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; background: linear-gradient(90deg, #1a1342 248px, transparent 248px); }
 .yan { background: linear-gradient(180deg, #24185f 0%, #141631 100%); color: #fff; padding: 22px 14px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh; }
 .logo { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 18px; padding: 0 10px 18px; }
 .logo i { width: 34px; height: 34px; border-radius: 11px; background: linear-gradient(135deg, var(--vurgu), var(--vurgu2)); display: grid; place-items: center; font-style: normal; box-shadow: 0 6px 18px rgba(124, 92, 250, .5); }
@@ -116,7 +116,7 @@ a.kart:hover, .kart.tik:hover { transform: translateY(-3px); box-shadow: var(--g
 .isi.gumus { background: linear-gradient(135deg, #e6ecf5, #8e9aaf); }
 .isi.bronz { background: linear-gradient(135deg, #e0a26b, #a0602c); }
 .isi.zayif { background: linear-gradient(135deg, #ff9aa8, #e5354f); }
-.isi.bos { background: var(--kenar); opacity: .5; }
+.isi.yok { background: var(--kenar); opacity: .5; }
 .lejant { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--soluk); align-items: center; }
 .lejant .isi { width: 14px; height: 14px; border-radius: 4px; vertical-align: middle; margin-right: 4px; }
 

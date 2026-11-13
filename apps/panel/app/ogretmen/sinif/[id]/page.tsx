@@ -30,7 +30,7 @@ export default async function SinifAnalizi({ params }: { params: Promise<{ id: s
       sag={<EylemDugmesi eylem={zayifKonularaOdev.bind(null, id, null)} etiket="Zayıf konulara ödev ver" />}>
       <Kart genis baslik="Kazanım ısı haritası" aciklama="Satırlar öğrenciler, sütunlar sınıfın en çok çalıştığı kazanımlar. Hücrenin üzerine gelince doğruluk ve çözülen soru sayısı görünür.">
         <div className="lejant" style={{ margin: "12px 0" }}>
-          <span><i className="isi altin" />Altın</span><span><i className="isi gumus" />Gümüş</span><span><i className="isi bronz" />Bronz</span><span><i className="isi zayif" />Zayıf (%50 altı)</span><span><i className="isi bos" />Çalışılmadı</span>
+          <span><i className="isi altin" />Altın</span><span><i className="isi gumus" />Gümüş</span><span><i className="isi bronz" />Bronz</span><span><i className="isi zayif" />Zayıf (%50 altı)</span><span><i className="isi yok" />Çalışılmadı</span>
         </div>
         {a.kazanimlar.length === 0 ? <p className="bos">Henüz çözüm verisi yok.</p> : (
           <div className="kaydir">
@@ -42,7 +42,7 @@ export default async function SinifAnalizi({ params }: { params: Promise<{ id: s
                     <td className="ad"><a href={`/ogretmen/ogrenci/${o.id}`}>{o.ad}</a></td>
                     {a.kazanimlar.map((k) => {
                       const h = hucre.get(`${o.id}|${k.id}`);
-                      return <td key={k.id}><span className={`isi ${h ? hucreSinifi(h.u, h.oran) : "bos"}`} title={h ? `${k.kod} · %${h.oran} doğru · ${h.n} soru` : `${k.kod} · çalışılmadı`} /></td>;
+                      return <td key={k.id}><span className={`isi ${h ? hucreSinifi(h.u, h.oran) : "yok"}`} title={h ? `${k.kod} · %${h.oran} doğru · ${h.n} soru` : `${k.kod} · çalışılmadı`} /></td>;
                     })}
                   </tr>
                 ))}
