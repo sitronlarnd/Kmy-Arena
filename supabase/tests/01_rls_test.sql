@@ -879,6 +879,86 @@ do $$ begin
 end $$;
 rollback;
 
+\echo '▶ 17. Topluluk ve asistan: görünürlük, kabul puanı, günlük sınır, döngü, şikâyet, asistan oturumu'
+begin;
+do $$
+declare
+  o3 uuid := app.sabit_uuid('kullanici:ogrenci03@demo.kmyarena.demo');
+  o4 uuid := app.sabit_uuid('kullanici:ogrenci04@demo.kmyarena.demo');
+  o5 uuid := app.sabit_uuid('kullanici:ogrenci05@demo.kmyarena.demo');
+  o21 uuid := app.sabit_uuid('kullanici:ogrenci21@demo.kmyarena.demo');
+  ogr uuid := app.sabit_uuid('kullanici:ogretmen.mat@demo.kmyarena.demo');
+  mat uuid := app.sabit_uuid('ders:lgs_matematik');
+  q uuid; c4 uuid; c5 uuid; r jsonb; x integer;
+begin
+  insert into public.ogrenci_ilerleme (kullanici_id, dershane_id) select u, app.sabit_uuid('dershane:demo') from unnest(array[o3, o4, o5, o21]) u on conflict do nothing;
+  q := public.sistem_topluluk_sor(o3, mat, null, 'Bu denklemde x kaçtır? 2x + 3 = 11', null, null, 'sinif', 5);
+  perform test.dogrula(jsonb_array_length(public.sistem_topluluk_akis(o4, 'hepsi', null, null)) >= 1, 'sınıf arkadaşı göremedi');
+  perform test.dogrula(not exists (select 1 from jsonb_array_elements(public.sistem_topluluk_akis(o21, 'hepsi', null, null)) e where (e ->> 'id')::uuid = q), 'başka sınıf gördü');
+  begin perform public.sistem_topluluk_detay(o21, q); raise exception 'TEST BAŞARISIZ: görünmeyen detay';
+  exception when others then perform test.dogrula(sqlerrm = 'topluluk.bulunamadi', sqlerrm); end;
+  begin perform public.sistem_topluluk_cevapla(o3, q, 'B', 'Kendi soruma cevap yazıyorum', null); raise exception 'TEST BAŞARISIZ: kendi sorusu';
+  exception when others then perform test.dogrula(sqlerrm = 'topluluk.kendiSorun', sqlerrm); end;
+  begin perform public.sistem_topluluk_sor(o3, app.sabit_uuid('ders:tyt_fizik'), null, 'Paketimde olmayan ders sorusu', null, null, 'dershane', 5); raise exception 'TEST BAŞARISIZ: paket dışı ders';
+  exception when others then perform test.dogrula(sqlerrm = 'topluluk.dersGecersiz', sqlerrm); end;
+  c4 := public.sistem_topluluk_cevapla(o4, q, 'C', '2x = 8 olduğundan x = 4 bulunur.', null);
+  c5 := public.sistem_topluluk_cevapla(o5, q, 'C', 'Her iki taraftan 3 çıkar, 2 ye böl: x = 4', null);
+  begin perform public.sistem_topluluk_cevapla(o4, q, 'C', 'İkinci kez cevap yazıyorum', null); raise exception 'TEST BAŞARISIZ: iki cevap';
+  exception when others then perform test.dogrula(sqlerrm = 'topluluk.zatenCevapladin', sqlerrm); end;
+  begin perform public.sistem_topluluk_kabul(o4, c5, 'soran', false, 50, 20, 20, 300, 10); raise exception 'TEST BAŞARISIZ: başkası kabul etti';
+  exception when others then perform test.dogrula(sqlerrm = 'topluluk.yetkisiz', sqlerrm); end;
+  x := (select altin from public.ogrenci_ilerleme where kullanici_id = o4);
+  r := public.sistem_topluluk_kabul(o3, c4, 'soran', false, 50, 20, 20, 300, 10);
+  perform test.dogrula((r ->> 'xp')::int = 50 and (r ->> 'altin')::int = 20 and (select altin from public.ogrenci_ilerleme where kullanici_id = o4) = x + 20, 'ilk kabul puanı: ' || r::text);
+  perform test.dogrula((select topluluk_kabul from public.ogrenci_ilerleme where kullanici_id = o4) = 1, 'kabul sayacı');
+  -- Soru çözüldü → yeni cevap yok; öğretmen ikinci cevabı onaylayabilir (20 XP, Altın yok) ve örnek çözüm işaretler
+  r := public.sistem_topluluk_kabul(ogr, c5, 'ogretmen', true, 50, 20, 20, 300, 10);
+  perform test.dogrula((r ->> 'xp')::int = 20 and (r ->> 'altin')::int = 0 and (select ornek_cozum from public.topluluk_cevap where id = c5), 'sonraki kabul / örnek: ' || r::text);
+  begin perform public.sistem_topluluk_kabul(o4, c4, 'ogretmen', true, 50, 20, 20, 300, 10); raise exception 'TEST BAŞARISIZ: öğrenci öğretmen gibi';
+  exception when others then perform test.dogrula(sqlerrm = 'topluluk.yetkisiz', sqlerrm); end;
+  -- Günlük XP sınırı
+  q := public.sistem_topluluk_sor(o3, mat, null, 'İkinci soru: 3x = 12 ise x?', null, null, 'dershane', 5);
+  c4 := public.sistem_topluluk_cevapla(o4, q, 'A', '12 yi 3 e bölersek x = 4 olur.', null);
+  r := public.sistem_topluluk_kabul(o3, c4, 'soran', false, 50, 20, 20, 60, 10);
+  perform test.dogrula((r ->> 'xp')::int = 10, 'günlük sınır uygulanmadı: ' || r::text);
+  -- Günlük soru sınırı
+  begin perform public.sistem_topluluk_sor(o3, mat, null, 'Üçüncü soru deneme', null, null, 'dershane', 2); raise exception 'TEST BAŞARISIZ: günlük soru sınırı';
+  exception when others then perform test.dogrula(sqlerrm = 'topluluk.gunlukSinir', sqlerrm); end;
+  -- AI bekleyenler (eski soru) ve yazma
+  update public.topluluk_soru set olusturma = now() - interval '3 hours' where id = q;
+  update public.topluluk_soru set durum = 'acik' where id = q;
+  perform test.dogrula(exists (select 1 from jsonb_array_elements(public.sistem_topluluk_ai_bekleyenler(15, 120, 10)) e where (e ->> 'id')::uuid = q and e ->> 'tur' = 'cozum'), 'AI bekleyen bulunamadı');
+  perform public.sistem_topluluk_ai_yaz(q, 'cozum', 'Tam çözüm');
+  perform test.dogrula((select ogretmen_bekliyor from public.topluluk_soru where id = q), 'öğretmen bekleyenlerine düşmedi');
+  -- Şikâyet: 3 şikâyette soru gizlenir
+  perform public.sistem_sikayet(o4, 'topluluk_soru', q::text, 'spam', null);
+  perform public.sistem_sikayet(o5, 'topluluk_soru', q::text, 'spam', null);
+  perform public.sistem_sikayet(app.sabit_uuid('kullanici:ogrenci06@demo.kmyarena.demo'), 'topluluk_soru', q::text, 'spam', null);
+  perform test.dogrula((select durum from public.topluluk_soru where id = q) = 'gizli', 'şikâyetle gizlenmedi');
+  -- Asistan: yalnız cevaplanmış antrenman sorusu
+  begin perform public.sistem_asistan_soru_oturumu(o21, app.sabit_uuid('soru:duello1')); raise exception 'TEST BAŞARISIZ: cevapsız soruya asistan';
+  exception when others then perform test.dogrula(sqlerrm = 'asistan.soruUygunDegil', sqlerrm); end;
+  perform test.dogrula((public.sistem_asistan_kullanim(o3) ->> 'mesaj')::int = 0, 'asistan kullanım sayacı');
+  perform public.sistem_rehberlik_bildir(o3, 'asistan', 'Destek gerektiren ifade');
+  perform public.sistem_rehberlik_bildir(o3, 'asistan', 'Tekrar');
+  perform test.dogrula((select count(*) from public.rehberlik_bildirim where kullanici_id = o3) = 1, 'rehberlik bildirimi tekilleşmedi');
+end $$;
+
+-- Rehberlik bildirimini öğrenci göremez, rehber/kurucu görür
+select test.oturum('ogrenci03@demo.kmyarena.demo');
+set local role authenticated;
+do $$ begin
+  perform test.dogrula((select count(*) from public.rehberlik_bildirim) = 0, 'öğrenci rehberlik bildirimi gördü');
+  perform test.dogrula((select count(*) from public.topluluk_soru) = 0, 'öğrenci topluluk tablosunu doğrudan okudu');
+end $$;
+reset role;
+select test.oturum('kurucu@demo.kmyarena.demo');
+set local role authenticated;
+do $$ begin
+  perform test.dogrula((select count(*) from public.rehberlik_bildirim) = 1, 'kurucu rehberlik bildirimini göremedi');
+end $$;
+rollback;
+
 \echo '✔ Tüm veritabanı testleri geçti'
 
 
