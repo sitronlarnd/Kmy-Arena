@@ -63,3 +63,8 @@ Belirsiz kalan noktalarda en makul varsayım yapıldı ve buraya yazıldı.
 33. **Gerçek zaman:** Realtime yalnız "değişti" dürtüsü taşır; durum her zaman sunucudan okunur (yoklama 1 sn). Bu, anahtar sızıntısını ve istemci hilesini önler.
 34. **Sınıf turnuvası** (şartnamede öğretmen başlatır) Faz 6 öğretmen paneliyle birlikte yapılacak.
 35. **Bir öğrencinin aynı anda tek aktif düellosu** olur; kuyruk isteği varsa mevcut düelloya yönlendirir.
+36. **Klan katkısı** her sayılan cevaptır (doğru/yanlış); boss ve savaş etkisi yalnız doğru cevaptan gelir. Savaş penceresinde her sayılan soru bir hak harcar (savaş için ayrı mod yok; öğrenci bölgenin dersinden soru çözer).
+37. **Strateji özelliği** savaşta en fazla %10 etki artışı verir ("bölge savunma gücü"nün sade karşılığı); düello sonucunu etkileyen hiçbir özellik yoktur.
+38. **Savaşa giriş** için klanın en az 5 üyesi olmalı; tek kalan klan o hafta eşleşmez. Canlı klan düellosu (Pazar 20:00 bayrak yarışı), dershane takımı / aylık dershaneler arası turnuva ve dershane sezon ödülleri Faz 6 panelleriyle birlikte yapılacak.
+39. **Klan adı onayı** varsayılan olarak otomatik filtreyle yapılır; dershane `ayarlar.klan_onayi` açarsa öğretmen onayı beklenir. Öğretmenin sınıf bazlı klan kurması ve onay ekranı Faz 6 öğretmen panelinde.
+40. **Moderasyon filtresi** kelime listesi + kalıp tabanlıdır (Türkçe normalizasyon, leet, harf tekrarı). Görsel moderasyonu Faz 5'te (fotoğraf yükleme ile) eklenecek.

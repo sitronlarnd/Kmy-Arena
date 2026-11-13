@@ -8,7 +8,7 @@
 | 1 | Çekirdek soru döngüsü: üretim + doğrulama hattı, havuz, soru ekranı (LaTeX), Elo, tespit sınavı, XP/Altın, çözüm, hata defteri, konu haritası, AI Merkezi temel | **Tamamlandı** |
 | 2 | Oyun katmanı: karakter, seri, görevler, 40 rozet, mağaza, lig, sıralamalar, kart albümü | **Tamamlandı** |
 | 3 | Düello ve Canlı Soru Saati (Supabase Realtime) | **Tamamlandı** |
-| 4 | Klanlar, boss, klan savaşı | |
+| 4 | Klanlar, boss, klan savaşı | **Tamamlandı** |
 | 5 | Topluluk soru-cevap, Sokratik asistan, fotoğraftan çöz | |
 | 6 | Öğretmen, Dershane Kurucu, Veli, Merkez panelleri | |
 | 7 | Tanıtım sitesi, 30 gün pilot + otomatik etki raporu, EAS mağaza derlemeleri, mağaza belgeleri | |
@@ -209,3 +209,26 @@ Tamamı `.env.example` içinde.
 **Canlı doğrulama:** iki cihazda soruyu görme farkı 22 ms (hedef ≤300 ms); ilk doğru kuralı, tepki, robot, dereceli eşleşme, sekme uyarısı, Canlı Soru Saati cevap/409 çalışıyor; anahtar açık turda `null`.
 
 **Elle test:** iki demo öğrenciyle (ör. ogrenci06/07, 8. sınıf) giriş → Düello → biri "Davet et", diğeri kodla katılır.
+
+## Faz 4 — Klanlar (2026-11-13)
+
+**Veritabanı (0018_klan.sql):** `klan`, `klan_uyelik` (öğrenci başına tek klan), `klan_basvuru` (başvuru + davet), `klan_gorev`, `boss`, `boss_hasar`, `klan_savasi`, `klan_savas_katki`, `klan_mesaj`, `sikayet`. İstemci hiçbir klan tablosuna yazamaz; tüm işlemler `sistem_klan_*` (service_role).
+
+**Kurallar:**
+- Kurma: karakter seviyesi 5 + son 7 günde 50 soru; 30 üye sınırı; ad/slogan filtreden geçer (dershane `ayarlar.klan_onayi = true` ise öğretmen onayı beklenir, klan bu sırada çalışır). Amblem hazır parçalardan (kalkan, simge, renk), bazı parçalar klan seviyesiyle açılır.
+- Roller: Lider, en fazla 3 Yardımcı, Üye. Lider 14 gün pasifse (Perşembe cron'unda ve lider ayrılınca) en aktif yardımcıya devredilir. Son üye ayrılınca klan silinir.
+- Katkı: her sayılan cevap +1 (klan seviyesi: 100 → 2, 400 → 3, 900 → 4 …).
+- Haftalık görevler: "klan olarak üye×50 soru" (100 Altın) ve "her üye 30 soru" (150 Altın), tamamlanınca tüm üyelere.
+- Boss: her hafta klanın ortalama en zayıf kazanımından; can = üye×60 (en az 300). Hasar = zorluk × ilgili özellik seviyesi. Yenilince hasar veren herkese 50 XP + 60 Altın.
+- Klan savaşı: Perşembe 09:00 eşleşme (aktif üye + ortalama beceri), Cuma 18:00 – Pazar 21:00. 5 bölge (ders grupları), üye başına 30 hak, doğru cevap etkisi 10 × (1 + (1 − E)) (Strateji seviyesiyle en fazla +%10). Katılım çarpanı (%50 altı ×0,8 · %80+ ×1,2 · %100 ×1,3). Çok bölge alan kazanır (eşitlikte toplam puan). Kazanan: klana +30 Kupa, katılan üyelere +10 Kupa, 50 XP, 80 Altın; kaybeden/berabere: hak başına 3 XP.
+- Sohbet: hazır mesajlar ve "Şu soruda takıldım" (yalnız görülen soru, cevapsız); serbest yazışma `klan_sohbeti_serbest` bayrağıyla, filtre (küfür, telefon/e-posta/sosyal medya, bağlantı). Hız sınırı 3 sn / saatte 30. Şikâyet: zorbalık öncelikli; 3 şikâyette mesaj gizlenir. DM yok.
+
+**API:** `/api/klan/{durum,kur,katil,ayril,basvuru-yanit,davet,yonet,mesajlar,mesaj,sikayet,onay}`; cevap sonrası `sistem_klan_katki` (cevabı asla bozmaz). Cron: `klan-savas-esle` (Per 09:00), `klan-savas-kapat` (Paz 21:05); elle `klan-savas-hemen` (demo).
+
+**Mobil:** Klan sekmesi (klansız: kur/katıl/davetler; üye: amblem, seviye, boss, savaş haritası ve bölgeye saldır, görevler, üyeler ve rol işlemleri, başvurular, davet), klan sohbeti ekranı, soru sonucunda klan etkisi ve "Klanıma sor".
+
+**Demo:** `03_klan_demo.sql` — Kartallar, Yıldızlar, Fırtına, Bilgeler (7'şer üye). Tekrar çalıştırılabilir; workflow'da `seed_dosya` girdisiyle tek başına yüklenebilir.
+
+**Canlı doğrulama:** küfürlü ad 400, koşulsuz kurma 409, açık klana katılım + rozet, başvuru → lider onayı, davetli klana davetsiz katılım 409, hazır mesaj, serbest kapalı 409, savaş eşleşmesi (2 savaş), cevap sonrası savaş etkisi 12,52 ve hak düşüşü, görev ilerlemesi.
+
+**Elle test:** ogrenci01 (Kartallar lideri) ile giriş → Klan → Sohbet; ogrenci15 ile giriş → Klan → Kartallar'a katıl.
