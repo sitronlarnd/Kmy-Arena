@@ -3,32 +3,80 @@
     "name": "KMY Arena",
     "slug": "kmy-arena",
     "scheme": "kmyarena",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
       "bundleIdentifier": "cloud.kmyai.arena",
       "supportsTablet": true,
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "Takıldığın sorunun fotoğrafını çekip çözümünü görmek için kamerayı kullanırız. Fotoğraf saklanmaz.",
+        "NSPhotoLibraryUsageDescription": "Soru fotoğrafını galeriden seçmek için kullanılır.",
+        "CFBundleDevelopmentRegion": "tr"
+      },
+      "buildNumber": "1",
+      "icon": "./assets/icon.png"
     },
     "android": {
       "package": "cloud.kmyai.arena",
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#6d5cff"
+      },
+      "permissions": [
+        "CAMERA",
+        "POST_NOTIFICATIONS"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
-      "output": "single"
+      "output": "single",
+      "favicon": "./assets/favicon.png",
+      "name": "KMY Arena"
     },
     "plugins": [
       "expo-router",
       "expo-status-bar",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 180,
+          "resizeMode": "contain",
+          "backgroundColor": "#0b0c1a"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/bildirim-ikon.png",
+          "color": "#6d5cff"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Takıldığın sorunun fotoğrafını çekip çözümünü görmek için kamerayı kullanırız. Fotoğraf saklanmaz.",
+          "photosPermission": "Soru fotoğrafını galeriden seçmek için kullanılır.",
+          "microphonePermission": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "icon": "./assets/icon.png",
+    "backgroundColor": "#0b0c1a",
+    "extra": {}
   }
 }

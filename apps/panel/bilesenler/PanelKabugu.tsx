@@ -38,7 +38,7 @@ export function PanelKabugu({ baslik, children, panel, aktif, yol, sag }: { basl
   return (
     <div className="kabuk">
       <nav className="yan" aria-label="Panel menüsü">
-        <div className="logo"><i>K</i>{t("uygulama.ad")}</div>
+        <div className="logo"><img src="/icon.png" alt="" width={36} height={36} />{t("uygulama.ad")}</div>
         {MENU[p].map((m, i) =>
           "bolum" in m ? (
             <div key={i} className="bolum">{m.bolum}</div>

@@ -209,3 +209,10 @@ describe("Doğrulayıcı cevap biçimleri", () => {
     assert.equal(dogrulamaCiktisiniCoz(JSON.stringify({ cevap: "Hiçbiri" })).cevap, null);
   });
 });
+
+describe("Tereddütlü çözüm", () => {
+  it("'şıklarda yok' yazan soru kalite kontrolünde elenir", () => {
+    const n = kaliteKontrolu({ ...uretilenSoruyuCoz(JSON.stringify(iyiSoru), istek), cozumAdimlari: ["7/8 + 15 = 127/8 olup şıklarda yok"] }, istek);
+    assert.ok(n.some((x) => x.includes("tereddüt")));
+  });
+});

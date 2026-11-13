@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import Animated, { Easing, FadeInDown, FadeInUp, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { Alan } from "@/bilesenler/Alan";
-import { Avatar } from "@/bilesenler/sanat";
+import { Avatar, MarkaLogo } from "@/bilesenler/sanat";
 import { Dugme, Metin } from "@/bilesenler/ui";
 import { supabase } from "@/lib/supabase";
 import { golge, useTema } from "@/lib/tema";
@@ -48,7 +48,10 @@ export default function Giris() {
             ))}
           </Animated.View>
           <Animated.View entering={FadeInDown.delay(150).duration(600)} style={{ alignItems: "center", gap: 6 }}>
-            <Metin tur="dev" ortala stil={{ fontSize: 40, lineHeight: 46 }}>{t("uygulama.ad")}</Metin>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+              <MarkaLogo boyut={52} />
+              <Metin tur="dev" stil={{ fontSize: 40, lineHeight: 46 }}>{t("uygulama.ad")}</Metin>
+            </View>
             <Metin soluk ortala>{t("uygulama.slogan")}</Metin>
           </Animated.View>
           <Animated.View entering={FadeInUp.delay(300).springify().damping(16)} style={{ gap: 14, padding: 20, borderRadius: 28, backgroundColor: tema.yuzey, borderWidth: 1, borderColor: tema.kenar, ...golge(3, "#000") }}>

@@ -145,3 +145,4 @@ pre.rapor { background: var(--yuzey2); padding: 12px; border-radius: 12px; overf
 .risk.d { background: #12b76a; } .risk.o { background: #f5a400; } .risk.y { background: #e5354f; }
 
 @media print { .yan, .ust .dugme { display: none !important; } .kabuk { display: block; background: none; } .kart { box-shadow: none; break-inside: avoid; } body { background: #fff; } }
+.logo img { border-radius: 10px; box-shadow: 0 6px 18px rgba(124, 92, 250, .5); }

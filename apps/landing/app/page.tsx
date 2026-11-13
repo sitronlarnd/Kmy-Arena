@@ -24,7 +24,7 @@ export default function Tanitim() {
     <>
       <header className="ust">
         <div className="kap">
-          <a href="#" className="logo"><i>K</i>KMY Arena</a>
+          <a href="#" className="logo"><img src="/logo.svg" alt="" width={36} height={36} />KMY Arena</a>
           <nav aria-label="Bölümler"><a href="#ozellikler">Özellikler</a><a href="#ogretmen">Öğretmen ve yönetici</a><a href="#kvkk">Güvenlik</a><a href="#sss">SSS</a></nav>
           <a href="#pilot" className="dugme ana kucuk">30 gün ücretsiz dene</a>
         </div>

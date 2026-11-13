@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><g transform="translate(256 262) scale(0.62) translate(-256 -253)">
+  <defs>
+    <linearGradient id="zemin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9b6bff"/><stop offset="0.55" stop-color="#6d5cff"/><stop offset="1" stop-color="#3f7bff"/>
+    </linearGradient>
+    <radialGradient id="isik" cx="0.3" cy="0.2" r="0.8">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/><stop offset="0.6" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="kalkan" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e6e2ff"/>
+    </linearGradient>
+    <linearGradient id="altin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe27a"/><stop offset="1" stop-color="#ff9f1c"/>
+    </linearGradient>
+  </defs>
+    <!-- kalkan -->
+  <path d="M256 92 L386 138 C386 262 346 350 256 414 C166 350 126 262 126 138 Z" fill="#1b1460" opacity="0.35" transform="translate(0 14)"/>
+  <path d="M256 92 L386 138 C386 262 346 350 256 414 C166 350 126 262 126 138 Z" fill="url(#kalkan)"/>
+  <!-- K -->
+  <path transform="translate(-37 -4)" d="M206 170 h44 v62 l56 -62 h54 l-70 76 l74 92 h-56 l-58 -74 v74 h-44 z" fill="#5b4bf5"/>
+  <!-- kıvılcım -->
+  <path d="M352 96 l10 26 l26 10 l-26 10 l-10 26 l-10 -26 l-26 -10 l26 -10 z" fill="url(#altin)"/>
+</g></svg>

@@ -350,3 +350,27 @@ export function RobotAvatar({ boyut = 64 }: { boyut?: number }) {
     </Svg>
   );
 }
+
+/** KMY Arena marka amblemi (marka/amblem.svg ile aynı çizim). */
+export function MarkaLogo({ boyut = 56, zeminli = true }: { boyut?: number; zeminli?: boolean }) {
+  return (
+    <Svg width={boyut} height={boyut} viewBox="0 0 512 512" accessibilityLabel="KMY Arena">
+      <Defs>
+        <SvgGradient id="markaZemin" x1="0" y1="0" x2="1" y2="1">
+          <Stop offset="0" stopColor="#9b6bff" />
+          <Stop offset="0.55" stopColor="#6d5cff" />
+          <Stop offset="1" stopColor="#3f7bff" />
+        </SvgGradient>
+        <SvgGradient id="markaAltin" x1="0" y1="0" x2="1" y2="1">
+          <Stop offset="0" stopColor="#ffe27a" />
+          <Stop offset="1" stopColor="#ff9f1c" />
+        </SvgGradient>
+      </Defs>
+      {zeminli && <Rect width={512} height={512} rx={120} fill="url(#markaZemin)" />}
+      <Path d="M256 106 L386 152 C386 276 346 364 256 428 C166 364 126 276 126 152 Z" fill="#1b1460" opacity={0.35} />
+      <Path d="M256 92 L386 138 C386 262 346 350 256 414 C166 350 126 262 126 138 Z" fill="#F4F2FF" />
+      <Path d="M169 166 h44 v62 l56 -62 h54 l-70 76 l74 92 h-56 l-58 -74 v74 h-44 z" fill="#5b4bf5" />
+      <Path d="M352 96 l10 26 l26 10 l-26 10 l-10 26 l-10 -26 l-26 -10 l26 -10 z" fill="url(#markaAltin)" />
+    </Svg>
+  );
+}

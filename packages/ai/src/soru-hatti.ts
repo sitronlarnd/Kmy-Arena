@@ -157,6 +157,8 @@ function kalinDisi(md: string): string {
 }
 
 /** Boş liste = geçti. Her eleman bir red nedenidir. */
+const TEREDDUT = /şıklarda (?:yok|bulunmuyor|yer almıyor)|şıklarda hata|hata var gibi|tekrar kontrol ed|yeniden hesapla(?:yalım|yın)|değil; işlem hatası|olmalıdır?\b.*alınmalı/i;
+
 export function kaliteKontrolu(s: UretilenSoru, istek: UretimIstegi): string[] {
   const n: string[] = [];
   const beklenenHarfler = SIKLAR.slice(0, sikSayisi(istek.sinav));
@@ -188,6 +190,8 @@ export function kaliteKontrolu(s: UretilenSoru, istek: UretimIstegi): string[] {
   if (s.tahminiSureSn < 10 || s.tahminiSureSn > 400) n.push("tahmini süre makul değil");
   if (s.cozumAdimlari.length < 1) n.push("çözüm adımı yok");
   if (s.ipuclari.length < 3) n.push("3 ipucu yok");
+  // Üretici çözümde kendi sorusunun bozuk olduğunu itiraf ediyorsa doğrulamaya hiç gönderme.
+  if (TEREDDUT.test(s.cozumAdimlari.join(" "))) n.push("çözüm adımlarında tutarsızlık / tereddüt ifadesi");
   return n;
 }
 

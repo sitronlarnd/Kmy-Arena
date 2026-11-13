@@ -69,5 +69,16 @@ export const SORU_URETIM_V3: PromptSurumu = {
 17. "sayisal_kontrol.ifade", doğru şıktaki SAYIYI hesaplayan saf bir aritmetik ifade olsun (ör. "(-2)^3 * 3^2", "gcd(84, 120)", "sqrt(50)/sqrt(2)"); karşılaştırma (==, <, >) veya mantıksal ifade yazma. Doğru şık bir sayı değilse (ifade, kelime, liste) "sayisal_kontrol" null olsun.`,
 };
 
-export const SORU_URETIM_PROMPTLARI: readonly PromptSurumu[] = [SORU_URETIM_V1, SORU_URETIM_V2, SORU_URETIM_V3];
-export const SORU_URETIM_VARSAYILAN = SORU_URETIM_V3;
+/**
+ * v4 (2026-11-14, mimo-v2.6-flash canlı testi): üretici, çözümü yazarken
+ * cevabın şıklarda olmadığını fark edip "şıklarda yok" diye not düşüyordu.
+ */
+export const SORU_URETIM_V4: PromptSurumu = {
+  surum: "soru-uretim@4",
+  metin: `${SORU_URETIM_V3.metin}
+18. Sırayla çalış: önce soruyu ve verileri kur, cevabı KESİN olarak hesapla, ardından doğru şıkkı tam bu cevapla yaz ve çeldiricileri üret. JSON'u yazmadan önce çözüm adımlarındaki sonucun "dogru" şıktaki metinle birebir aynı olduğunu kontrol et.
+19. Çözüm adımları kesin ve tutarlı olsun; "şıklarda yok", "hata var", "tekrar kontrol edelim" gibi tereddüt veya düzeltme ifadeleri ASLA yazma. Tutarsızlık fark edersen soruyu baştan kur.`,
+};
+
+export const SORU_URETIM_PROMPTLARI: readonly PromptSurumu[] = [SORU_URETIM_V1, SORU_URETIM_V2, SORU_URETIM_V3, SORU_URETIM_V4];
+export const SORU_URETIM_VARSAYILAN = SORU_URETIM_V4;

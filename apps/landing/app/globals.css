@@ -100,3 +100,4 @@ footer .kap { display: flex; justify-content: space-between; flex-wrap: wrap; ga
   .ust nav { display: none; }
   .form { grid-template-columns: 1fr; }
 }
+.logo img { border-radius: 11px; box-shadow: 0 6px 20px #8b5cf680; }
