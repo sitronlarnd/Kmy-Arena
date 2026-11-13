@@ -7,6 +7,8 @@ import { Avatar } from "@/bilesenler/Avatar";
 import { Dugme } from "@/bilesenler/Dugme";
 import { Ekran } from "@/bilesenler/Ekran";
 import { Kart } from "@/bilesenler/Kart";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 import { useOyun } from "@/lib/oyun";
 import { useOturum } from "@/lib/oturum";
 import { useHataDefteri, useMufredat, useTespitler } from "@/lib/sorgular";
@@ -25,6 +27,13 @@ export default function Arena() {
   const tema = useTema();
   const { profil, dershane } = useOturum();
   const oyun = useOyun().data;
+  const canliAcik = useOturum((s) => s.ozellikler.canli_soru_saati !== false);
+  const canli = useQuery({
+    queryKey: ["canli-ozet"],
+    enabled: profil?.tur === "ogrenci" && canliAcik,
+    refetchInterval: 60_000,
+    queryFn: () => api<{ durum: string; baslangic?: string }>("/api/canli/durum", {}),
+  }).data;
   const mufredat = useMufredat();
   const dersler = mufredat.data ?? [];
   const tespitler = useTespitler().data;
@@ -113,6 +122,16 @@ export default function Arena() {
         <Kart stil={{ borderColor: tema.vurgu }}>
           <Text style={{ color: tema.metin }}>{t("arena.tespitOneri", { ders: secili.ad })}</Text>
           <Dugme baslik={t("soru.tespitBasla")} onPress={() => router.push({ pathname: "/soru", params: { mod: "tespit", tespitDersKodu: secili.kod } })} />
+        </Kart>
+      )}
+
+      {ogrenci && canli && canli.durum !== "kapali" && (
+        <Kart stil={canli.durum === "aktif" ? { borderColor: "#E4572E" } : undefined}>
+          <Text style={{ color: tema.metin, fontWeight: "800" }}>🔴 {t("canli.baslik")}</Text>
+          <Text style={{ color: tema.soluk }}>
+            {canli.durum === "aktif" ? t("canli.aciklama") : canli.baslangic ? t("canli.yakinda", { zaman: new Date(canli.baslangic).toLocaleString("tr-TR", { weekday: "long", hour: "2-digit", minute: "2-digit" }) }) : ""}
+          </Text>
+          {canli.durum === "aktif" && <Dugme baslik={t("canli.katil")} onPress={() => router.push("/canli")} />}
         </Kart>
       )}
 

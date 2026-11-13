@@ -106,7 +106,7 @@ async function soruSec(
 }
 
 /** Öğrencinin paketine ve sınıfına (LGS / YKS, alan) göre açık dersleri. */
-async function izinliDersler(k: Kullanici): Promise<Set<string>> {
+export async function izinliDersler(k: Kullanici): Promise<Set<string>> {
   const { data, error } = await servisIstemcisi().rpc("sistem_ogrenci_dersleri", { p_kullanici: k.id });
   if (error) throw error;
   const set = new Set(((data ?? []) as Array<{ id: string }>).map((d) => d.id));

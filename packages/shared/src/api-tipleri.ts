@@ -105,6 +105,7 @@ export interface OyunDurumu {
   gunlukHedef: number;
   ligAdim: number;
   haftalikXp: number;
+  kupa: number;
   gorevler: OyunGorevi[];
   rozetler: string[];
   envanter: string[];

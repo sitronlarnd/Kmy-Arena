@@ -625,6 +625,122 @@ do $$ begin
 end $$;
 rollback;
 
+\echo '▶ 15. Düello: tur kuralları, adil zaman, robot, süre, sekme, eşleştirme, Kupa; Canlı Soru Saati'
+do $$
+declare
+  a uuid := app.sabit_uuid('kullanici:ogrenci13@demo.kmyarena.demo');
+  b uuid := app.sabit_uuid('kullanici:ogrenci14@demo.kmyarena.demo');
+  kz uuid := app.sabit_uuid('kazanim:M.8.1.3.2');
+  ders uuid := app.sabit_uuid('ders:lgs_matematik');
+  sorular uuid[]; d uuid; r jsonb; n integer; o uuid;
+begin
+  for n in 1..20 loop
+    insert into public.soru (id, kaynak, kazanim_id, sinav_turu, soru_tipi, zorluk, govde_md, siklar, dogru, durum, cozum_adimlari)
+    values (app.sabit_uuid('soru:duello' || n), 'ai', kz, 'LGS', 'islem', 4, 'D' || n, '{"A":"1","B":"2","C":"3","D":"4"}', 'C', 'dogrulandi', '["adım"]');
+  end loop;
+  insert into public.ogrenci_ilerleme (kullanici_id, dershane_id) values (a, app.sabit_uuid('dershane:demo')), (b, app.sabit_uuid('dershane:demo'))
+  on conflict do nothing;
+
+  -- Soru seçimi: ikisinin de görmediği 5 soru
+  sorular := public.sistem_duello_sorulari(a, b, ders, 4, 5);
+  perform test.dogrula(cardinality(sorular) = 5, 'düello soruları seçilemedi');
+  d := public.sistem_duello_olustur('dereceli', app.sabit_uuid('dershane:demo'), ders, a, b, sorular, array[30,30,30,30,30]);
+  perform test.dogrula((select count(*) from public.soru_gosterim where kullanici_id in (a, b) and soru_id = any (sorular)) = 10, 'düello soruları gösterim olarak işaretlenmedi');
+
+  -- Geri sayım bitmeden soru metni ve cevap anahtarı gitmez
+  r := public.sistem_duello_durum(d, a, 32);
+  perform test.dogrula(r -> 'turlar' -> 0 -> 'soru' = 'null'::jsonb and r -> 'turlar' -> 0 -> 'dogru' = 'null'::jsonb, 'geri sayımda soru sızdı');
+  begin perform public.sistem_duello_cevap(d, a, 1::smallint, 'C', 0, 32); raise exception 'TEST BAŞARISIZ: açılmamış tura cevap';
+  exception when others then perform test.dogrula(sqlerrm = 'duello.turAcilmadi', sqlerrm); end;
+
+  -- Tur 1: A yanlış → kilitlenir; B doğru → turu alır
+  update public.duello_tur set acilis = clock_timestamp() - interval '2 seconds', son_an = clock_timestamp() + interval '28 seconds' where duello_id = d and sira = 1;
+  r := public.sistem_duello_durum(d, a, 32);
+  perform test.dogrula(r -> 'turlar' -> 0 -> 'soru' ->> 'govde_md' is not null and r -> 'turlar' -> 0 -> 'dogru' = 'null'::jsonb, 'açık turda anahtar sızdı');
+  r := public.sistem_duello_cevap(d, a, 1::smallint, 'A', 120, 32);
+  perform test.dogrula(not (r ->> 'dogru')::boolean, 'yanlış cevap doğru sayıldı');
+  begin perform public.sistem_duello_cevap(d, a, 1::smallint, 'C', 0, 32); raise exception 'TEST BAŞARISIZ: kilitli oyuncu cevapladı';
+  exception when others then perform test.dogrula(sqlerrm = 'duello.zatenCevapladin', sqlerrm); end;
+  r := public.sistem_duello_cevap(d, b, 1::smallint, 'C', 600, 32);
+  -- Adil zaman: RTT/2 en fazla 250 ms düşülür
+  perform test.dogrula((r ->> 'sure_ms')::int between 1700 and 2300, 'adil zaman düzeltmesi: ' || r::text);
+  r := public.sistem_duello_durum(d, a, 32);
+  perform test.dogrula(r -> 'turlar' -> 0 ->> 'kazanan' = 'b' and r -> 'turlar' -> 0 ->> 'dogru' = 'C' and (r ->> 'skor_rakip')::int = 1, 'tur 1 sonucu');
+  perform test.dogrula((r ->> 'gecerli_tur')::int = 2 and r -> 'turlar' -> 1 -> 'soru' = 'null'::jsonb, '8 sn ara olmadan tur açıldı');
+
+  -- B iki tur daha alır → 3 puan, düello biter, Kupa Elo ile aktarılır
+  for n in 2..3 loop
+    update public.duello_tur set acilis = clock_timestamp() - interval '1 second', son_an = clock_timestamp() + interval '29 seconds' where duello_id = d and sira = n;
+    perform public.sistem_duello_cevap(d, b, n::smallint, 'C', 0, 32);
+  end loop;
+  r := public.sistem_duello_durum(d, b, 32);
+  perform test.dogrula(r ->> 'durum' = 'bitti' and r ->> 'kazanan' = 'ben' and (r ->> 'kupa')::int = 16, 'düello bitişi / Kupa: ' || (r - 'turlar')::text);
+  perform test.dogrula((select kupa from public.ogrenci_ilerleme where kullanici_id = b) = 16 and (select kupa from public.ogrenci_ilerleme where kullanici_id = a) = 0, 'Kupa sıfırın altına indi ya da yazılmadı');
+  perform test.dogrula((select duello_galibiyet from public.ogrenci_ilerleme where kullanici_id = b) = 1, 'galibiyet sayılmadı');
+  perform test.dogrula(jsonb_typeof(r -> 'turlar' -> 0 -> 'cozum') = 'array', 'düello özetinde tam çözüm (dizi) yok');
+
+  -- Süre dolarsa tur boş geçer (ikisi de cevap vermedi)
+  sorular := public.sistem_duello_sorulari(a, b, ders, 4, 5);
+  d := public.sistem_duello_olustur('arkadas', app.sabit_uuid('dershane:demo'), ders, a, null, sorular, array[20,20,20,20,20], null, null, 'ABCDEF');
+  perform test.dogrula((select durum from public.duello where id = d) = 'davet', 'davet oluşmadı');
+  perform public.sistem_duello_katil('abcdef', b);
+  update public.duello_tur set acilis = clock_timestamp() - interval '25 seconds', son_an = clock_timestamp() - interval '5 seconds' where duello_id = d and sira = 1;
+  r := public.sistem_duello_durum(d, a, 32);
+  perform test.dogrula((r -> 'turlar' -> 0 ->> 'kapandi')::boolean and r -> 'turlar' -> 0 ->> 'kazanan' is null, 'süre dolan tur kapanmadı');
+
+  -- Sekme: dereceli düelloda 2. ihlalde o tur kaybedilir
+  sorular := public.sistem_duello_sorulari(a, b, ders, 4, 3);
+  d := public.sistem_duello_olustur('dereceli', app.sabit_uuid('dershane:demo'), ders, a, b, sorular, array[30,30,30]);
+  update public.duello_tur set acilis = clock_timestamp() - interval '1 second' where duello_id = d and sira = 1;
+  perform test.dogrula(public.sistem_duello_sekme(d, a, 32) = 1, 'ilk sekme uyarısı');
+  perform public.sistem_duello_sekme(d, a, 32);
+  perform test.dogrula((select a_dogru from public.duello_tur where duello_id = d and sira = 1) = false, 'ikinci sekme ihlali turu kaybettirmedi');
+
+  -- Robot: açıkça robot; robot doğru cevap zamanında turu alır
+  d := public.sistem_duello_olustur('robot', app.sabit_uuid('dershane:demo'), ders, a, null, array[app.sabit_uuid('soru:duello20'), app.sabit_uuid('soru:duello19'), app.sabit_uuid('soru:duello18')],
+    array[30,30,30], '[{"sure_ms":1000,"dogru":true,"secilen":"C"},{"sure_ms":1000,"dogru":false,"secilen":"A"},{"sure_ms":1000,"dogru":true,"secilen":"C"}]', 1000);
+  update public.duello_tur set acilis = clock_timestamp() - interval '3 seconds', son_an = clock_timestamp() + interval '27 seconds' where duello_id = d and sira = 1;
+  r := public.sistem_duello_durum(d, a, 32);
+  perform test.dogrula(r -> 'rakip' ->> 'takma_ad' = 'Robot' and r -> 'turlar' -> 0 ->> 'kazanan' = 'b', 'robot turu: ' || (r -> 'turlar' -> 0)::text);
+
+  -- Eşleştirme: aynı ders, yakın Kupa
+  delete from public.duello_kuyruk;
+  perform test.dogrula(public.sistem_duello_eslestir(a, ders) is null, 'boş kuyrukta eşleşti');
+  perform test.dogrula(public.sistem_duello_eslestir(b, ders) = a, 'eşleşme olmadı');
+  perform test.dogrula(not exists (select 1 from public.duello_kuyruk), 'eşleşenler kuyruktan çıkmadı');
+
+  -- Canlı Soru Saati: ilk doğru bonus alır, ikinci cevap reddedilir
+  insert into public.canli_oturum (dershane_id, sinav_grubu, gun, baslangic, sorular)
+  values (app.sabit_uuid('dershane:demo'), 'LGS', app.bugun(), clock_timestamp() - interval '2 seconds',
+          array[app.sabit_uuid('soru:duello1'), app.sabit_uuid('soru:duello2'), app.sabit_uuid('soru:duello3'), app.sabit_uuid('soru:duello4'), app.sabit_uuid('soru:duello5')])
+  returning id into o;
+  r := public.sistem_canli_cevap(o, a, 1::smallint, 'C', 100);
+  perform test.dogrula((r ->> 'derece')::int = 1 and (r ->> 'bonus')::boolean, 'canlı ilk doğru');
+  r := public.sistem_canli_cevap(o, b, 1::smallint, 'C', 100);
+  perform test.dogrula((r ->> 'derece')::int = 2, 'canlı ikinci doğru');
+  begin perform public.sistem_canli_cevap(o, a, 1::smallint, 'C', 0); raise exception 'TEST BAŞARISIZ: canlı soruya iki cevap';
+  exception when others then perform test.dogrula(sqlerrm = 'canli.zatenCevapladin', sqlerrm); end;
+  begin perform public.sistem_canli_cevap(o, a, 2::smallint, 'C', 0); raise exception 'TEST BAŞARISIZ: açılmamış canlı soru';
+  exception when others then perform test.dogrula(sqlerrm = 'canli.sureDisi', sqlerrm); end;
+  r := public.sistem_canli_durum(o, a);
+  perform test.dogrula(r -> 'sorular' -> 0 -> 'soru' is not null and r -> 'sorular' -> 0 -> 'dogru' = 'null'::jsonb and r -> 'sorular' -> 1 -> 'soru' = 'null'::jsonb, 'canlı durumda sızıntı');
+end $$;
+
+begin;
+select test.oturum('ogrenci13@demo.kmyarena.demo');
+set local role authenticated;
+do $$ begin
+  begin perform public.sistem_duello_cevap(gen_random_uuid(), auth.uid(), 1::smallint, 'A', 0, 32); raise exception 'TEST BAŞARISIZ: istemci düello fonksiyonu';
+  exception when insufficient_privilege then null; end;
+  begin perform 1 from public.duello_tur; raise exception 'TEST BAŞARISIZ: istemci düello turlarını okudu';
+  exception when insufficient_privilege then null; end;
+  begin update public.ogrenci_ilerleme set kupa = 9999 where kullanici_id = auth.uid(); raise exception 'TEST BAŞARISIZ: istemci Kupa yazdı';
+  exception when insufficient_privilege then null; end;
+  perform test.dogrula((select count(*) from public.duello) >= 1, 'oyuncu kendi düellolarını göremiyor');
+end $$;
+rollback;
+
 \echo '✔ Tüm veritabanı testleri geçti'
+
 
 

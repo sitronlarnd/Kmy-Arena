@@ -55,7 +55,7 @@ async function ilerlemeSatiri(k: Kullanici) {
   return data as Record<string, unknown> & {
     xp: number; altin: number; seviye: number; seri_gun: number; seri_son_gun: string | null; seri_dondurucu: number;
     en_uzun_seri: number; gunluk_gun: string | null; gunluk_soru: number; gunluk_hedef: number; lig_adim: number;
-    hafta: string | null; haftalik_xp: number; onceki_seri: number; seri_kirilma_gunu: string | null; ozellik_puanlari: Record<string, number>;
+    hafta: string | null; haftalik_xp: number; kupa: number; onceki_seri: number; seri_kirilma_gunu: string | null; ozellik_puanlari: Record<string, number>;
   };
 }
 
@@ -171,6 +171,7 @@ export async function oyunDurumu(k: Kullanici): Promise<OyunDurumu> {
     gunlukSoru: i.gunluk_gun === bugun ? i.gunluk_soru : 0,
     gunlukHedef: i.gunluk_hedef,
     ligAdim: i.lig_adim,
+    kupa: i.kupa ?? 0,
     haftalikXp: i.hafta === haftaBasi(bugun) ? i.haftalik_xp : 0,
     gorevler: gorevler.sort((a, b) => (a.tur === b.tur ? 0 : a.tur === "gunluk" ? -1 : 1)).map(gorevGorunumu),
     rozetler: (rozet.data ?? []).map((r) => r.rozet_kod as string),

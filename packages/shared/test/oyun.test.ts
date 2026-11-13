@@ -65,10 +65,11 @@ describe("Rozetler", () => {
   it("sonraki fazların rozetleri kazanılamaz", () => {
     const hepsi = { ...bos, toplam_cevap: 1e6, toplam_dogru: 1e6, seviye: 99, en_uzun_seri: 999, max_ardisik: 999, sabah_cozum: 999,
       zor_dogru: 999, ipucusuz_dogru: 999, temizlenen_hata: 999, gorev_tamamlanan: 999, haftalik_gorev_tamamlanan: 99,
-      lig_yukselme: 9, en_iyi_lig_adim: 18, ozellik_min: 999, bronz_ustu: 999, gumus_ustu: 999, altin: 999, tespit_biten: 9, tam_set: true, envanter: 99 };
+      lig_yukselme: 9, en_iyi_lig_adim: 18, ozellik_min: 999, bronz_ustu: 999, gumus_ustu: 999, altin: 999, tespit_biten: 9, tam_set: true, envanter: 99,
+      duello_galibiyet: 99, en_uzun_duello_seri: 99 };
     const kazanilan = new Set(yeniRozetler(hepsi, new Set()).map((r) => r.kod));
     assert.equal(kazanilan.size, ROZETLER.filter((r) => r.kosul).length);
-    assert.ok(!kazanilan.has("duello_ilk"));
+    assert.ok(kazanilan.has("duello_ilk") && !kazanilan.has("klan_katil"));
   });
   it("ilerleme gösterimi", () => {
     const r = ROZETLER.find((x) => x.kod === "soru_100");

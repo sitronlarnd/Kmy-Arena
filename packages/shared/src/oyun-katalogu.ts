@@ -143,6 +143,8 @@ export interface OyunMetrikleri {
   ders_sayisi: number;
   tam_set: boolean;
   envanter: number;
+  duello_galibiyet?: number;
+  en_uzun_duello_seri?: number;
 }
 
 export type RozetKategorisi = "soru" | "seri" | "ustalik" | "tekrar" | "beceri" | "gorev" | "karakter" | "lig" | "sosyal";
@@ -214,8 +216,8 @@ export const ROZETLER: readonly Rozet[] = [
   { kod: "lig_altin", ad: "Altın lig", aciklama: "Altın ligine ulaş.", kategori: "lig", altin: 200, emoji: "🏅", kosul: k("en_iyi_lig_adim", 7) },
   { kod: "lig_efsane", ad: "Efsaneler arasında", aciklama: "Efsane ligine ulaş.", kategori: "lig", altin: 800, emoji: "💎", unvan: "Efsane Ligci", kosul: k("en_iyi_lig_adim", 16) },
   // Sosyal (sonraki fazlarda açılır) (6)
-  { kod: "duello_ilk", ad: "İlk zafer", aciklama: "İlk düellonu kazan.", kategori: "sosyal", altin: 50, emoji: "⚔️", faz: 3 },
-  { kod: "duello_seri_10", ad: "Yenilmez", aciklama: "Üst üste 10 düello kazan.", kategori: "sosyal", altin: 300, emoji: "🛡️", unvan: "Yenilmez", faz: 3 },
+  { kod: "duello_ilk", ad: "İlk zafer", aciklama: "İlk düellonu kazan.", kategori: "sosyal", altin: 50, emoji: "⚔️", kosul: k("duello_galibiyet", 1) },
+  { kod: "duello_seri_10", ad: "Yenilmez", aciklama: "Üst üste 10 düello kazan.", kategori: "sosyal", altin: 300, emoji: "🛡️", unvan: "Yenilmez", kosul: k("en_uzun_duello_seri", 10) },
   { kod: "klan_katil", ad: "Takım oyuncusu", aciklama: "Bir klana katıl.", kategori: "sosyal", altin: 30, emoji: "🤝", faz: 4 },
   { kod: "boss_vurus", ad: "Boss avcısı", aciklama: "Bir klan boss'una 100 hasar ver.", kategori: "sosyal", altin: 100, emoji: "🐉", faz: 4 },
   { kod: "topluluk_10", ad: "Yardımsever", aciklama: "Toplulukta 10 kabul edilmiş cevap ver.", kategori: "sosyal", altin: 150, emoji: "💬", unvan: "Yardımsever", faz: 5 },
@@ -226,7 +228,7 @@ export function rozetKosuluSaglandi(r: Rozet, m: OyunMetrikleri): boolean {
   if (!r.kosul) return false;
   if (typeof r.kosul === "function") return r.kosul(m);
   const v = m[r.kosul.metrik];
-  return Number(v) >= r.kosul.esik;
+  return Number(v ?? 0) >= r.kosul.esik;
 }
 
 /** Yeni kazanılan rozetler (sahip olunanlar hariç). */
@@ -237,7 +239,7 @@ export function yeniRozetler(m: OyunMetrikleri, sahip: ReadonlySet<string>): Roz
 /** Rozet ilerlemesi (gösterim için). */
 export function rozetIlerlemesi(r: Rozet, m: OyunMetrikleri): { mevcut: number; hedef: number } | null {
   if (!r.kosul || typeof r.kosul === "function") return null;
-  return { mevcut: Math.min(Number(m[r.kosul.metrik]), r.kosul.esik), hedef: r.kosul.esik };
+  return { mevcut: Math.min(Number(m[r.kosul.metrik] ?? 0), r.kosul.esik), hedef: r.kosul.esik };
 }
 
 // ── Görevler ────────────────────────────────────────────────────────
