@@ -3,7 +3,7 @@ import { t } from "@kmy/shared/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import {
-  Award, BookMarked, CalendarCheck, CheckCircle2, Coins, Flame, Layers, MessagesSquare, Play, Radio, RotateCcw, ScanLine, ShoppingBag, Snowflake, Sparkles, Target, Trophy, type LucideIcon,
+  Award, BookMarked, CalendarCheck, CheckCircle2, ClipboardList, Coins, Flame, Layers, Megaphone, MessagesSquare, Play, Radio, RotateCcw, ScanLine, ShoppingBag, Snowflake, Sparkles, Target, Trophy, type LucideIcon,
 } from "lucide-react-native";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -11,6 +11,7 @@ import { Ekran } from "@/bilesenler/Ekran";
 import { Avatar } from "@/bilesenler/sanat";
 import { Basilabilir, Bolum, Cip, Cubuk, Dugme, Etiket, Halka, IkonKutu, Kart, Kaynak, Metin, Nabiz } from "@/bilesenler/ui";
 import { api } from "@/lib/api";
+import { supabase } from "@/lib/supabase";
 import { useOyun } from "@/lib/oyun";
 import { useOturum } from "@/lib/oturum";
 import { useHataDefteri, useMufredat, useTespitler } from "@/lib/sorgular";
@@ -43,6 +44,22 @@ export default function Arena() {
     refetchInterval: 60_000,
     queryFn: () => api<{ durum: string; baslangic?: string }>("/api/canli/durum", {}),
   }).data;
+  const odevler = useQuery({
+    queryKey: ["odevlerim"],
+    enabled: profil?.tur === "ogrenci",
+    queryFn: async () => {
+      const { data } = await supabase.rpc("odevlerim");
+      return (data ?? []) as Array<{ id: string; baslik: string; son_tarih: string; soru_sayisi: number; cozulen: number; bitti: boolean; gecikti: boolean }>;
+    },
+  }).data ?? [];
+  const duyurular = useQuery({
+    queryKey: ["duyurularim"],
+    enabled: profil?.tur === "ogrenci",
+    queryFn: async () => {
+      const { data } = await supabase.rpc("duyurularim");
+      return (data ?? []) as Array<{ id: string; baslik: string; metin: string; olusturma: string }>;
+    },
+  }).data ?? [];
   const mufredat = useMufredat();
   const dersler = mufredat.data ?? [];
   const tespitler = useTespitler().data;
@@ -144,6 +161,42 @@ export default function Arena() {
           onPress={() => router.push({ pathname: "/soru", params: { mod: "antrenman", ...(secili ? { dersKodu: secili.kod, baslik: secili.ad } : {}) } })}
         />
       </Nabiz>
+
+      {duyurular.slice(0, 2).map((d, i) => (
+        <Kart key={d.id} sira={3 + i} vurgu={OYUN.buz}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <IkonKutu ikon={Megaphone} renk={OYUN.buz} boyut={36} />
+            <View style={{ flex: 1 }}>
+              <Metin tur="altbaslik" stil={{ fontSize: 15 }}>{d.baslik}</Metin>
+              <Metin tur="kucuk" soluk>{d.metin}</Metin>
+            </View>
+          </View>
+        </Kart>
+      ))}
+
+      {odevler.filter((o) => !o.bitti).length > 0 && (
+        <>
+          <Bolum baslik={t("odev.odevlerim")} ikon={ClipboardList} />
+          {odevler.filter((o) => !o.bitti).map((o, i) => (
+            <Kart key={o.id} sira={3 + i} vurgu={o.gecikti ? tema.yanlis : tema.dogru} onPress={() => router.push({ pathname: "/soru", params: { mod: "odev", odevId: o.id } })}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+                <IkonKutu ikon={ClipboardList} renk={o.gecikti ? tema.yanlis : tema.dogru} />
+                <View style={{ flex: 1, gap: 4 }}>
+                  <Metin tur="altbaslik" stil={{ fontSize: 15 }}>{o.baslik}</Metin>
+                  <Cubuk oran={o.cozulen / Math.max(1, o.soru_sayisi)} gradyan={GRADYAN.dogru} yukseklik={8} />
+                  <View style={{ flexDirection: "row", gap: 8 }}>
+                    <Metin tur="kucuk" soluk>{t("odev.ilerleme", { n: o.cozulen, toplam: o.soru_sayisi })}</Metin>
+                    <Metin tur="kucuk" renk={o.gecikti ? tema.yanlis : tema.soluk}>
+                      {o.gecikti ? t("odev.gecikti") : t("odev.sonTarih", { tarih: new Date(o.son_tarih).toLocaleString("tr-TR", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) })}
+                    </Metin>
+                  </View>
+                </View>
+                <Play size={20} color={tema.soluk} />
+              </View>
+            </Kart>
+          ))}
+        </>
+      )}
 
       {ogrenci && mufredat.isSuccess && dersler.length === 0 && (
         <Kart vurgu={tema.yanlis}>

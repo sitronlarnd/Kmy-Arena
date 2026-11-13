@@ -260,6 +260,24 @@ export async function siradakiSoru(k: Kullanici, istek: SiradakiIstegi): Promise
     return havuzBosYaniti();
   }
 
+  if (mod === "odev") {
+    if (!istek.odevId) throw new IstemciHatasi("soru.odevYok", 404);
+    const { data: o } = await s.rpc("sistem_odev_sonraki", { p_kullanici: k.id, p_odev: istek.odevId });
+    const od = o as { kazanim_id: string; zorluk_modu: string; sabit_zorluk: number | null; kalan: number; baslik: string } | null;
+    if (!od?.kazanim_id) throw new IstemciHatasi("soru.odevYok", 404);
+    if (od.kalan <= 0) return { durum: "odev_bitti" };
+    const okz = m.kazanimlar.get(od.kazanim_id);
+    if (!okz) throw new IstemciHatasi("soru.kazanimYok", 404);
+    const { data: oo } = await s.from("odev").select("soru_sayisi").eq("id", istek.odevId).single();
+    const toplam = (oo?.soru_sayisi as number | undefined) ?? od.kalan;
+    const b = await beceriGetir(k.id, okz.id);
+    const hedef = od.zorluk_modu === "sabit" && od.sabit_zorluk ? od.sabit_zorluk : antrenmanZorlugu(b.theta, 0, a);
+    const r = await soruSec(k, { kazanimId: okz.id, hedef, baglam: "odev" });
+    if (r.bant_stok < 2) arkaPlandaDoldur(okz.id, r.bant, Math.max(2, arkaPlanIhtiyaci(r.bant_stok)));
+    if (r.soru) return { durum: "soru", mod, soru: istemciSorusu(r.soru, okz), odev: { cozulen: toplam - od.kalan, toplam, baslik: od.baslik } };
+    return havuzBosYaniti();
+  }
+
   // Antrenman
   const kz = await antrenmanKazanimi(k, m, istek);
   const [beceri, ilerleme] = await Promise.all([
@@ -395,8 +413,30 @@ export async function cevapVer(k: Kullanici, istek: CevapIstegi, deneme = 0): Pr
       console.error("klan katkısı işlenemedi", hata);
     }
   }
+  // Ödev ilerlemesi: bu kazanımı içeren, bitmemiş en yakın tarihli ödev
+  let odev: CevapYaniti["odev"];
+  if (g.baglam === "odev") {
+    try {
+      const { data: atamalar } = await s
+        .from("odev_atama")
+        .select("odev_id, odev:odev_id (kazanim_ids, son_tarih)")
+        .eq("kullanici_id", k.id)
+        .is("bitis", null);
+      const uygun = (atamalar ?? [])
+        .map((x) => ({ id: x.odev_id as string, o: (Array.isArray(x.odev) ? x.odev[0] : x.odev) as { kazanim_ids: string[]; son_tarih: string } | null }))
+        .filter((x) => x.o?.kazanim_ids.includes(kz.id))
+        .sort((a, b) => Date.parse(a.o?.son_tarih ?? "") - Date.parse(b.o?.son_tarih ?? ""))[0];
+      if (uygun) {
+        const { data: r } = await s.rpc("sistem_odev_isle", { p_kullanici: k.id, p_odev: uygun.id, p_dogru: sonuc === "dogru" });
+        odev = r as CevapYaniti["odev"];
+      }
+    } catch (hata) {
+      console.error("ödev işlenemedi", hata);
+    }
+  }
   return {
     sonuc,
+    odev,
     dogru: soru.dogru,
     cozumAdimlari: soru.cozum_adimlari ?? [],
     celdiriciNotu: istek.secilen && istek.secilen !== soru.dogru ? (soru.celdirici_notlari?.[istek.secilen] ?? null) : null,

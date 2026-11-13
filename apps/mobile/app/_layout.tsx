@@ -41,6 +41,7 @@ function OturumKapisi() {
     const authBolumunde = bolumler[0] === "(auth)";
     if (!oturum && !authBolumunde) yonlendir.replace("/(auth)/giris");
     else if (oturum && !profil && bolumler[1] !== "katil") yonlendir.replace("/(auth)/katil");
+    else if (oturum && profil && profil.tur === "veli" && bolumler[0] !== "veli") yonlendir.replace("/veli");
     else if (oturum && profil && authBolumunde) yonlendir.replace("/(sekmeler)");
   }, [hazir, oturum, profil, bolumler, yonlendir]);
 

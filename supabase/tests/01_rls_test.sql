@@ -959,6 +959,79 @@ do $$ begin
 end $$;
 rollback;
 
+\echo '▶ 18. Paneller: sınıf analizi, ödev, bekleyenler, kurucu özeti, rehberlik, veli — yetki sınırları'
+begin;
+set local role authenticated;
+do $$
+declare
+  r jsonb; sinif1 uuid; sinif3 uuid; od uuid; o1 uuid := app.sabit_uuid('kullanici:ogrenci01@demo.kmyarena.demo');
+begin
+  -- Öğretmen: kendi sınıfları
+  perform test.oturum('ogretmen.mat@demo.kmyarena.demo');
+  r := public.panel_siniflarim();
+  perform test.dogrula(jsonb_array_length(r) = 2, 'öğretmen sınıf sayısı: ' || jsonb_array_length(r));
+  select (e ->> 'id')::uuid into sinif1 from jsonb_array_elements(r) e where e ->> 'sinav_turu' = 'LGS' limit 1;
+  r := public.panel_sinif_analiz(sinif1);
+  perform test.dogrula(jsonb_array_length(r -> 'ogrenciler') >= 5, 'sınıf öğrencileri');
+  -- Öğretmen kendi öğrencisinin adını görür
+  perform test.dogrula(exists (select 1 from jsonb_array_elements(r -> 'ogrenciler') e where e ->> 'ad' like '% %' and e ->> 'ad' <> e ->> 'takma_ad'), 'öğretmen öğrenci adını göremedi');
+  select s.id into sinif3 from public.sinif s where s.id not in (select (e ->> 'id')::uuid from jsonb_array_elements(public.panel_siniflarim()) e) limit 1;
+  begin perform public.panel_sinif_analiz(sinif3); raise exception 'TEST BAŞARISIZ: başka sınıf analizi';
+  exception when others then perform test.dogrula(sqlerrm = 'panel.yetkisiz', sqlerrm); end;
+  -- Ödev
+  od := public.panel_odev_olustur('Kesirler tekrar', array[app.sabit_uuid('kazanim:M.8.1.3.2')], array[sinif1], '{}', 5, 'uyarlamali', null, now() + interval '2 days');
+  perform test.dogrula((select (e ->> 'atanan')::int from jsonb_array_elements(public.panel_odevler()) e where (e ->> 'id')::uuid = od) >= 5, 'ödev ataması');
+  begin perform public.panel_odev_olustur('X', array[app.sabit_uuid('kazanim:M.8.1.3.2')], array[sinif3], '{}', 5, 'uyarlamali', null, now() + interval '2 days');
+    raise exception 'TEST BAŞARISIZ: başka sınıfa ödev';
+  exception when others then perform test.dogrula(sqlerrm = 'panel.yetkisiz', sqlerrm); end;
+  perform test.dogrula(jsonb_array_length(public.panel_odevler()) >= 1, 'ödev listesi');
+  perform test.dogrula(public.panel_bekleyenler() ? 'sikayetler', 'bekleyenler');
+  begin perform public.panel_dershane_ozet(); raise exception 'TEST BAŞARISIZ: öğretmen kurucu özeti';
+  exception when others then perform test.dogrula(sqlerrm = 'panel.yetkisiz', sqlerrm); end;
+  begin perform public.panel_rehberlik(); raise exception 'TEST BAŞARISIZ: öğretmen rehberlik';
+  exception when others then perform test.dogrula(sqlerrm = 'panel.yetkisiz', sqlerrm); end;
+  r := public.panel_ogrenci_detay(o1);
+  perform test.dogrula(r -> 'rehberlik' = 'null'::jsonb and jsonb_array_length(r -> 'gunluk') = 28, 'öğrenci detayı (rehberliksiz)');
+
+  -- Öğrenci: ödevini görür, panel fonksiyonlarına erişemez
+  perform test.oturum('ogrenci01@demo.kmyarena.demo');
+  perform test.dogrula(exists (select 1 from jsonb_array_elements(public.odevlerim()) e where (e ->> 'id')::uuid = od), 'öğrenci ödevini görmedi');
+  begin perform public.panel_bekleyenler(); raise exception 'TEST BAŞARISIZ: öğrenci bekleyenler';
+  exception when others then perform test.dogrula(sqlerrm = 'panel.yetkisiz', sqlerrm); end;
+  begin perform public.panel_ogrenci_detay(app.sabit_uuid('kullanici:ogrenci02@demo.kmyarena.demo')); raise exception 'TEST BAŞARISIZ: öğrenci başkasının detayı';
+  exception when others then perform test.dogrula(sqlerrm = 'panel.yetkisiz', sqlerrm); end;
+  perform test.dogrula(jsonb_array_length(public.panel_siniflarim()) = 0, 'öğrenci sınıf analizi listesi');
+
+  -- Kurucu: özet, öğrenciler, rehberlik, ayar
+  perform test.oturum('kurucu@demo.kmyarena.demo');
+  r := public.panel_dershane_ozet();
+  perform test.dogrula((r ->> 'ogrenci')::int >= 40 and jsonb_array_length(r -> 'trend') = 8, 'kurucu özeti');
+  perform test.dogrula(jsonb_array_length(public.panel_ogrenciler()) >= 40, 'öğrenci listesi');
+  perform test.dogrula(public.panel_rehberlik() ? 'riskliler', 'rehberlik');
+  perform public.panel_rehberlik_not(o1, 'gorusme', 'Haftaya görüşme', now() + interval '3 days');
+  perform test.dogrula(jsonb_array_length(public.panel_ogrenci_detay(o1) -> 'rehberlik') = 1, 'rehberlik notu');
+  r := public.panel_ayar_guncelle('{"canli_saat": "20:15", "gunluk_hedef": 500, "klan_sohbeti_serbest": true}');
+  perform test.dogrula(r ->> 'canli_saat' = '20:15' and not (r ? 'gunluk_hedef'), 'ayar doğrulama: ' || r::text);
+  perform test.dogrula(app.ozellik_acik_mi('klan_sohbeti_serbest', app.sabit_uuid('dershane:demo')), 'dershane bayrağı');
+  perform public.panel_duyuru('Deneme sınavı', 'Cumartesi 10:00', null, null);
+  perform test.oturum('ogrenci01@demo.kmyarena.demo');
+  perform test.dogrula(jsonb_array_length(public.duyurularim()) >= 1, 'öğrenci duyuruyu görmedi');
+  perform test.dogrula(jsonb_array_length(public.veli_ozet()) = 0, 'öğrenci veli özeti');
+  -- Rakip dershane kurucusu demo verisini göremez
+  perform test.oturum('kurucu@rakip.kmyarena.demo');
+  perform test.dogrula(not exists (select 1 from jsonb_array_elements(public.panel_ogrenciler()) e where (e ->> 'id')::uuid = o1), 'rakip kurucu demo öğrencisini gördü');
+end $$;
+reset role;
+-- Ödev işleme (service)
+do $$
+declare od uuid := (select id from public.odev order by olusturma desc limit 1); o1 uuid := app.sabit_uuid('kullanici:ogrenci01@demo.kmyarena.demo'); r jsonb; i int;
+begin
+  perform test.dogrula((public.sistem_odev_sonraki(o1, od) ->> 'kalan')::int = 5, 'ödev kalan');
+  for i in 1..5 loop r := public.sistem_odev_isle(o1, od, i % 2 = 0); end loop;
+  perform test.dogrula((r ->> 'bitti')::boolean, 'ödev bitmedi: ' || r::text);
+end $$;
+rollback;
+
 \echo '✔ Tüm veritabanı testleri geçti'
 
 

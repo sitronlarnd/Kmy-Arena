@@ -39,8 +39,8 @@ function metin(anahtar: string): string {
 export default function SoruEkrani() {
   const tema = useTema();
   const sorgu = useQueryClient();
-  const p = useLocalSearchParams<{ mod?: string; dersKodu?: string; kazanimKodu?: string; tespitDersKodu?: string; baslik?: string }>();
-  const mod: SoruModu = p.mod === "tekrar" || p.mod === "tespit" ? p.mod : "antrenman";
+  const p = useLocalSearchParams<{ mod?: string; dersKodu?: string; kazanimKodu?: string; tespitDersKodu?: string; baslik?: string; odevId?: string }>();
+  const mod: SoruModu = p.mod === "tekrar" || p.mod === "tespit" || p.mod === "odev" ? p.mod : "antrenman";
 
   const [ekran, setEkran] = useState<Ekran>({ ad: "yukleniyor" });
   const [soru, setSoru] = useState<IstemciSorusu | null>(null);
@@ -52,6 +52,7 @@ export default function SoruEkrani() {
   const [bildirildi, setBildirildi] = useState(false);
   const [klanaSoruldu, setKlanaSoruldu] = useState<string | null>(null);
   const [tespit, setTespit] = useState<{ cevaplanan: number; toplam: number } | null>(null);
+  const [odev, setOdev] = useState<{ cozulen: number; toplam: number; baslik: string } | null>(null);
   const [oturum, setOturum] = useState({ n: 0, dogru: 0, xp: 0, altin: 0 });
   const [gecen, setGecen] = useState(0);
   const [kutlama, setKutlama] = useState<number | null>(null);
@@ -74,6 +75,7 @@ export default function SoruEkrani() {
           ...(p.dersKodu ? { dersKodu: p.dersKodu } : {}),
           ...(p.kazanimKodu ? { kazanimKodu: p.kazanimKodu } : {}),
           ...(p.tespitDersKodu ? { tespitDersKodu: p.tespitDersKodu } : {}),
+          ...(p.odevId ? { odevId: p.odevId } : {}),
         });
         if (y.durum === "soru") {
           setSoru(y.soru);
@@ -82,6 +84,7 @@ export default function SoruEkrani() {
           setIpucuVar(y.soru.ipucuVar && mod !== "tespit");
           setBildirildi(false);
           setTespit(y.tespit ?? null);
+          setOdev(y.odev ?? null);
           baslangic.current = Date.now();
           setGecen(0);
           setEkran({ ad: "soru" });
@@ -94,6 +97,9 @@ export default function SoruEkrani() {
           zamanlayici.current = setTimeout(() => void getir(deneme + 1), y.tekrarDeneMs);
         } else if (y.durum === "tekrar_yok") {
           setEkran(oturum.n > 0 ? { ad: "ozet" } : { ad: "bilgi", anahtar: "soru.tekrarYok" });
+        } else if (y.durum === "odev_bitti") {
+          setKonfeti((k) => k + 1);
+          setEkran({ ad: "bilgi", anahtar: "soru.odevBitti" });
         } else if (y.durum === "tespit_bitti") {
           setEkran({ ad: "bilgi", anahtar: oturum.n > 0 ? "soru.tespitSonuc" : "soru.tespitBitti" });
         } else {
@@ -104,7 +110,7 @@ export default function SoruEkrani() {
         setEkran({ ad: "bilgi", anahtar: "ortak.hata" });
       }
     },
-    [mod, p.dersKodu, p.kazanimKodu, p.tespitDersKodu, oturum.n],
+    [mod, p.dersKodu, p.kazanimKodu, p.tespitDersKodu, p.odevId, oturum.n],
   );
 
   useEffect(() => {
@@ -185,6 +191,12 @@ export default function SoruEkrani() {
   };
 
   const sonraki = () => {
+    if (ekran.ad === "sonuc" && ekran.c.odev?.bitti) {
+      setKonfeti((k) => k + 1);
+      setEkran({ ad: "bilgi", anahtar: "soru.odevBitti" });
+      void sorgu.invalidateQueries({ queryKey: ["odevlerim"] });
+      return;
+    }
     if (ekran.ad === "sonuc" && ekran.c.tespitBitti) {
       setEkran({ ad: "bilgi", anahtar: "soru.tespitSonuc" });
       return;
@@ -196,9 +208,11 @@ export default function SoruEkrani() {
     void getir(0);
   };
 
-  const baslik = mod === "tespit" ? t("soru.tespitBaslik") : mod === "tekrar" ? t("arena.hataDefteri") : (p.baslik ?? t("arena.soruCoz"));
+  const baslik = mod === "tespit" ? t("soru.tespitBaslik") : mod === "tekrar" ? t("arena.hataDefteri") : mod === "odev" ? (odev?.baslik ?? t("odev.baslik")) : (p.baslik ?? t("arena.soruCoz"));
   const sayac =
-    mod === "tespit" && tespit
+    mod === "odev" && odev
+      ? t("soru.soruSayaci", { n: Math.min(odev.cozulen + (ekran.ad === "sonuc" ? 0 : 1), odev.toplam), toplam: odev.toplam })
+      : mod === "tespit" && tespit
       ? t("soru.soruSayaci", { n: Math.min(tespit.cevaplanan + 1, tespit.toplam), toplam: tespit.toplam })
       : mod === "antrenman"
         ? t("soru.soruSayaci", { n: Math.min(oturum.n + (ekran.ad === "sonuc" ? 0 : 1), ANTRENMAN_SORU), toplam: ANTRENMAN_SORU })
@@ -228,6 +242,8 @@ export default function SoruEkrani() {
           <Metin tur="kucuk" soluk numberOfLines={1}>{baslik}</Metin>
           {mod === "antrenman" ? (
             <Cubuk oran={(oturum.n + (sonuc ? 0 : 0)) / ANTRENMAN_SORU} yukseklik={10} parilti />
+          ) : mod === "odev" && odev ? (
+            <Cubuk oran={(odev.cozulen + (sonuc ? 1 : 0)) / Math.max(1, odev.toplam)} yukseklik={10} gradyan={GRADYAN.dogru} parilti />
           ) : mod === "tespit" && tespit ? (
             <Cubuk oran={tespit.cevaplanan / Math.max(1, tespit.toplam)} yukseklik={10} gradyan={GRADYAN.buz} />
           ) : null}

@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 // Havuz boşsa yanıttan sonra arka planda üretim yapılır (after)
 export const maxDuration = 300;
 
-const MODLAR = new Set(["antrenman", "tekrar", "tespit"]);
+const MODLAR = new Set(["antrenman", "tekrar", "tespit", "odev"]);
 const kod = (d: unknown): string | undefined => (typeof d === "string" && /^[\p{L}\p{N}._-]{1,40}$/u.test(d) ? d : undefined);
 
 export const OPTIONS = onUcus;
@@ -26,6 +26,7 @@ export async function POST(istek: Request) {
     if (kazanim) ist.kazanimKodu = kazanim;
     if (ders) ist.dersKodu = ders;
     if (tespit) ist.tespitDersKodu = tespit;
+    if (typeof g.odevId === "string" && /^[0-9a-f-]{36}$/i.test(g.odevId)) ist.odevId = g.odevId;
     return json(await siradakiSoru(k, ist));
   });
 }

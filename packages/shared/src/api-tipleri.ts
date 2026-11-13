@@ -2,7 +2,7 @@
 
 import type { CevapSonucu, Sik, SinavTuru, SoruTipi, Ustalik } from "./tipler";
 
-export type SoruModu = "antrenman" | "tekrar" | "tespit";
+export type SoruModu = "antrenman" | "tekrar" | "tespit" | "odev";
 
 export interface SiradakiIstegi {
   mod: SoruModu;
@@ -11,6 +11,8 @@ export interface SiradakiIstegi {
   dersKodu?: string;
   /** Tespit: hangi ders */
   tespitDersKodu?: string;
+  /** Ödev: hangi ödev */
+  odevId?: string;
 }
 
 /** Öğrenciye giden soru: cevap anahtarı, çözüm ve çeldirici notları YOK. */
@@ -31,7 +33,8 @@ export interface IstemciSorusu {
 }
 
 export type SiradakiYaniti =
-  | { durum: "soru"; mod: SoruModu; soru: IstemciSorusu; tespit?: { cevaplanan: number; toplam: number } }
+  | { durum: "soru"; mod: SoruModu; soru: IstemciSorusu; tespit?: { cevaplanan: number; toplam: number }; odev?: { cozulen: number; toplam: number; baslik: string } }
+  | { durum: "odev_bitti" }
   /** Havuz boş: arka planda üretim başladı, birkaç saniye sonra yeniden dene */
   | { durum: "hazirlaniyor"; tekrarDeneMs: number }
   | { durum: "tekrar_yok" }
@@ -47,6 +50,8 @@ export interface CevapIstegi {
 
 export interface CevapYaniti {
   sonuc: CevapSonucu;
+  /** Ödev sorusuysa ödevdeki ilerleme */
+  odev?: { cozulen: number; bitti: boolean };
   dogru: Sik;
   cozumAdimlari: string[];
   /** Öğrencinin seçtiği yanlış şık için çeldirici notu */
