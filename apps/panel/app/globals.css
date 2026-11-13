@@ -24,3 +24,20 @@ a { color: var(--vurgu); }
 .giris input { padding: 12px; border-radius: 8px; border: 1px solid var(--kenar); font-size: 16px; background: var(--zemin); color: var(--metin); }
 .giris button { padding: 12px; border: 0; border-radius: 8px; background: var(--vurgu); color: #fff; font-size: 16px; cursor: pointer; min-height: 44px; }
 .hata { color: #c62828; font-size: 14px; }
+.tam { grid-column: 1 / -1; }
+.tablo { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tablo th, .tablo td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--kenar); vertical-align: middle; }
+.tablo th { color: var(--soluk); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; }
+.tablo input, .tablo select, .form input, .form select { padding: 6px 8px; border-radius: 6px; border: 1px solid var(--kenar); background: var(--zemin); color: var(--metin); font-size: 14px; min-height: 32px; }
+.tablo input[type="number"] { width: 90px; }
+.dugme { padding: 8px 14px; border: 0; border-radius: 8px; background: var(--vurgu); color: #fff; font-size: 14px; cursor: pointer; min-height: 36px; }
+.dugme.ikincil { background: transparent; color: var(--vurgu); border: 1px solid var(--vurgu); }
+.dugme.tehlike { background: #c62828; }
+.form { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.rozet { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; background: var(--zemin); border: 1px solid var(--kenar); }
+.isi { display: inline-block; min-width: 38px; text-align: center; padding: 4px 6px; border-radius: 6px; font-size: 12px; font-variant-numeric: tabular-nums; }
+.metrikler { display: flex; gap: 24px; flex-wrap: wrap; }
+.metrik strong { display: block; font-size: 24px; }
+.metrik span { color: var(--soluk); font-size: 13px; }
+.yol { color: var(--soluk); font-size: 14px; }
+pre.rapor { background: var(--zemin); padding: 12px; border-radius: 8px; overflow: auto; font-size: 12px; max-height: 360px; }

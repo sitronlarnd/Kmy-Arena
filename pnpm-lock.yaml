@@ -172,6 +172,9 @@ importers:
 
   apps/panel:
     dependencies:
+      '@kmy/ai':
+        specifier: workspace:*
+        version: link:../../packages/ai
       '@kmy/shared':
         specifier: workspace:*
         version: link:../../packages/shared

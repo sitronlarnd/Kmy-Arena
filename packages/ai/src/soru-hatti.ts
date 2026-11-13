@@ -174,6 +174,7 @@ export function kaliteKontrolu(s: UretilenSoru, istek: UretimIstegi): string[] {
   if (enUzun > 30 && dogruUzunluk === enUzun && uzunluklar.filter((u) => u === enUzun).length === 1 && dogruUzunluk > 1.6 * enKisa) {
     n.push("doğru şık belirgin biçimde en uzun");
   }
+  if ((s.govdeMd.match(/^\s*[*_]{0,2}\(?[A-E][).][*_]{0,2}\s/gm)?.length ?? 0) >= 3) n.push("şıklar soru metninde tekrar edilmiş");
   if (s.govdeMd.length < 15) n.push("soru metni çok kısa");
   if (s.govdeMd.length > 2500) n.push("soru metni çok uzun");
   if ((s.govdeMd.match(/(?<!\\)\$/g)?.length ?? 0) % 2 !== 0) n.push("LaTeX $ işaretleri dengesiz");

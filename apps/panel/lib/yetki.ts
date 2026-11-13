@@ -37,3 +37,18 @@ export async function paneliKoru(panel: Panel): Promise<YetkiSatiri[]> {
   if (!paneleErisebilir(yetkiler, panel)) redirect("/?yetkisiz=1");
   return yetkiler;
 }
+
+/**
+ * Merkez işlemi için: oturumdaki kullanıcının genel kapsamlı yetkisi yoksa
+ * hata fırlatır. Kullanıcı kimliğini döner (denetim kaydı için).
+ */
+export async function merkezYetkisi(yetki: YetkiKodu): Promise<string> {
+  const supabase = await sunucuIstemcisi();
+  const { data } = await supabase.auth.getUser();
+  if (!data.user) redirect("/giris");
+  const yetkiler = await yetkilerim();
+  if (!yetkiler.some((y) => y.yetki_kod === yetki && y.dershane_id === null)) {
+    throw new Error("Bu işlem için yetkin yok.");
+  }
+  return data.user.id;
+}

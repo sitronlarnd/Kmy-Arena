@@ -43,10 +43,9 @@ cp .env.example .env                          # değerleri doldur; KMYAI_API_KEY
 ### Supabase
 
 1. Supabase Cloud'da **Frankfurt (eu-central-1)** bölgesinde proje aç.
-2. Migration'ları uygula: `supabase link --project-ref <ref>` → `supabase db push`
-3. Müfredatı yükle: `psql "$DATABASE_URL" -f supabase/seed/01_mufredat.sql`
-4. Yalnızca demo projesinde: `psql "$DATABASE_URL" -f supabase/seed/02_demo.sql`
-5. Auth → URL Configuration'a panel ve web adreslerini ekle.
+2. Migration + seed: GitHub → Actions → **Supabase'e yükle** → Run workflow (gizli değer `SUPABASE_DB_URL` = Connect → Session pooler adresi). Yerelden: `SUPABASE_DB_URL=... bash scripts/db-yukle.sh [--seed]`. Uygulanan migration'lar `kmy_migration` tablosunda tutulur; yeni migration gelince aynı işi yeniden çalıştır.
+3. `--seed` / "Demo verilerini de yükle" yalnızca demo projesinde (demo hesaplar içerir).
+4. Auth → URL Configuration'a panel ve web adreslerini ekle.
 
 `supabase/tests/00_supabase_yerel_taklit.sql` **yalnızca yerel testler içindir**, gerçek Supabase'de çalıştırma.
 
@@ -67,10 +66,12 @@ Aynı depodan 4 proje; her birinde **Root Directory** farklı, gerisi `vercel.js
 
 | Proje | Root Directory | Ortam değişkenleri |
 |---|---|---|
-| kmy-arena-panel | `apps/panel` | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
-| kmy-arena-api | `apps/api` | `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `KMYAI_*`, `CRON_SECRET`, `RESEND_API_KEY`, `SAHIP_EPOSTA` |
+| kmy-arena-panel | `apps/panel` | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_API_URL` |
+| kmy-arena-api | `apps/api` | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `KMYAI_*`, `CRON_SECRET`, `RESEND_API_KEY`, `SAHIP_EPOSTA` |
 | kmy-arena-web | `apps/mobile` | `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_API_URL` |
 | kmy-arena-tanitim | `apps/landing` | — |
+
+API'nin zamanlanmış işleri (`apps/api/vercel.json`): `havuz-doldur` her 10 dakikada (soru havuzunu doldurur), `kalibrasyon` her gece (20+ cevaplı soruların gerçek zorluğu), `cevap-bolumu` her ayın 25'i.
 
 Fonksiyon bölgesi `fra1` (Frankfurt) — veritabanıyla aynı bölge. Mobil derlemeler Vercel'de değil, EAS Build'de alınır (`eas build --profile magaza`).
 

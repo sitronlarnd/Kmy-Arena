@@ -51,5 +51,16 @@ Kurallar:
 14. Önceki soru özetleri verilmişse onlara benzemeyen, farklı bir bağlam ve sayılarla yaz.`,
 };
 
-export const SORU_URETIM_PROMPTLARI: readonly PromptSurumu[] = [SORU_URETIM_V1];
-export const SORU_URETIM_VARSAYILAN = SORU_URETIM_V1;
+/**
+ * v2 (2026-11-13, canlı test bulguları): şıklar soru metnine de yazılıyordu;
+ * claude-sonnet-4-6 gereksiz uzun çıktı (5000+ token) üretiyordu.
+ */
+export const SORU_URETIM_V2: PromptSurumu = {
+  surum: "soru-uretim@2",
+  metin: `${SORU_URETIM_V1.metin}
+15. Şıkları govde_md içine YAZMA; şıklar yalnızca "siklar" alanında olsun. govde_md soru kökü ile bitsin.
+16. Düşünme sürecini, taslağı veya açıklamayı yazma. Çıktın yalnızca tek bir JSON nesnesi olsun; çözüm adımları ve notlar kısa olsun.`,
+};
+
+export const SORU_URETIM_PROMPTLARI: readonly PromptSurumu[] = [SORU_URETIM_V1, SORU_URETIM_V2];
+export const SORU_URETIM_VARSAYILAN = SORU_URETIM_V2;

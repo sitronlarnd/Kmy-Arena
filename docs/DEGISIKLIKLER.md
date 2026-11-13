@@ -5,7 +5,7 @@
 | Faz | Kapsam | Durum |
 |---|---|---|
 | 0 | Altyapı: monorepo, uygulama iskeletleri, Supabase şema + RLS + RBAC, davet kodu, özellik bayrakları, seed, CI | **Tamamlandı** |
-| 1 | Çekirdek soru döngüsü: üretim + doğrulama hattı, havuz, soru ekranı (LaTeX), Elo, tespit sınavı, XP/Altın, çözüm, hata defteri, konu haritası, AI Merkezi temel | Sırada |
+| 1 | Çekirdek soru döngüsü: üretim + doğrulama hattı, havuz, soru ekranı (LaTeX), Elo, tespit sınavı, XP/Altın, çözüm, hata defteri, konu haritası, AI Merkezi temel | **Tamamlandı** (tam müfredat listesi hariç, aşağıya bakın) |
 | 2 | Oyun katmanı: karakter, seri, görevler, 40 rozet, mağaza, lig, sıralamalar, kart albümü | |
 | 3 | Düello ve Canlı Soru Saati (Supabase Realtime) | |
 | 4 | Klanlar, boss, klan savaşı | |
@@ -82,3 +82,53 @@ Tamamı `.env.example` içinde.
 
 - `scripts/db-yukle.sh`: migration'ları uygular, uygulananları `public.kmy_migration` tablosunda tutar (her dosya bir kez, tek işlem içinde). `--seed` ile demo verisi.
 - `.github/workflows/supabase-yukle.yml`: GitHub Actions'tan elle çalıştırılır. Gizli değer: `SUPABASE_DB_URL` (Supabase → Connect → Session pooler adresi). Yeni migration eklendikçe aynı iş yeniden çalıştırılır.
+
+---
+
+## Faz 1 — Çekirdek soru döngüsü (2026-11-13)
+
+### Neler var
+
+- **Soru üretim hattı** (`packages/ai/src/soru-hatti.ts`): istek → üretici (sürümlü prompt, `promptlar/`) → JSON ayıklama → kalite filtreleri → mathjs sayısal kontrol → **cevap anahtarını görmeyen** doğrulayıcı → `dogrulandi` / `reddedildi` (+ red nedeni ve aşaması). Doğru şık harfi dengeli dağıtılır. Reddedilen sorular istatistik için saklanır, öğrenciye asla gitmez.
+- **Havuz** (`apps/api/lib/havuz.ts`): (kazanım, bant) başına veritabanı kilidiyle tek üretici, 3 paralel soru. Öğrenci soru isterken stok azsa yanıttan sonra arka planda üretim (`after`). Cron `havuz-doldur` her 10 dakikada: aktif kazanımlarda her bantta 8, diğerlerinin kolay bantlarında 3 soru hedefi.
+- **Seçim** (`sistem_soru_sec`): öğrencinin görmediği, hedef zorluğa en yakın soru; eşitlikte önce kullanılmış olan (taze sorular düelloya). Kazanım boşsa aynı dersten.
+- **Cevap işleme** (`sistem_cevap_isle`, tek işlem): gösterim kapanır (ikinci cevap 409), Elo θ (yarış kontrolüyle), XP/Altın, ustalık, seri, özellik puanı, soru istatistiği, hata defteri, tespit. Tüm hesap `packages/shared` → `cevapHesapla` (tek kaynak), istemci hiçbir değer göndermez. İpucu sayacı sunucuda.
+- **Seviye tespiti:** ders başına 10 soruluk uyarlamalı sınav; sonuç dersin kazanımlarına başlangıç θ olarak yayılır.
+- **Hata defteri ve aralıklı tekrar:** yanlış/boş → deftere; 1-3-7-21 gün; doğruysa sonraki aralık, yanlışsa başa.
+- **Gece kalibrasyonu:** 20+ cevaplı soruların ölçülmüş zorluğu; çok hata bildirilen sorular akıştan çekilir.
+- **API:** `POST /api/soru/{siradaki,cevap,ipucu,hata-bildir}`, `POST /api/yonetim/on-isitma` (ön ısıtma ve üretim testi raporu), `GET /api/yonetim/tanilama`. Bearer JWT (Supabase imza anahtarlarıyla doğrulama), CORS. Model ayarları ve promptlar veritabanından 60 sn önbellekle okunur.
+- **Mobil:** soru ekranı (KaTeX: web'de doğrudan, iOS/Android'de WebView; matematiksiz metin düz Text), şıklar, süre, ipucu, boş bırak, sonuç + çözüm adımları + seçilen yanlış şıkkın çeldirici notu, "Soruda hata var", 10 soruluk oturum özeti; Arena (seviye/XP çubuğu, Altın, seri, ders seçimi, tespit önerisi, tekrar zamanı), Harita (ders → ünite → kazanım, ustalık renkleri, "Önce şunu dene"), Hata defteri, Profil (istatistik, özellik puanları).
+- **Merkez Panel:** `/merkez/ai` — görev bazlı model ayarları (yeni sürüm yayınla / tek tıkla geri al, yalnızca Claude), acil durum (yedek mod, görev durdur), havuz ısı haritası (kazanım × bant), ön ısıtma / üretim testi, son 7 gün atılma oranı ve red aşamaları, görev × model token tüketimi. `/merkez/bayraklar` — genel (yüzde ile) ve dershane bazında özellik bayrakları. Tüm işlemler denetim kaydına yazılır.
+
+### Canlı ortamda yapılan testler (2026-11-13)
+
+| Kontrol | Sonuç |
+|---|---|
+| Soru getirme süresi (havuzdan, sıcak) | 0,6-1,0 sn ✔ (soğuk başlangıç ~2 sn) |
+| Yanıtta cevap anahtarı / çözüm / ipucu | Yok ✔ |
+| İkinci cevap | 409 ✔ |
+| İstemciden XP yazma | 403 (yetki yok) ✔ |
+| Sahte süre (25 sn bildirildi, gerçekte 1 sn) | Sunucu ölçümüne sıkıştırıldı, puana sayılmadı ✔ |
+| Gerçek KMYAI ile üretim | İlk deneme: sonnet-4-6 20 sn'de zaman aşımı, doğrulayıcı 1200 token'da kesildi → düzeltildi (0009, doğrulama promptu v2, kesik JSON toleransı) |
+| Düzeltme sonrası üretim testi | 6 sorudan 4 doğrulandı (atılma %33); doğrulayıcı gerçek hataları yakaladı: yanlış anahtar, soru metninde tekrar eden şıklar → üretim promptu v2 ve kalite filtresi eklendi |
+
+### Açık kalanlar
+
+- **Tam MEB/ÖSYM kazanım listesi:** hâlâ 22 örnek kazanım var. Resmî kodlarla doğrulanmış liste gerekiyor (uydurma kod girilmedi).
+- **100 soruluk üretim testi raporu:** Panel > AI Merkezi > Ön ısıtma ile yapılabilir (bir çalıştırma ~5 dk, ~10-15 soru); cron da sürekli üretir. Atılma oranı ve süre panelde görünür.
+- **Prompt stüdyosu, A/B testi, model kataloğu, bütçe alarmları:** Faz 6.
+- **Hata bildirimini öğretmenin onaylaması ve XP iadesi:** Faz 6 öğretmen paneli.
+
+### Elle test adımları
+
+1. Mobil web: `ogrenci01@demo.kmyarena.demo` / `KmyDemo!2026` → Arena → Matematik → **Tespite başla** → 10 soru → "Tespit tamamlandı".
+2. **Soru Çöz** → soru 1,5 sn içinde gelmeli; bir şık seç → Cevapla → doğru/yanlış, XP, çözüm adımları; yanlışsa "Hata defterine eklendi".
+3. Harita → kazanım renkleri; bir kazanıma dokun → o kazanımdan soru.
+4. Panel: `sahip@kmyarena.demo` → Merkez → AI Merkezi → bir görevin modelini değiştir → Yayınla → sürüm artar; **Geri al** → önceki sürüm geri gelir.
+5. AI Merkezi → Ön ısıt (Matematik, bant 1-3, adet 3) → rapor: doğrulanan, reddedilen, atılma oranı, ortalama süre.
+6. Özellik bayrakları → demo dershanede "Düello"yu Kapalı yap → mobil uygulamayı yenile → Düello sekmesi kaybolur.
+
+### Yeni ortam değişkenleri
+
+- Panel: `SUPABASE_SERVICE_ROLE_KEY` (zaten girildi), isteğe bağlı `NEXT_PUBLIC_API_URL`.
+- `KMYAI_ZAMAN_ASIMI_URETIM_MS` varsayılanı 90000.

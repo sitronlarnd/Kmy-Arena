@@ -93,6 +93,10 @@ describe("Kalite filtreleri", () => {
     const iyi = uretilenSoruyuCoz(JSON.stringify({ ...iyiSoru, govde_md: "Aşağıdakilerden hangisi $-72$'ye eşit **değildir**?" }), istek);
     assert.doesNotMatch(kaliteKontrolu(iyi, istek).join(), /olumsuz/);
   });
+  it("şıklar soru metnine de yazılmışsa reddedilir", () => {
+    const s = uretilenSoruyuCoz(JSON.stringify({ ...iyiSoru, govde_md: "Hangisi doğrudur?\n\nA) $-36$\nB) $36$\nC) $-72$\nD) $72$" }), istek);
+    assert.match(kaliteKontrolu(s, istek).join(), /tekrar edilmiş/);
+  });
   it("hedeften çok uzak zorluk ve eksik ipucu reddedilir", () => {
     const s = uretilenSoruyuCoz(JSON.stringify({ ...iyiSoru, zorluk: 8, ipuclari: ["a"] }), istek);
     const n = kaliteKontrolu(s, istek).join();
@@ -131,7 +135,7 @@ describe("Üretim + doğrulama hattı", () => {
     assert.equal(r.durum, "dogrulandi");
     assert.deepEqual(kayitlar.map((k) => k.amac), ["soru_uretim", "soru_dogrulama"]);
     assert.ok(kayitlar.every((k) => k.kullaniciId === null && k.basarili));
-    assert.equal(kayitlar[0]?.promptSurumu, "soru-uretim@1");
+    assert.equal(kayitlar[0]?.promptSurumu, "soru-uretim@1"); // test V1 ile çağırıyor
   });
   it("KABUL: doğrulayıcıyla eşleşmeyen soru reddedilir", async () => {
     const r = await soruUret(bag([JSON.stringify(iyiSoru), dogrulayici("D")]), istek);

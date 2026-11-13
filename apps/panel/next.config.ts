@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const config: NextConfig = {
-  transpilePackages: ["@kmy/shared"],
+  transpilePackages: ["@kmy/shared", "@kmy/ai"],
   poweredByHeader: false,
 };
 
