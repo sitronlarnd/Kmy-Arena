@@ -1,0 +1,29 @@
+name: Supabase'e yükle
+
+# Elle çalıştırılır: GitHub → Actions → "Supabase'e yükle" → Run workflow.
+# Gerekli gizli değer: Settings → Secrets and variables → Actions →
+#   SUPABASE_DB_URL = Supabase → Connect → "Session pooler" bağlantı adresi
+#   (içindeki [YOUR-PASSWORD] yerine veritabanı şifresi yazılmış hali).
+on:
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: "Demo verilerini de yükle (yalnızca demo veritabanı için)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: supabase-yukle
+  cancel-in-progress: false
+
+jobs:
+  yukle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: psql kur
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client >/dev/null
+      - name: Migration'lar${{ inputs.seed && ' + demo verisi' || '' }}
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: bash scripts/db-yukle.sh ${{ inputs.seed && '--seed' || '' }}

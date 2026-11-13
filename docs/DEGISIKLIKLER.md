@@ -77,3 +77,8 @@ Tamamı `.env.example` içinde.
 | `pnpm test` | ✔ 45/45 |
 | `pnpm db:test` | ✔ 11 grup, PostgreSQL 16 |
 | `pnpm build` | ✔ landing, panel, api (`next build`), mobile (`expo export --platform web`) |
+
+### Supabase'e yükleme
+
+- `scripts/db-yukle.sh`: migration'ları uygular, uygulananları `public.kmy_migration` tablosunda tutar (her dosya bir kez, tek işlem içinde). `--seed` ile demo verisi.
+- `.github/workflows/supabase-yukle.yml`: GitHub Actions'tan elle çalıştırılır. Gizli değer: `SUPABASE_DB_URL` (Supabase → Connect → Session pooler adresi). Yeni migration eklendikçe aynı iş yeniden çalıştırılır.
