@@ -12,7 +12,7 @@ export async function GET(istek: Request) {
     const s = servisIstemcisi();
     const [log, red, ozet] = await Promise.all([
       s.from("ai_cagri_log").select("olusturma, amac, model, token_giris, token_cikis, sure_ms, basarili, hata, prompt_surumu").order("olusturma", { ascending: false }).limit(40),
-      s.from("soru").select("olusturma, zorluk, red_nedeni, uretici_model, dogrulayici_model").eq("durum", "reddedildi").order("olusturma", { ascending: false }).limit(15),
+      s.from("soru").select("olusturma, zorluk, red_nedeni, uretici_model, dogrulayici_model, govde_md, siklar, dogru, cozum_adimlari").eq("durum", "reddedildi").order("olusturma", { ascending: false }).limit(15),
       s.from("soru").select("durum, uretici_model, red_nedeni").eq("kaynak", "ai").limit(10000),
     ]);
     const durumlar: Record<string, number> = {};

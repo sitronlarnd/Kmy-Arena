@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
+  dogrulamaCiktisiniCoz,
   dogruSikSec,
   jsonAyikla,
   kaliteKontrolu,
@@ -197,5 +198,14 @@ describe("Doğrulama çıktısı token sınırında kesilirse", () => {
   it("karar alanı eksikse hata verir (soru reddedilir)", async () => {
     const { dogrulamaCiktisiniCoz } = await import("../src/index");
     assert.throws(() => dogrulamaCiktisiniCoz('{"cozum": "uzun bir çözüm ve sonra kesil'));
+  });
+});
+
+describe("Doğrulayıcı cevap biçimleri", () => {
+  it("C), C şıkkı, Cevap: C biçimlerini okur", () => {
+    for (const c of ["C", "C)", "C şıkkı", "Cevap: C", "c"]) {
+      assert.equal(dogrulamaCiktisiniCoz(JSON.stringify({ cevap: c, tek_dogru_mu: true })).cevap, "C");
+    }
+    assert.equal(dogrulamaCiktisiniCoz(JSON.stringify({ cevap: "Hiçbiri" })).cevap, null);
   });
 });

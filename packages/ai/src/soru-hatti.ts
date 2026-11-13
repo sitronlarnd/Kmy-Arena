@@ -48,6 +48,7 @@ export interface DogrulamaSonucu {
   kazanimUygun: boolean;
   sorunlar: string[];
   zorlukTahmini: number | null;
+  cozum?: string;
 }
 
 export type HatSonucu =
@@ -316,7 +317,9 @@ export function dogrulamaCiktisiniCoz(icerik: string): DogrulamaSonucu {
     if (!v) throw h;
   }
   if (!nesne(v)) throw new Error("doğrulama çıktısı nesne değil");
-  const cevap = typeof v.cevap === "string" ? v.cevap.trim().toUpperCase().slice(0, 1) : "";
+  // "C", "C)", "C şıkkı", "Cevap: C" gibi biçimleri de kabul et.
+  const ham = typeof v.cevap === "string" ? v.cevap.trim().toUpperCase() : "";
+  const cevap = /^[A-E]\b/.test(ham) ? ham[0] : (/(?:^|[^A-ZÇĞİÖŞÜ])([A-E])(?:[^A-ZÇĞİÖŞÜ]|$)/.exec(ham)?.[1] ?? "");
   const z = Number(v.zorluk_tahmini);
   return {
     cevap: sikMi(cevap) ? cevap : null,
@@ -324,6 +327,7 @@ export function dogrulamaCiktisiniCoz(icerik: string): DogrulamaSonucu {
     kazanimUygun: v.kazanim_uygun !== false,
     sorunlar: Array.isArray(v.sorunlar) ? v.sorunlar.filter(metinMi) : [],
     zorlukTahmini: Number.isFinite(z) && z >= 1 && z <= 10 ? Math.round(z) : null,
+    ...(typeof v.cozum === "string" && v.cozum ? { cozum: v.cozum.slice(0, 300) } : {}),
   };
 }
 
@@ -398,7 +402,7 @@ export async function soruUret(b: HatBagimliliklari, istek: UretimIstegi): Promi
     return red("dogrulama", `doğrulama çıktısı çözümlenemedi: ${dogrulamaYaniti.icerik.slice(0, 160)}`, soru, uretim.model, dogrulamaYaniti.model);
   }
   if (d.cevap !== soru.dogru) {
-    return red("dogrulama", `doğrulayıcı ${d.cevap ?? "?"} buldu, anahtar ${soru.dogru}`, soru, uretim.model, dogrulamaYaniti.model);
+    return red("dogrulama", `doğrulayıcı ${d.cevap ?? "?"} buldu, anahtar ${soru.dogru}${d.cozum ? ` — ${d.cozum}` : ""}`, soru, uretim.model, dogrulamaYaniti.model);
   }
   if (!d.tekDogruMu) return red("dogrulama", "birden çok doğru şık", soru, uretim.model, dogrulamaYaniti.model);
   if (!d.kazanimUygun) return red("dogrulama", "kazanım dışı", soru, uretim.model, dogrulamaYaniti.model);
