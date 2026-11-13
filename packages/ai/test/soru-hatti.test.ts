@@ -119,6 +119,10 @@ describe("Sayısal kontrol (mathjs)", () => {
     const s2 = uretilenSoruyuCoz(JSON.stringify({ ...iyiSoru, siklar: { ...iyiSoru.siklar, C: "$-70$" } }), istek);
     assert.equal(sayisalKontrol(s2)?.gecti, false);
   });
+  it("karşılaştırma ifadesi denetlenmez (doğrulayıcıya bırakılır)", () => {
+    const s = uretilenSoruyuCoz(JSON.stringify({ ...iyiSoru, sayisal_kontrol: { ifade: "72 % 8 == 0", sonuc: "1" } }), istek);
+    assert.equal(sayisalKontrol(s), null);
+  });
   it("Türkçe ondalık ve kesir yazımı", () => {
     const s = uretilenSoruyuCoz(
       JSON.stringify({ ...iyiSoru, siklar: { ...iyiSoru.siklar, C: "$\\frac{1}{4}$" }, sayisal_kontrol: { ifade: "1/4", sonuc: "0,25" } }),

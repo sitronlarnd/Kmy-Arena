@@ -66,7 +66,7 @@ export function ortamdanVarsayilanlar(env: OrtamDegiskenleri): Record<AiGorevi, 
     modelBirincil: model, modelYedek: m.yedek, sicaklik, maxToken, zamanAsimiMs, yenidenDeneme: deneme,
   });
   return {
-    soru_uretim: { ...ayar(m.uretici, 0.8, 2500, uretimMs), yenidenDeneme: Math.min(deneme, 1) },
+    soru_uretim: { ...ayar(m.uretici, 0.8, 4000, uretimMs), yenidenDeneme: Math.min(deneme, 1) },
     // Doğrulayıcı da yedeğe düşerse doğrulama gücü azalır; yedek olarak
     // yine güçlü model kalır, haiku'ya düşülmez.
     // Doğrulayıcıya ulaşılamazsa daha zayıf bir modele düşülmez: soru atılır, sonra yeniden üretilir.
@@ -76,7 +76,7 @@ export function ortamdanVarsayilanlar(env: OrtamDegiskenleri): Record<AiGorevi, 
     topluluk_degerlendirme: ayar(m.yedek, 0, 400, 20_000),
     moderasyon: ayar(m.yedek, 0, 200, 20_000),
     veli_raporu: ayar(m.veliRaporu, 0.5, 600, asistanMs),
-    ogretmen_soru_uretim: ayar(m.dogrulayici, 0.7, 2500, uretimMs),
+    ogretmen_soru_uretim: ayar(m.dogrulayici, 0.7, 4000, uretimMs),
   };
 }
 

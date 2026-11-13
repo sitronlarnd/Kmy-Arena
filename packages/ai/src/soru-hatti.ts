@@ -214,13 +214,15 @@ function sayiyaCevir(metin: string): number | null {
  */
 export function sayisalKontrol(s: UretilenSoru): { gecti: boolean; neden?: string } | null {
   if (!s.sayisalKontrol) return null;
+  // Karşılaştırma ifadeleri ("55 % 11 == 0") sayı değil doğru/yanlış verir: denetlenemez, doğrulayıcıya bırakılır.
+  if (/[=<>!]|\b(and|or|not)\b/.test(s.sayisalKontrol.ifade)) return null;
   const hesap = sayiyaCevir(s.sayisalKontrol.ifade);
   const beyan = sayiyaCevir(s.sayisalKontrol.sonuc);
   if (hesap === null || beyan === null) return null; // hesaplanamayan ifade: doğrulayıcıya bırak
   const esit = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(a), Math.abs(b));
   if (!esit(hesap, beyan)) return { gecti: false, neden: `ifade ${hesap}, beyan edilen sonuç ${beyan}` };
   const sik = sayiyaCevir(s.siklar[s.dogru] ?? "");
-  if (sik !== null && !esit(sik, hesap)) return { gecti: false, neden: `doğru şık ${sik}, hesap ${hesap}` };
+  if (sik !== null && !esit(sik, hesap)) return { gecti: false, neden: `doğru şık ${sik}, hesap ${hesap} (ifade: ${s.sayisalKontrol.ifade.slice(0, 80)})` };
   return { gecti: true };
 }
 

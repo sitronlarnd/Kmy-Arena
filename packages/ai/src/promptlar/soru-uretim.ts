@@ -62,5 +62,12 @@ export const SORU_URETIM_V2: PromptSurumu = {
 16. Düşünme sürecini, taslağı veya açıklamayı yazma. Çıktın yalnızca tek bir JSON nesnesi olsun; çözüm adımları ve notlar kısa olsun.`,
 };
 
-export const SORU_URETIM_PROMPTLARI: readonly PromptSurumu[] = [SORU_URETIM_V1, SORU_URETIM_V2];
-export const SORU_URETIM_VARSAYILAN = SORU_URETIM_V2;
+/** v3 (2026-11-13): sayisal_kontrol'e karşılaştırma yazılıyordu ("55 % 11 == 0"). */
+export const SORU_URETIM_V3: PromptSurumu = {
+  surum: "soru-uretim@3",
+  metin: `${SORU_URETIM_V2.metin}
+17. "sayisal_kontrol.ifade", doğru şıktaki SAYIYI hesaplayan saf bir aritmetik ifade olsun (ör. "(-2)^3 * 3^2", "gcd(84, 120)", "sqrt(50)/sqrt(2)"); karşılaştırma (==, <, >) veya mantıksal ifade yazma. Doğru şık bir sayı değilse (ifade, kelime, liste) "sayisal_kontrol" null olsun.`,
+};
+
+export const SORU_URETIM_PROMPTLARI: readonly PromptSurumu[] = [SORU_URETIM_V1, SORU_URETIM_V2, SORU_URETIM_V3];
+export const SORU_URETIM_VARSAYILAN = SORU_URETIM_V3;
