@@ -1,4 +1,3 @@
-import { t } from "@kmy/shared/i18n";
 import { PanelKabugu } from "@/bilesenler/PanelKabugu";
 import { servis } from "@/lib/servis";
 import { paneliKoru } from "@/lib/yetki";
@@ -36,7 +35,7 @@ export default async function Bayraklar({ searchParams }: { searchParams: Promis
   const ozel = new Map((bayraklar.data ?? []).filter((b) => b.dershane_id === secili).map((b) => [b.kod as string, b.acik as boolean]));
 
   return (
-    <PanelKabugu baslik={`${t("panel.merkez")} · Özellik bayrakları`}>
+    <PanelKabugu baslik="Özellik bayrakları" panel="merkez" aktif="/merkez/bayraklar">
       <p className="yol tam"><a href="/merkez">Merkez</a> / Özellik bayrakları</p>
       <section className="kart tam">
         <h3>Genel (tüm dershaneler)</h3>

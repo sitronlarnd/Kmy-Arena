@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function Merkez() {
   await paneliKoru("merkez");
   return (
-    <PanelKabugu baslik={t("panel.merkez")}>
+    <PanelKabugu baslik={t("panel.merkez")} panel="merkez" aktif="/merkez">
       <Kart baslik="Genel bakış" aciklama="Dershane, öğrenci, MRR, KMYAI maliyeti ve brüt marj kartları (Faz 6)." />
       <a href="/merkez/ai" className="kart" style={{ textDecoration: "none", color: "inherit" }}>
         <h3>AI Merkezi →</h3>

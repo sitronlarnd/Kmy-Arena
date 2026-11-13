@@ -1,5 +1,4 @@
 import { AI_GOREVLERI, SORU_DOGRULAMA_VARSAYILAN, SORU_URETIM_VARSAYILAN } from "@kmy/ai";
-import { t } from "@kmy/shared/i18n";
 import { PanelKabugu } from "@/bilesenler/PanelKabugu";
 import { servis } from "@/lib/servis";
 import { paneliKoru } from "@/lib/yetki";
@@ -92,7 +91,7 @@ export default async function AiMerkezi() {
     ((promptlar.data ?? []) as Array<{ gorev: string; surum: string }>).find((p) => p.gorev === gorev)?.surum ?? `${varsayilan} (kod)`;
 
   return (
-    <PanelKabugu baslik={`${t("panel.merkez")} · AI Merkezi`}>
+    <PanelKabugu baslik="AI Merkezi" panel="merkez" aktif="/merkez/ai">
       <p className="yol tam"><a href="/merkez">Merkez</a> / AI Merkezi</p>
 
       <section className="kart tam">
