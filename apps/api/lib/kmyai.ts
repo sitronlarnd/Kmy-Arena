@@ -72,6 +72,11 @@ function devreKaydet(basarili: boolean, hata: string | null): void {
     return;
   }
   // Yalnızca erişim hataları sayılır (biçim/kalite reddi ve hız sınırı değil)
+  // 401/403: anahtar geçersiz ya da yetkisiz — düzelene kadar boşuna istek atılmaz
+  if (hata && /HTTP 40[13]/.test(hata)) {
+    acikKadar = Date.now() + 600_000;
+    return;
+  }
   if (hata && /zaman aşımı|ağ hatası|HTTP 5\d\d|HTTP 429/.test(hata)) {
     ardisikHata++;
     // 2 ardışık erişim/hız hatasında 5 dakika KMYAI'ye hiç istek gitmez
