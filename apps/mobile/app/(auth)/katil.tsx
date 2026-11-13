@@ -1,9 +1,12 @@
 import { t, type MetinAnahtari } from "@kmy/shared/i18n";
 import { Link } from "expo-router";
 import { useState } from "react";
-import { ScrollView, Text } from "react-native";
+import { ScrollView, View } from "react-native";
 import { Alan } from "@/bilesenler/Alan";
-import { Dugme } from "@/bilesenler/Dugme";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ticket, UserPlus } from "lucide-react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
+import { Dugme, IkonKutu, Metin } from "@/bilesenler/ui";
 import { hataAnahtari, useOturum } from "@/lib/oturum";
 import { supabase } from "@/lib/supabase";
 import { BOYUT, useTema } from "@/lib/tema";
@@ -54,8 +57,13 @@ export default function Katil() {
   }
 
   return (
+    <View style={{ flex: 1, backgroundColor: tema.zemin }}>
+    <LinearGradient colors={["#3B2A8F", "#141631", tema.zemin]} style={{ position: "absolute", left: 0, right: 0, top: 0, height: 420 }} />
     <ScrollView contentContainerStyle={{ padding: 24, gap: BOYUT.bosluk, maxWidth: 480, width: "100%", alignSelf: "center" }}>
-      <Text style={{ fontSize: 28, fontWeight: "800", color: tema.metin }}>{t("giris.baslik")}</Text>
+      <Animated.View entering={FadeInDown.duration(500)} style={{ alignItems: "center", gap: 8, paddingTop: 20 }}>
+        <IkonKutu ikon={Ticket} renk="#FFC53D" boyut={72} />
+        <Metin tur="baslik" ortala>{t("giris.baslik")}</Metin>
+      </Animated.View>
       <Alan etiket={t("giris.davetKoduEtiket")} placeholder={t("giris.davetKoduIpucu")} value={kod} onChangeText={(v) => setKod(v.toUpperCase())} autoCapitalize="characters" maxLength={8} />
       {!oturum && (
         <>
@@ -67,14 +75,15 @@ export default function Katil() {
       <Alan etiket={t("giris.soyadEtiket")} value={soyad} onChangeText={setSoyad} />
       <Alan etiket={t("giris.takmaAdEtiket")} placeholder={t("giris.takmaAdIpucu")} value={takmaAd} onChangeText={setTakmaAd} autoCapitalize="none" />
       <Alan etiket={t("giris.dogumYiliEtiket")} value={dogumYili} onChangeText={setDogumYili} keyboardType="number-pad" maxLength={4} />
-      <Text style={{ color: tema.soluk, fontSize: 13 }}>{t("giris.kvkkOnay")}</Text>
-      {hata && <Text style={{ color: tema.yanlis }}>{hata}</Text>}
-      <Dugme baslik={t("giris.katil")} onPress={katil} yukleniyor={bekliyor} />
+      <Metin tur="kucuk" soluk>{t("giris.kvkkOnay")}</Metin>
+      {hata && <Metin renk={tema.yanlis}>{hata}</Metin>}
+      <Dugme buyuk ikon={UserPlus} baslik={t("giris.katil")} onPress={katil} yukleniyor={bekliyor} />
       {!oturum && (
         <Link href="/(auth)/giris" style={{ color: tema.vurgu, textAlign: "center", padding: 12 }}>
           {t("giris.hesabinVarMi")}
         </Link>
       )}
     </ScrollView>
+    </View>
   );
 }

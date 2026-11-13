@@ -123,6 +123,7 @@ export const tr = {
     kapat: "Kapat",
   },
   oyun: {
+    tamSet: "Tam set",
     seviyeAtladinBaslik: "Seviye atladın",
     yeniRozetBaslik: "Yeni rozet",
     seriEtiket: "Seri",
@@ -460,6 +461,8 @@ export const tr = {
     gecersiz: "Şikâyet gönderilemedi.",
   },
   canli: {
+    basliyorKisa: "Başlıyor",
+    bekleKisa: "Sıradaki soru",
     yanlis: "Yanlış — bir sonrakinde!",
     dogruKisa: "· doğru",
     yanlisKisa: "· yanlış",

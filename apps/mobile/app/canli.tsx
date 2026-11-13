@@ -2,13 +2,16 @@ import { SIKLAR, type Sik } from "@kmy/shared";
 import { t, type MetinAnahtari } from "@kmy/shared/i18n";
 import { Stack } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { View } from "react-native";
+import Animated, { FadeIn, ZoomIn } from "react-native-reanimated";
+import { Radio, Trophy } from "lucide-react-native";
+import { SikKarti } from "@/bilesenler/SikKarti";
+import { Bolum, Etiket, Halka, Kart, Metin, Nabiz, titret } from "@/bilesenler/ui";
 import { Ekran } from "@/bilesenler/Ekran";
-import { Kart } from "@/bilesenler/Kart";
 import { MatematikMetni } from "@/bilesenler/MatematikMetni";
 import { api, ApiHatasi } from "@/lib/api";
 import { olculenRtt, saatGuncelle, sunucuSimdi } from "@/lib/saat";
-import { BOYUT, useTema } from "@/lib/tema";
+import { BOYUT, GRADYAN, OYUN, useTema, yazi } from "@/lib/tema";
 
 interface CanliSoru {
   sira: number;
@@ -71,60 +74,80 @@ export default function Canli() {
     }
   };
 
-  return (
-    <Ekran baslik={t("canli.baslik")}>
-      <Stack.Screen options={{ headerShown: true, title: t("canli.baslik"), headerStyle: { backgroundColor: tema.yuzey }, headerTintColor: tema.metin }} />
-      <Text style={{ color: tema.soluk }}>{t("canli.aciklama")}</Text>
-      {hata && <Text style={{ color: tema.yanlis }}>{hata}</Text>}
-      {d?.durum === "kapali" && <Text style={{ color: tema.metin }}>{t("canli.kapali")}</Text>}
-      {d?.durum === "yakinda" && d.baslangic && <Text style={{ color: tema.metin, fontSize: 18 }}>{t("canli.yakinda", { zaman: new Date(d.baslangic).toLocaleString("tr-TR", { weekday: "long", hour: "2-digit", minute: "2-digit" }) })}</Text>}
+  const kalanSn = aktifSoru && o ? Math.max(0, Math.ceil((Date.parse(aktifSoru.acilis) + o.sure_sn * 1000 - simdi) / 1000)) : 0;
+  const bekleSn = siradaki ? Math.max(0, Math.ceil((Date.parse(siradaki.acilis) - simdi) / 1000)) : 0;
 
-      {o && !aktifSoru && siradaki && (
-        <Kart>
-          <Text style={{ color: tema.metin, fontSize: 18, fontWeight: "800" }}>
-            {siradaki.sira === 1 ? t("canli.basliyor", { sn: Math.ceil((Date.parse(siradaki.acilis) - simdi) / 1000) }) : t("canli.bekle", { sn: Math.ceil((Date.parse(siradaki.acilis) - simdi) / 1000) })}
-          </Text>
+  return (
+    <Ekran baslik={t("canli.baslik")} altBaslik={t("canli.aciklama")}>
+      <Stack.Screen options={{ headerShown: false }} />
+      {hata && <Metin renk={tema.yanlis}>{hata}</Metin>}
+      {d?.durum === "kapali" && <Kart><Metin soluk ortala>{t("canli.kapali")}</Metin></Kart>}
+      {d?.durum === "yakinda" && d.baslangic && (
+        <Kart gradyan={GRADYAN.ates}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <Nabiz><Radio size={32} color="#fff" /></Nabiz>
+            <Metin tur="altbaslik" renk="#fff" stil={{ flex: 1 }}>{t("canli.yakinda", { zaman: new Date(d.baslangic).toLocaleString("tr-TR", { weekday: "long", hour: "2-digit", minute: "2-digit" }) })}</Metin>
+          </View>
         </Kart>
       )}
 
+      {o && !aktifSoru && siradaki && (
+        <View style={{ alignItems: "center", paddingVertical: 20, gap: 6 }}>
+          <Metin soluk>{siradaki.sira === 1 ? t("canli.basliyorKisa") : t("canli.bekleKisa")}</Metin>
+          <Animated.Text key={bekleSn} entering={ZoomIn.springify().damping(8)} style={[yazi("siyah"), { color: OYUN.ates, fontSize: 88 }]}>{bekleSn}</Animated.Text>
+        </View>
+      )}
+
       {o && aktifSoru?.soru && (
-        <>
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <Text style={{ color: tema.soluk }}>{t("canli.soru", { n: aktifSoru.sira })}</Text>
-            <Text style={{ color: tema.metin, fontWeight: "800" }}>{Math.max(0, Math.ceil((Date.parse(aktifSoru.acilis) + o.sure_sn * 1000 - simdi) / 1000))}</Text>
+        <Animated.View key={aktifSoru.sira} entering={FadeIn} style={{ gap: 12 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <Halka oran={kalanSn / Math.max(1, o.sure_sn)} boyut={56} kalinlik={6} gradyan={kalanSn <= 10 ? GRADYAN.yanlis : GRADYAN.ates}>
+              <Metin tur="altbaslik">{kalanSn}</Metin>
+            </Halka>
+            <Metin tur="altbaslik" stil={{ flex: 1 }}>{t("canli.soru", { n: aktifSoru.sira })}</Metin>
+            <Etiket metin="CANLI" renk={OYUN.ates} ikon={Radio} />
           </View>
-          <Kart><MatematikMetni md={aktifSoru.soru.govde_md} renk={tema.metin} boyut={BOYUT.soruMetni} /></Kart>
+          <View style={{ padding: 20, borderRadius: 24, backgroundColor: tema.yuzey, borderWidth: 1, borderColor: tema.kenar }}>
+            <MatematikMetni md={aktifSoru.soru.govde_md} renk={tema.metin} boyut={BOYUT.soruMetni} />
+          </View>
           {aktifSoru.ben ? (
-            <Text style={{ color: aktifSoru.ben.dogru ? tema.dogru : tema.yanlis, fontWeight: "700" }}>
-              {aktifSoru.ben.dogru ? (aktifSoru.ben.derece && aktifSoru.ben.derece <= 10 ? t("canli.bonus") : t("canli.derece", { n: aktifSoru.ben.derece ?? 0 })) : t("canli.yanlis")}
-            </Text>
+            <Kart gradyan={aktifSoru.ben.dogru ? GRADYAN.dogru : GRADYAN.yanlis}>
+              <Metin tur="altbaslik" renk="#fff" ortala>
+                {aktifSoru.ben.dogru ? (aktifSoru.ben.derece && aktifSoru.ben.derece <= 10 ? t("canli.bonus") : t("canli.derece", { n: aktifSoru.ben.derece ?? 0 })) : t("canli.yanlis")}
+              </Metin>
+            </Kart>
           ) : (
             <View style={{ gap: 10 }}>
-              {SIKLAR.filter((h) => aktifSoru.soru?.siklar[h] !== undefined).map((h) => (
-                <Pressable key={h} onPress={() => void cevapla(h)} accessibilityRole="button" style={{ flexDirection: "row", gap: 12, minHeight: 52, padding: 12, alignItems: "center", borderRadius: BOYUT.yaricap, borderWidth: 2, borderColor: tema.kenar, backgroundColor: tema.yuzey }}>
-                  <Text style={{ fontWeight: "800", color: tema.metin, width: 22 }}>{h}</Text>
-                  <View style={{ flex: 1 }}><MatematikMetni md={aktifSoru.soru?.siklar[h] ?? ""} renk={tema.metin} boyut={BOYUT.govde} /></View>
-                </Pressable>
+              {SIKLAR.filter((h) => aktifSoru.soru?.siklar[h] !== undefined).map((h, i) => (
+                <SikKarti key={`${aktifSoru.sira}${h}`} harf={h} sira={i} md={aktifSoru.soru?.siklar[h] ?? ""} secili={false} durum={null} pasif={false} onPress={() => { titret("orta"); void cevapla(h); }} />
               ))}
             </View>
           )}
-        </>
+        </Animated.View>
       )}
 
-      {o && (
+      {o && o.sorular.some((s) => s.dogru) && (
         <Kart>
-          <Text style={{ color: tema.metin, fontWeight: "800" }}>{t("canli.sonuc")}</Text>
+          <Bolum baslik={t("canli.sonuc")} ikon={Trophy} />
           {o.sorular.filter((s) => s.dogru).map((s) => (
-            <View key={s.sira} style={{ gap: 2 }}>
-              <Text style={{ color: tema.metin }}>{t("canli.soru", { n: s.sira })} · {s.dogru} {s.ben ? (s.ben.dogru ? t("canli.dogruKisa") : t("canli.yanlisKisa")) : ""}</Text>
-              {s.ilk10 && <Text style={{ color: tema.soluk, fontSize: 12 }}>{t("canli.ilk10")}: {s.ilk10.map((x) => x.takma_ad).join(", ")}</Text>}
+            <View key={s.sira} style={{ gap: 4 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <Metin stil={{ flex: 1 }}>{t("canli.soru", { n: s.sira })}</Metin>
+                <Etiket metin={s.dogru ?? ""} renk={tema.dogru} />
+                {s.ben && <Etiket metin={s.ben.dogru ? t("canli.dogruKisa") : t("canli.yanlisKisa")} renk={s.ben.dogru ? tema.dogru : tema.yanlis} />}
+              </View>
+              {s.ilk10 && <Metin tur="kucuk" soluk>{t("canli.ilk10")}: {s.ilk10.map((x) => x.takma_ad).join(", ")}</Metin>}
             </View>
           ))}
           {bitti && (o.subeler ?? []).length > 0 && (
             <>
-              <Text style={{ color: tema.metin, fontWeight: "700", marginTop: 8 }}>{t("canli.subeSiralama")}</Text>
+              <Bolum baslik={t("canli.subeSiralama")} ikon={Trophy} />
               {(o.subeler ?? []).map((s, i) => (
-                <Text key={s.sube} style={{ color: tema.metin }}>{i + 1}. {s.sube} — {t("canli.dogruSayisi", { n: s.dogru, k: s.katilimci })}</Text>
+                <View key={s.sube} style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                  <Metin tur="altbaslik" renk={i === 0 ? OYUN.altin : tema.soluk} stil={{ width: 24 }}>{i + 1}</Metin>
+                  <Metin stil={{ flex: 1 }}>{s.sube}</Metin>
+                  <Metin tur="kucuk" soluk>{t("canli.dogruSayisi", { n: s.dogru, k: s.katilimci })}</Metin>
+                </View>
               ))}
             </>
           )}

@@ -1,17 +1,19 @@
 import { LIG_KADEMELERI, ligAdimi } from "@kmy/shared";
-import { Trophy } from "lucide-react-native";
+import { ChevronDown, ChevronUp, Crown, Trophy } from "lucide-react-native";
 import { t } from "@kmy/shared/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
-import { Avatar } from "@/bilesenler/Avatar";
+import { ScrollView, View } from "react-native";
+import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
 import { Ekran } from "@/bilesenler/Ekran";
-import { Kart } from "@/bilesenler/Kart";
+import { Avatar } from "@/bilesenler/sanat";
+import { Cip, Kart, Metin } from "@/bilesenler/ui";
 import { useOyun } from "@/lib/oyun";
 import { useOturum } from "@/lib/oturum";
 import { supabase } from "@/lib/supabase";
-import { BOYUT, useTema } from "@/lib/tema";
+import { GRADYAN, OYUN, golge, useTema } from "@/lib/tema";
 
 interface Satir {
   sira: number;
@@ -22,20 +24,6 @@ interface Satir {
 }
 
 type Kapsam = "lig" | "sinif" | "sube" | "dershane" | "dershaneler";
-
-function Sekme({ etiket, aktif, onPress }: { etiket: string; aktif: boolean; onPress: () => void }) {
-  const tema = useTema();
-  return (
-    <Pressable
-      accessibilityRole="tab"
-      accessibilityState={{ selected: aktif }}
-      onPress={onPress}
-      style={{ minHeight: 40, paddingHorizontal: 12, justifyContent: "center", borderRadius: 20, borderWidth: 1, borderColor: aktif ? tema.vurgu : tema.kenar, backgroundColor: aktif ? tema.vurgu : tema.yuzey }}
-    >
-      <Text style={{ color: aktif ? "#fff" : tema.metin, fontWeight: "600" }}>{etiket}</Text>
-    </Pressable>
-  );
-}
 
 /** Haftalık lig grubu ve sıralamalar. Yalnızca takma ad ve karakter görünür. */
 export default function Lig() {
@@ -63,53 +51,91 @@ export default function Lig() {
   });
   const n = data.length;
 
+  const podyum = data.slice(0, 3);
+  const PODYUM_SIRA = [1, 0, 2];
+  const yukseklik = [110, 80, 60];
+  const renk: Array<readonly [string, string]> = [GRADYAN.altin, ["#E6ECF5", "#8E9AAF"], ["#E0A26B", "#A0602C"]];
+
   return (
     <Ekran baslik={t("oyun.lig")}>
-      <Stack.Screen options={{ headerShown: true, title: t("oyun.lig"), headerStyle: { backgroundColor: tema.yuzey }, headerTintColor: tema.metin }} />
-      <Kart stil={{ borderColor: lig.renk }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}><Trophy size={26} color={lig.renk} fill={`${lig.renk}44`} /><Text style={{ color: lig.renk, fontSize: 24, fontWeight: "900" }}>{lig.ad}</Text></View>
-        <Text style={{ color: tema.metin }}>{t("oyun.ligHafta", { xp: oyun?.haftalikXp ?? 0 })}</Text>
-        <Text style={{ color: tema.soluk, fontSize: 13 }}>{t("oyun.ligAciklama")}</Text>
-        <View style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}>
-          {LIG_KADEMELERI.map((k, i) => (
-            <Text key={k.ad} style={{ color: i + 1 === lig.kademe ? k.renk : tema.soluk, fontWeight: i + 1 === lig.kademe ? "800" : "400", fontSize: 12 }}>{k.ad}</Text>
-          ))}
+      <Stack.Screen options={{ headerShown: false }} />
+      <Kart gradyan={[`${lig.renk}55`, "#141631"]} sira={0}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+          <Trophy size={44} color={lig.renk} fill={`${lig.renk}55`} />
+          <View style={{ flex: 1 }}>
+            <Metin tur="baslik" renk="#fff">{lig.ad}</Metin>
+            <Metin renk="#ffffffcc">{t("oyun.ligHafta", { xp: oyun?.haftalikXp ?? 0 })}</Metin>
+          </View>
         </View>
+        <Metin tur="kucuk" renk="#ffffffaa">{t("oyun.ligAciklama")}</Metin>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6, alignItems: "center" }}>
+          {LIG_KADEMELERI.map((k, i) => (
+            <View key={k.ad} style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10, backgroundColor: i + 1 === lig.kademe ? k.renk : "#ffffff14" }}>
+              <Metin tur="kucuk" renk={i + 1 === lig.kademe ? "#141631" : "#ffffffaa"} stil={{ fontSize: 11 }}>{k.ad}</Metin>
+            </View>
+          ))}
+        </ScrollView>
       </Kart>
 
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }} accessibilityRole="tablist">
-        <Sekme etiket={t("oyun.lig")} aktif={kapsam === "lig"} onPress={() => setKapsam("lig")} />
-        <Sekme etiket={t("oyun.sinif")} aktif={kapsam === "sinif"} onPress={() => setKapsam("sinif")} />
-        <Sekme etiket={t("oyun.sube")} aktif={kapsam === "sube"} onPress={() => setKapsam("sube")} />
-        <Sekme etiket={t("oyun.dershane")} aktif={kapsam === "dershane"} onPress={() => setKapsam("dershane")} />
-        {dershaneArasi && <Sekme etiket={t("oyun.dershaneler")} aktif={kapsam === "dershaneler"} onPress={() => setKapsam("dershaneler")} />}
-      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }} accessibilityRole="tablist">
+        <Cip baslik={t("oyun.lig")} secili={kapsam === "lig"} onPress={() => setKapsam("lig")} />
+        <Cip baslik={t("oyun.sinif")} secili={kapsam === "sinif"} onPress={() => setKapsam("sinif")} />
+        <Cip baslik={t("oyun.sube")} secili={kapsam === "sube"} onPress={() => setKapsam("sube")} />
+        <Cip baslik={t("oyun.dershane")} secili={kapsam === "dershane"} onPress={() => setKapsam("dershane")} />
+        {dershaneArasi && <Cip baslik={t("oyun.dershaneler")} secili={kapsam === "dershaneler"} onPress={() => setKapsam("dershaneler")} />}
+      </ScrollView>
       {kapsam !== "lig" && (
         <View style={{ flexDirection: "row", gap: 8 }}>
-          <Sekme etiket={t("oyun.buHafta")} aktif={donem === "hafta"} onPress={() => setDonem("hafta")} />
-          <Sekme etiket={t("oyun.tumZamanlar")} aktif={donem === "tum"} onPress={() => setDonem("tum")} />
+          <Cip baslik={t("oyun.buHafta")} secili={donem === "hafta"} onPress={() => setDonem("hafta")} renk={OYUN.elmas} />
+          <Cip baslik={t("oyun.tumZamanlar")} secili={donem === "tum"} onPress={() => setDonem("tum")} renk={OYUN.elmas} />
         </View>
       )}
 
-      {kapsam === "lig" && !isLoading && n === 0 && <Text style={{ color: tema.soluk }}>{t("oyun.ligBos")}</Text>}
-      {error && <Text style={{ color: tema.yanlis }}>{t("ortak.hata")}</Text>}
-      <Kart>
-        {data.map((r) => {
+      {kapsam === "lig" && !isLoading && n === 0 && <Metin soluk>{t("oyun.ligBos")}</Metin>}
+      {error && <Metin renk={tema.yanlis}>{t("ortak.hata")}</Metin>}
+
+      {/* Podyum: ilk üç */}
+      {podyum.length >= 3 && (
+        <View style={{ flexDirection: "row", alignItems: "flex-end", justifyContent: "center", gap: 10, paddingTop: 20 }}>
+          {PODYUM_SIRA.map((i) => {
+            const r = podyum[i];
+            if (!r) return null;
+            const g = renk[i] ?? GRADYAN.vurgu;
+            return (
+              <Animated.View key={r.takma_ad} entering={FadeInUp.delay(200 + i * 150).springify()} style={{ alignItems: "center", width: 100, gap: 6 }}>
+                {i === 0 && <Crown size={26} color={OYUN.altin} fill={OYUN.altin} />}
+                <Avatar tur={r.karakter} cerceve={r.cerceve} boyut={i === 0 ? 68 : 56} aura={false} />
+                <Metin tur="kucuk" ortala numberOfLines={1}>{r.takma_ad}</Metin>
+                <LinearGradient colors={g} style={{ width: "100%", height: yukseklik[i], borderTopLeftRadius: 16, borderTopRightRadius: 16, alignItems: "center", paddingTop: 8, ...golge(2, g[1]) }}>
+                  <Metin tur="baslik" renk="#fff">{i + 1}</Metin>
+                  <Metin tur="kucuk" renk="#ffffffdd">{r.puan} XP</Metin>
+                </LinearGradient>
+              </Animated.View>
+            );
+          })}
+        </View>
+      )}
+
+      <Kart sira={2}>
+        {data.map((r, idx) => {
           const yukselen = kapsam === "lig" && r.sira <= (n >= 10 ? 5 : Math.max(1, Math.floor(n / 3))) && r.puan > 0;
           const dusen = kapsam === "lig" && n >= 10 && r.sira > n - 5;
           return (
-            <View
+            <Animated.View
               key={`${r.sira}-${r.takma_ad}`}
-              style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 6, paddingHorizontal: 6, borderRadius: 8, backgroundColor: r.ben ? `${tema.vurgu}22` : "transparent" }}
+              entering={FadeInDown.delay(Math.min(idx, 15) * 30)}
+              style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 8, paddingHorizontal: 8, borderRadius: 14, backgroundColor: r.ben ? `${tema.vurgu}26` : yukselen ? `${tema.dogru}0F` : dusen ? `${tema.yanlis}0F` : "transparent" }}
             >
-              <Text style={{ width: 28, color: yukselen ? tema.dogru : dusen ? tema.yanlis : tema.soluk, fontWeight: "700" }}>{r.sira}</Text>
-              <Avatar tur={r.karakter} cerceve={r.cerceve} boyut={32} />
+              <Metin tur="altbaslik" renk={yukselen ? tema.dogru : dusen ? tema.yanlis : tema.soluk} stil={{ width: 28, fontSize: 15 }}>{r.sira}</Metin>
+              <Avatar tur={r.karakter} cerceve={r.cerceve} boyut={36} aura={false} />
               <View style={{ flex: 1 }}>
-                <Text style={{ color: tema.metin, fontWeight: r.ben ? "800" : "500" }}>{r.takma_ad}{r.ben ? ` (${t("oyun.sen")})` : ""}</Text>
-                {r.dershane && <Text style={{ color: tema.soluk, fontSize: 12 }}>{r.dershane}</Text>}
+                <Metin tur={r.ben ? "altbaslik" : "govde"} stil={{ fontSize: 15 }}>{r.takma_ad}{r.ben ? ` (${t("oyun.sen")})` : ""}</Metin>
+                {r.dershane && <Metin tur="kucuk" soluk>{r.dershane}</Metin>}
               </View>
-              <Text style={{ color: tema.metin, fontVariant: ["tabular-nums"], fontSize: BOYUT.govde }}>{r.puan} XP</Text>
-            </View>
+              {yukselen && <ChevronUp size={18} color={tema.dogru} />}
+              {dusen && <ChevronDown size={18} color={tema.yanlis} />}
+              <Metin tur="kucuk">{r.puan} XP</Metin>
+            </Animated.View>
           );
         })}
       </Kart>

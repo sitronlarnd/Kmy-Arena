@@ -4,7 +4,9 @@ import { t, type MetinAnahtari } from "@kmy/shared/i18n";
 import { Stack } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import { Kart } from "@/bilesenler/Kart";
+import { LinearGradient } from "expo-linear-gradient";
+import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import { Metin } from "@/bilesenler/ui";
 import { MatematikMetni } from "@/bilesenler/MatematikMetni";
 import { api, ApiHatasi } from "@/lib/api";
 import { useOturum } from "@/lib/oturum";
@@ -84,14 +86,16 @@ export default function KlanSohbet() {
         {mesajlar.length === 0 && <Text style={{ color: tema.soluk }}>{t("klan.sohbetBos")}</Text>}
         {mesajlar.map((m) =>
           m.tur === "sistem" ? (
-            <Text key={m.id} style={{ color: tema.soluk, textAlign: "center", fontSize: 13 }}>— {icerik(m)} —</Text>
+            <View key={m.id} style={{ alignSelf: "center", paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, backgroundColor: `${tema.vurgu}1A` }}><Metin tur="kucuk" renk={tema.vurgu}>{icerik(m)}</Metin></View>
           ) : (
             <View key={m.id} style={{ alignSelf: m.benim ? "flex-end" : "flex-start", maxWidth: "85%" }}>
               {!m.benim && <Text style={{ color: tema.soluk, fontSize: 12 }}>{m.takma_ad}</Text>}
-              <Kart stil={{ backgroundColor: m.benim ? tema.vurgu : tema.yuzey }}>
-                <Text style={{ color: m.benim ? "#fff" : tema.metin }}>{icerik(m)}</Text>
-                {m.soru && <MatematikMetni md={m.soru.govde_md} renk={m.benim ? "#fff" : tema.metin} boyut={BOYUT.govde} />}
-              </Kart>
+              <Animated.View entering={m.benim ? FadeInUp.springify() : FadeInDown.springify()} style={{ borderRadius: 18, borderTopRightRadius: m.benim ? 6 : 18, borderTopLeftRadius: m.benim ? 18 : 6, overflow: "hidden", borderWidth: m.benim ? 0 : 1, borderColor: tema.kenar }}>
+                <LinearGradient colors={m.benim ? tema.vurguGradyan : [tema.yuzey, tema.yuzey]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 12, gap: 6 }}>
+                  <Metin renk={m.benim ? "#fff" : tema.metin}>{icerik(m)}</Metin>
+                  {m.soru && <MatematikMetni md={m.soru.govde_md} renk={m.benim ? "#fff" : tema.metin} boyut={BOYUT.govde} />}
+                </LinearGradient>
+              </Animated.View>
               {!m.benim && (
                 <Pressable onPress={() => void sikayet(m.id)} accessibilityRole="button">
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}><Flag size={11} color={tema.soluk} /><Text style={{ color: tema.soluk, fontSize: 11 }}>{t("klan.sikayet")}</Text></View>
