@@ -172,3 +172,15 @@ describe("Üretim + doğrulama hattı", () => {
     assert.doesNotMatch(dogrulamaGovdesi, /celdirici|cozum_adimlari|"dogru"|Doğru şık harfi|-8 \\\\cdot 9/);
   });
 });
+
+describe("Doğrulama çıktısı token sınırında kesilirse", () => {
+  it("karar alanları tamamsa kesik JSON'dan okunur", async () => {
+    const { dogrulamaCiktisiniCoz } = await import("../src/index");
+    const kesik = '{\n  "cevap": "C",\n  "tek_dogru_mu": true,\n  "kazanim_uygun": true,\n  "sorunlar": [],\n  "zorluk_tahmini": 4,\n  "cozum": "Önce üsleri hesapla, sonra çarp ve';
+    assert.deepEqual(dogrulamaCiktisiniCoz(kesik), { cevap: "C", tekDogruMu: true, kazanimUygun: true, sorunlar: [], zorlukTahmini: 4 });
+  });
+  it("karar alanı eksikse hata verir (soru reddedilir)", async () => {
+    const { dogrulamaCiktisiniCoz } = await import("../src/index");
+    assert.throws(() => dogrulamaCiktisiniCoz('{"cozum": "uzun bir çözüm ve sonra kesil'));
+  });
+});

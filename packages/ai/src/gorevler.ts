@@ -58,23 +58,24 @@ export function ortamdanVarsayilanlar(env: OrtamDegiskenleri): Record<AiGorevi, 
     veliRaporu: metin(env.KMYAI_MODEL_VELI_RAPORU, VARSAYILAN_MODELLER.veliRaporu),
     yedek: metin(env.KMYAI_MODEL_YEDEK, VARSAYILAN_MODELLER.yedek),
   };
-  const uretimMs = sayi(env.KMYAI_ZAMAN_ASIMI_URETIM_MS, 20_000);
+  // Soru üretimi arka planda (havuz) çalışır; uzun çıktılı modeller 20 sn'ye sığmaz.
+  const uretimMs = sayi(env.KMYAI_ZAMAN_ASIMI_URETIM_MS, 90_000);
   const asistanMs = sayi(env.KMYAI_ZAMAN_ASIMI_ASISTAN_MS, 30_000);
   const deneme = sayi(env.KMYAI_YENIDEN_DENEME, 2);
   const ayar = (model: string, sicaklik: number, maxToken: number, zamanAsimiMs: number): GorevAyari => ({
     modelBirincil: model, modelYedek: m.yedek, sicaklik, maxToken, zamanAsimiMs, yenidenDeneme: deneme,
   });
   return {
-    soru_uretim: ayar(m.uretici, 0.8, 1800, uretimMs),
+    soru_uretim: { ...ayar(m.uretici, 0.8, 2500, uretimMs), yenidenDeneme: Math.min(deneme, 1) },
     // Doğrulayıcı da yedeğe düşerse doğrulama gücü azalır; yedek olarak
     // yine güçlü model kalır, haiku'ya düşülmez.
-    soru_dogrulama: { ...ayar(m.dogrulayici, 0, 1200, uretimMs), modelYedek: m.uretici },
+    soru_dogrulama: { ...ayar(m.dogrulayici, 0, 2500, uretimMs), modelYedek: m.uretici, yenidenDeneme: Math.min(deneme, 1) },
     asistan: ayar(m.asistan, 0.4, 900, asistanMs),
     gorsel_okuma: ayar(m.gorsel, 0, 1500, asistanMs),
-    topluluk_degerlendirme: ayar(m.yedek, 0, 400, uretimMs),
-    moderasyon: ayar(m.yedek, 0, 200, uretimMs),
+    topluluk_degerlendirme: ayar(m.yedek, 0, 400, 20_000),
+    moderasyon: ayar(m.yedek, 0, 200, 20_000),
     veli_raporu: ayar(m.veliRaporu, 0.5, 600, asistanMs),
-    ogretmen_soru_uretim: ayar(m.dogrulayici, 0.7, 1800, asistanMs),
+    ogretmen_soru_uretim: ayar(m.dogrulayici, 0.7, 2500, uretimMs),
   };
 }
 

@@ -264,8 +264,34 @@ ${siklar}`,
   ];
 }
 
+/**
+ * Çıktı token sınırında kesilmişse (JSON kapanmamış) karar alanlarını tek tek
+ * okur. Karar alanlarından biri eksikse null döner (soru reddedilir).
+ */
+function kismiDogrulama(icerik: string): Record<string, unknown> | null {
+  const cevap = /"cevap"\s*:\s*"([A-Ea-e])"/.exec(icerik)?.[1];
+  const tek = /"tek_dogru_mu"\s*:\s*(true|false)/.exec(icerik)?.[1];
+  const kapsam = /"kazanim_uygun"\s*:\s*(true|false)/.exec(icerik)?.[1];
+  const sorunlar = /"sorunlar"\s*:\s*(\[[^\]]*\])/.exec(icerik)?.[1];
+  if (!cevap || !tek || !kapsam || !sorunlar) return null;
+  let liste: unknown = [];
+  try {
+    liste = JSON.parse(sorunlar);
+  } catch {
+    return null;
+  }
+  const z = /"zorluk_tahmini"\s*:\s*(\d+)/.exec(icerik)?.[1];
+  return { cevap, tek_dogru_mu: tek === "true", kazanim_uygun: kapsam === "true", sorunlar: liste, zorluk_tahmini: z ? Number(z) : null };
+}
+
 export function dogrulamaCiktisiniCoz(icerik: string): DogrulamaSonucu {
-  const v = jsonAyikla(icerik);
+  let v: unknown;
+  try {
+    v = jsonAyikla(icerik);
+  } catch (h) {
+    v = kismiDogrulama(icerik);
+    if (!v) throw h;
+  }
   if (!nesne(v)) throw new Error("doğrulama çıktısı nesne değil");
   const cevap = typeof v.cevap === "string" ? v.cevap.trim().toUpperCase().slice(0, 1) : "";
   const z = Number(v.zorluk_tahmini);
@@ -346,7 +372,7 @@ export async function soruUret(b: HatBagimliliklari, istek: UretimIstegi): Promi
   try {
     d = dogrulamaCiktisiniCoz(dogrulamaYaniti.icerik);
   } catch {
-    return red("dogrulama", "doğrulama çıktısı çözümlenemedi", soru, uretim.model, dogrulamaYaniti.model);
+    return red("dogrulama", `doğrulama çıktısı çözümlenemedi: ${dogrulamaYaniti.icerik.slice(0, 160)}`, soru, uretim.model, dogrulamaYaniti.model);
   }
   if (d.cevap !== soru.dogru) {
     return red("dogrulama", `doğrulayıcı ${d.cevap ?? "?"} buldu, anahtar ${soru.dogru}`, soru, uretim.model, dogrulamaYaniti.model);
