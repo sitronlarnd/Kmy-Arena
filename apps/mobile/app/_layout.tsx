@@ -11,7 +11,8 @@ const sorguIstemcisi = new QueryClient({ defaultOptions: { queries: { staleTime:
 
 function OturumKapisi() {
   const { hazir, oturum, profil, yukle } = useOturum();
-  const bolumler = useSegments();
+  // Tipli rotalar bölüm dizisini dar bir demete çevirir; burada düz dizi olarak okunur.
+  const bolumler: readonly string[] = useSegments();
   const yonlendir = useRouter();
   const tema = useTema();
 

@@ -143,7 +143,20 @@ export const OYUN_AYARLARI = {
   },
 } as const;
 
-export type OyunAyarlari = typeof OYUN_AYARLARI;
+/** `as const` sabit değerlerini genişletir; panelden gelen farklı değerler tipe uyar. */
+type Genislet<T> = T extends number
+  ? number
+  : T extends string
+    ? string
+    : T extends boolean
+      ? boolean
+      : T extends readonly unknown[]
+        ? { readonly [I in keyof T]: Genislet<T[I]> }
+        : T extends object
+          ? { readonly [K in keyof T]: Genislet<T[K]> }
+          : T;
+
+export type OyunAyarlari = Genislet<typeof OYUN_AYARLARI>;
 
 type DerinKismi<T> = {
   [K in keyof T]?: T[K] extends readonly unknown[] ? T[K] : T[K] extends object ? DerinKismi<T[K]> : T[K];

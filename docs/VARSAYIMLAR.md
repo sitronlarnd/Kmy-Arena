@@ -42,6 +42,6 @@ Belirsiz kalan noktalarda en makul varsayım yapıldı ve buraya yazıldı.
 12. **Seed:** Deneme sonuçları, klanlar ve düello kayıtları ilgili tabloların geldiği fazlarda eklenir.
 13. **Test aracı:** Birim testleri Node'un yerleşik `node:test`'i ile yazıldı (ek bağımlılık yok), `tsx` ile çalışır.
 14. **Next.js 16:** Oturum yenileme `middleware.ts` yerine yeni adıyla `proxy.ts` içinde.
-15. **Expo paket sürümleri:** `expo` ~57.0.0 sabit; diğer `expo-*` paketleri ilk kurulumda `pnpm --filter @kmy/mobile surumleri-duzelt` ile SDK'ya uygun sürüme sabitlenir.
+15. **Expo paket sürümleri:** SDK 57 sürümlerine sabitlendi (`~`). SDK yükseltmesinde `pnpm --filter @kmy/mobile surumleri-duzelt` çalıştırılır ve `pnpm-workspace.yaml` içindeki `overrides` SDK listesine göre güncellenir.
 16. **Takma ad filtresi** Faz 0'da yalnızca biçim denetimi (3-20 karakter, harf/rakam/nokta/alt çizgi). Küfür ve kişisel bilgi filtresi Faz 1'de.
 17. **Cevap tablosu** aylık bölümlenir; bölümler pg_cron (yoksa Vercel Cron) ile her ayın 25'inde bir sonraki ay için oluşturulur. Varsayılan bölüm güvenlik ağıdır.

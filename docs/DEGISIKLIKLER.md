@@ -4,7 +4,7 @@
 
 | Faz | Kapsam | Durum |
 |---|---|---|
-| 0 | Altyapı: monorepo, uygulama iskeletleri, Supabase şema + RLS + RBAC, davet kodu, özellik bayrakları, seed, CI | **Tamamlandı (uygulama derlemeleri bekliyor, aşağıya bakın)** |
+| 0 | Altyapı: monorepo, uygulama iskeletleri, Supabase şema + RLS + RBAC, davet kodu, özellik bayrakları, seed, CI | **Tamamlandı** |
 | 1 | Çekirdek soru döngüsü: üretim + doğrulama hattı, havuz, soru ekranı (LaTeX), Elo, tespit sınavı, XP/Altın, çözüm, hata defteri, konu haritası, AI Merkezi temel | Sırada |
 | 2 | Oyun katmanı: karakter, seri, görevler, 40 rozet, mağaza, lig, sıralamalar, kart albümü | |
 | 3 | Düello ve Canlı Soru Saati (Supabase Realtime) | |
@@ -37,7 +37,7 @@
 | RLS / yetki / davet testleri | ✔ 11 grup |
 | RLS testlerinin sızıntıyı yakaladığı (mutasyon denemesi) | ✔ |
 | Uygulama dosyaları sözdizimi | ✔ 38 dosya |
-| `pnpm install`, lint, uygulamaların tip kontrolü ve `next build` / `expo export` | ⏳ Bu oturumda paket yükleme kapalıydı; bir sonraki oturumda yapılacak |
+| `pnpm install`, lint, uygulamaların tip kontrolü ve `next build` / `expo export` | ✔ (Faz 0.1'e bakın) |
 
 Testler sırasında yakalanıp düzeltilen hata: varsayılan matriste öğretmene dershane geneli akademik
 okuma yetkisi verilmişti; atanmadığı sınıfın öğrencilerinin becerisini görebiliyordu. Yetki kaldırıldı,
@@ -55,3 +55,25 @@ okuma yetkisi verilmişti; atanmadığı sınıfın öğrencilerinin becerisini 
 ### Yeni ortam değişkenleri
 
 Tamamı `.env.example` içinde.
+
+---
+
+## Faz 0.1 — Kurulum ve derleme doğrulaması (2026-11-13)
+
+- `pnpm-lock.yaml` eklendi. Vercel ve CI artık `pnpm install --frozen-lockfile` ile kurar; her derleme aynı sürümleri kullanır.
+- Expo paketleri SDK 57'ye sabitlendi (`expo install --fix` + `bundledNativeModules.json`). `expo-router` önceden `*` olduğu için 58.x'e çıkıyordu.
+- `@expo/metro-runtime` doğrudan bağımlılık olarak eklendi. Vercel'deki `Unable to resolve module @expo/metro-runtime` web derleme hatası buydu.
+- `pnpm-workspace.yaml` → `overrides`: `react-native-reanimated` 4.5.1, `react-native-worklets` 0.10.1, `@react-native/metro-config` 0.86.3 (dolaylı eş bağımlılıklar SDK dışı sürüme çıkıyordu). `onlyBuiltDependencies: esbuild`.
+- Mobil TypeScript 6.0 (SDK 57 önerisi); diğer paketler 5.9'da.
+- Düzeltilen hatalar:
+  - `OyunAyarlari` tipi `as const` yüzünden sabit değerlere kilitliydi; Merkez Panelden gelen farklı bir değer (ör. `kupaK: 40`) tip hatası veriyordu. Tip genişletildi.
+  - Mobil sekme simgeleri `ColorValue` tipine uyarlandı; tipli rotalarda `useSegments` düz dizi olarak okunuyor.
+  - ESLint: `metro.config.js` gibi CommonJS araç dosyaları için Node ortamı tanımlandı.
+
+| Kontrol | Sonuç |
+|---|---|
+| `pnpm lint` | ✔ 0 uyarı |
+| `pnpm typecheck` | ✔ 7 paket |
+| `pnpm test` | ✔ 45/45 |
+| `pnpm db:test` | ✔ 11 grup, PostgreSQL 16 |
+| `pnpm build` | ✔ landing, panel, api (`next build`), mobile (`expo export --platform web`) |

@@ -4,3 +4,14 @@ packages:
 
 # Expo/React Native, hoisted node_modules ile en sorunsuz çalışır.
 nodeLinker: hoisted
+
+# Expo SDK 57'nin beklediği yerel modül sürümleri. Dolaylı eş bağımlılıklar
+# (expo-router → reanimated → worklets) aksi halde SDK dışı en yeni sürüme çıkar.
+overrides:
+  react-native-reanimated: 4.5.1
+  react-native-worklets: 0.10.1
+  "@react-native/metro-config": 0.86.3
+
+# esbuild (tsx) kurulum betiğine izin
+onlyBuiltDependencies:
+  - esbuild

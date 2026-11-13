@@ -1,10 +1,10 @@
 import { t } from "@kmy/shared/i18n";
 import { Tabs } from "expo-router";
-import { Text } from "react-native";
+import { Text, type ColorValue } from "react-native";
 import { useOturum } from "@/lib/oturum";
 import { useTema } from "@/lib/tema";
 
-const simge = (s: string) => ({ color }: { color: string }) => <Text style={{ color, fontSize: 20 }}>{s}</Text>;
+const simge = (s: string) => ({ color }: { color: ColorValue }) => <Text style={{ color, fontSize: 20 }}>{s}</Text>;
 
 export default function SekmeDuzeni() {
   const tema = useTema();

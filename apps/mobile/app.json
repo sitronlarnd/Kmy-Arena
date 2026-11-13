@@ -10,7 +10,9 @@
     "ios": {
       "bundleIdentifier": "cloud.kmyai.arena",
       "supportsTablet": true,
-      "infoPlist": { "ITSAppUsesNonExemptEncryption": false }
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "cloud.kmyai.arena",
@@ -20,7 +22,12 @@
       "bundler": "metro",
       "output": "single"
     },
-    "plugins": ["expo-router"],
-    "experiments": { "typedRoutes": true }
+    "plugins": [
+      "expo-router",
+      "expo-status-bar"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }
