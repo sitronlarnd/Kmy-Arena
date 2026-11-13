@@ -1,24 +1,31 @@
 import { ligAdimi, seviyeIcinXp } from "@kmy/shared";
 import { t } from "@kmy/shared/i18n";
-import { router } from "expo-router";
-import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
-import { Avatar } from "@/bilesenler/Avatar";
-import { Dugme } from "@/bilesenler/Dugme";
-import { Ekran } from "@/bilesenler/Ekran";
-import { Kart } from "@/bilesenler/Kart";
 import { useQuery } from "@tanstack/react-query";
+import { router } from "expo-router";
+import {
+  Award, BookMarked, CalendarCheck, CheckCircle2, Coins, Flame, Layers, Play, Radio, RotateCcw, ShoppingBag, Snowflake, Sparkles, Target, Trophy, type LucideIcon,
+} from "lucide-react-native";
+import { useState } from "react";
+import { ScrollView, View } from "react-native";
+import { Ekran } from "@/bilesenler/Ekran";
+import { Avatar } from "@/bilesenler/sanat";
+import { Basilabilir, Bolum, Cip, Cubuk, Dugme, Etiket, Halka, IkonKutu, Kart, Kaynak, Metin, Nabiz } from "@/bilesenler/ui";
 import { api } from "@/lib/api";
 import { useOyun } from "@/lib/oyun";
 import { useOturum } from "@/lib/oturum";
 import { useHataDefteri, useMufredat, useTespitler } from "@/lib/sorgular";
-import { BOYUT, useTema } from "@/lib/tema";
+import { GRADYAN, OYUN, golge, useTema } from "@/lib/tema";
 
-function Cubuk({ oran, renk }: { oran: number; renk: string }) {
-  const tema = useTema();
+function Kisayol({ ikon, renk, baslik, alt, onPress, sira }: { ikon: LucideIcon; renk: string; baslik: string; alt?: string; onPress: () => void; sira: number }) {
   return (
-    <View style={{ height: 10, borderRadius: 5, backgroundColor: tema.kenar, overflow: "hidden" }}>
-      <View style={{ width: `${Math.round(Math.min(1, Math.max(0, oran)) * 100)}%`, height: 10, backgroundColor: renk }} />
+    <View style={{ flexBasis: "47%", flexGrow: 1 }}>
+      <Kart sira={sira} onPress={onPress} ic={14}>
+        <IkonKutu ikon={ikon} renk={renk} />
+        <View>
+          <Metin tur="altbaslik" numberOfLines={1}>{baslik}</Metin>
+          {alt && <Metin tur="kucuk" soluk numberOfLines={1}>{alt}</Metin>}
+        </View>
+      </Kart>
     </View>
   );
 }
@@ -50,127 +57,173 @@ export default function Arena() {
   const tespitYok = secili && tespitler && !tespitler.get(secili.id)?.bitti;
   const gunluk = oyun?.gorevler.filter((g) => g.tur === "gunluk") ?? [];
   const haftalik = oyun?.gorevler.filter((g) => g.tur === "haftalik") ?? [];
+  const gunlukOran = oyun ? oyun.gunlukSoru / Math.max(1, oyun.gunlukHedef) : 0;
 
   return (
-    <Ekran baslik={dershane?.uygulama_ici_ad ?? t("sekmeler.arena")}>
+    <Ekran baslik={dershane?.uygulama_ici_ad ?? t("sekmeler.arena")} altBaslik={profil?.takma_ad ? t("arena.merhaba", { ad: profil.takma_ad }) : undefined}>
       {ogrenci && !profil.veli_onayi && (
-        <Kart>
-          <Text style={{ color: tema.metin }}>{t("giris.veliOnayiBekleniyor")}</Text>
+        <Kart vurgu={OYUN.altin}>
+          <Metin>{t("giris.veliOnayiBekleniyor")}</Metin>
         </Kart>
       )}
 
       {ogrenci && oyun && !oyun.karakter && (
-        <Kart stil={{ borderColor: tema.vurgu }}>
-          <Text style={{ color: tema.metin, fontWeight: "700", fontSize: 17 }}>{t("oyun.karakterSec")}</Text>
-          <Text style={{ color: tema.soluk }}>{t("oyun.karakterAciklama")}</Text>
-          <Dugme baslik={t("oyun.karakterSec")} onPress={() => router.push("/karakter")} />
-        </Kart>
-      )}
-
-      {ogrenci && oyun && (
-        <Kart>
-          <View style={{ flexDirection: "row", gap: 14, alignItems: "center" }}>
-            <Pressable onPress={() => router.push("/magaza")} accessibilityRole="button" accessibilityLabel={t("oyun.magaza")}>
-              <Avatar tur={oyun.karakter?.tur} seviye={seviye} cerceve={oyun.karakter?.cerceve} arkaPlan={oyun.karakter?.arka_plan} kostum={oyun.karakter?.kostum} boyut={64} />
-            </Pressable>
-            <View style={{ flex: 1, gap: 4 }}>
-              <Text style={{ color: tema.metin, fontSize: 18, fontWeight: "800" }}>
-                {profil.takma_ad ?? ""} · {t("arena.seviye", { n: seviye })}
-              </Text>
-              {oyun.karakter?.unvan && <Text style={{ color: tema.vurgu, fontWeight: "600" }}>{oyun.karakter.unvan}</Text>}
-              <Cubuk oran={(oyun.xp - alt) / Math.max(1, ust - alt)} renk={tema.vurgu} />
-              <Text style={{ color: tema.soluk, fontSize: 12 }}>{oyun.xp} / {ust} {t("arena.xp")}</Text>
+        <Kart gradyan={GRADYAN.vurgu} sira={0}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <Sparkles size={28} color="#fff" />
+            <View style={{ flex: 1 }}>
+              <Metin tur="altbaslik" renk="#fff">{t("oyun.karakterSec")}</Metin>
+              <Metin renk="#ffffffcc">{t("oyun.karakterAciklama")}</Metin>
             </View>
           </View>
-          <View style={{ flexDirection: "row", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-            <Text style={{ color: oyun.seriTehlikede ? tema.yanlis : tema.metin, fontWeight: "700" }}>🔥 {t("oyun.seri", { n: oyun.seri })}</Text>
-            <Text style={{ color: tema.metin }}>🪙 {oyun.altin}</Text>
-            <Text style={{ color: tema.metin }}>🧊 {oyun.dondurucu}</Text>
-          </View>
-          {oyun.seriTehlikede && <Text style={{ color: tema.yanlis, fontSize: 13 }}>{t("oyun.seriTehlikede")}</Text>}
-          <Text style={{ color: tema.soluk, fontSize: 13 }}>{t("oyun.gunlukHedef", { n: Math.min(oyun.gunlukSoru, oyun.gunlukHedef), hedef: oyun.gunlukHedef })}</Text>
-          <Cubuk oran={oyun.gunlukSoru / Math.max(1, oyun.gunlukHedef)} renk="#F2711C" />
+          <Dugme tur="altin" baslik={t("oyun.karakterSec")} onPress={() => router.push("/karakter")} />
         </Kart>
       )}
 
-      {ogrenci && mufredat.isSuccess && dersler.length === 0 && (
-        <Kart>
-          <Text style={{ color: tema.metin }}>{t("soru.paketYok")}</Text>
+      {/* Kahraman kartı: XP halkası içinde karakter, kaynaklar */}
+      {ogrenci && oyun && (
+        <Kart sira={1} gradyan={[tema.yuzey2, tema.yuzey]}>
+          <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
+            <Basilabilir onPress={() => router.push("/karakter")} etiket={t("oyun.karakter")}>
+              <Halka oran={(oyun.xp - alt) / Math.max(1, ust - alt)} boyut={104} kalinlik={7}>
+                <Avatar tur={oyun.karakter?.tur} seviye={seviye} cerceve={oyun.karakter?.cerceve} arkaPlan={oyun.karakter?.arka_plan} kostum={oyun.karakter?.kostum} boyut={80} />
+              </Halka>
+              <View style={{ position: "absolute", bottom: -4, alignSelf: "center", paddingHorizontal: 10, paddingVertical: 2, borderRadius: 10, backgroundColor: OYUN.xp, ...golge(1, OYUN.xp) }}>
+                <Metin tur="kucuk" renk="#fff">{t("arena.seviye", { n: seviye })}</Metin>
+              </View>
+            </Basilabilir>
+            <View style={{ flex: 1, gap: 6 }}>
+              <Metin tur="altbaslik" numberOfLines={1}>{profil.takma_ad ?? ""}</Metin>
+              {oyun.karakter?.unvan && <Etiket metin={oyun.karakter.unvan} renk={OYUN.xp} ikon={Award} />}
+              <Metin tur="kucuk" soluk>{oyun.xp.toLocaleString("tr-TR")} / {ust.toLocaleString("tr-TR")} {t("arena.xp")}</Metin>
+              <Basilabilir onPress={() => router.push("/lig")} etiket={t("oyun.lig")}>
+                <Etiket metin={`${lig.ad} · ${t("oyun.lig")}`} renk={lig.renk} ikon={Trophy} />
+              </Basilabilir>
+            </View>
+          </View>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+            <Kaynak ikon={Flame} deger={oyun.seri} renk={oyun.seriTehlikede ? tema.yanlis : OYUN.ates} etiket={t("oyun.seriEtiket")} />
+            <Kaynak ikon={Coins} deger={oyun.altin} renk={OYUN.altin} etiket={t("oyun.altin")} />
+            <Kaynak ikon={Snowflake} deger={oyun.dondurucu} renk={OYUN.buz} etiket={t("oyun.dondurucu")} />
+            <Kaynak ikon={Trophy} deger={oyun.kupa} renk={OYUN.kupa} etiket={t("duello.kupaEtiket")} />
+          </View>
+          {oyun.seriTehlikede && <Etiket metin={t("oyun.seriTehlikede")} renk={tema.yanlis} ikon={Flame} />}
+        </Kart>
+      )}
+
+      {/* Günlük hedef + ana eylem */}
+      {ogrenci && oyun && (
+        <Kart sira={2}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
+            <Halka oran={gunlukOran} boyut={64} kalinlik={7} gradyan={GRADYAN.ates}>
+              <Flame size={24} color={OYUN.ates} fill={gunlukOran >= 1 ? OYUN.ates : "transparent"} />
+            </Halka>
+            <View style={{ flex: 1 }}>
+              <Metin tur="etiket" soluk>{t("arena.gunlukHedef")}</Metin>
+              <Metin tur="altbaslik">{t("oyun.gunlukHedef", { n: Math.min(oyun.gunlukSoru, oyun.gunlukHedef), hedef: oyun.gunlukHedef })}</Metin>
+            </View>
+          </View>
         </Kart>
       )}
 
       {dersler.length > 0 && (
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }} accessibilityLabel={t("arena.dersSec")}>
-          {dersler.map((d) => {
-            const aktif = secili?.id === d.id;
-            return (
-              <Pressable
-                key={d.id}
-                accessibilityRole="button"
-                accessibilityState={{ selected: aktif }}
-                onPress={() => setDersKodu(d.kod)}
-                style={{ minHeight: BOYUT.dokunma, paddingHorizontal: 14, justifyContent: "center", borderRadius: 22, borderWidth: 1, borderColor: aktif ? tema.vurgu : tema.kenar, backgroundColor: aktif ? tema.vurgu : tema.yuzey }}
-              >
-                <Text style={{ color: aktif ? "#fff" : tema.metin, fontWeight: "600" }}>{d.ad} · {d.sinav_turu}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingRight: 8 }} accessibilityLabel={t("arena.dersSec")}>
+          {dersler.map((d) => (
+            <Cip key={d.id} baslik={d.ad} secili={secili?.id === d.id} onPress={() => setDersKodu(d.kod)} />
+          ))}
+        </ScrollView>
+      )}
+
+      <Nabiz aktif={Boolean(ogrenci && oyun && oyun.gunlukSoru < oyun.gunlukHedef)}>
+        <Dugme
+          buyuk
+          ikon={Play}
+          baslik={secili ? t("arena.soruCozDers", { ders: secili.ad }) : t("arena.soruCoz")}
+          onPress={() => router.push({ pathname: "/soru", params: { mod: "antrenman", ...(secili ? { dersKodu: secili.kod, baslik: secili.ad } : {}) } })}
+        />
+      </Nabiz>
+
+      {ogrenci && mufredat.isSuccess && dersler.length === 0 && (
+        <Kart vurgu={tema.yanlis}>
+          <Metin>{t("soru.paketYok")}</Metin>
+        </Kart>
+      )}
+
+      {vadesiGelen > 0 && (
+        <Kart sira={3} vurgu="#FF7AB6" onPress={() => router.push({ pathname: "/soru", params: { mod: "tekrar" } })}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <IkonKutu ikon={RotateCcw} renk="#FF7AB6" />
+            <View style={{ flex: 1 }}>
+              <Metin tur="altbaslik">{t("arena.tekrarZamani", { n: vadesiGelen })}</Metin>
+              <Metin tur="kucuk" soluk>{t("arena.tekrarAciklama")}</Metin>
+            </View>
+          </View>
+        </Kart>
       )}
 
       {ogrenci && tespitYok && secili && (
-        <Kart stil={{ borderColor: tema.vurgu }}>
-          <Text style={{ color: tema.metin }}>{t("arena.tespitOneri", { ders: secili.ad })}</Text>
-          <Dugme baslik={t("soru.tespitBasla")} onPress={() => router.push({ pathname: "/soru", params: { mod: "tespit", tespitDersKodu: secili.kod } })} />
+        <Kart sira={3} vurgu={OYUN.buz}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <IkonKutu ikon={Target} renk={OYUN.buz} />
+            <Metin stil={{ flex: 1 }}>{t("arena.tespitOneri", { ders: secili.ad })}</Metin>
+          </View>
+          <Dugme tur="ikincil" baslik={t("soru.tespitBasla")} onPress={() => router.push({ pathname: "/soru", params: { mod: "tespit", tespitDersKodu: secili.kod } })} />
         </Kart>
       )}
 
       {ogrenci && canli && canli.durum !== "kapali" && (
-        <Kart stil={canli.durum === "aktif" ? { borderColor: "#E4572E" } : undefined}>
-          <Text style={{ color: tema.metin, fontWeight: "800" }}>🔴 {t("canli.baslik")}</Text>
-          <Text style={{ color: tema.soluk }}>
-            {canli.durum === "aktif" ? t("canli.aciklama") : canli.baslangic ? t("canli.yakinda", { zaman: new Date(canli.baslangic).toLocaleString("tr-TR", { weekday: "long", hour: "2-digit", minute: "2-digit" }) }) : ""}
-          </Text>
-          {canli.durum === "aktif" && <Dugme baslik={t("canli.katil")} onPress={() => router.push("/canli")} />}
+        <Kart sira={4} gradyan={canli.durum === "aktif" ? GRADYAN.ates : undefined} vurgu={canli.durum === "aktif" ? undefined : OYUN.ates}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <Nabiz aktif={canli.durum === "aktif"}>
+              <IkonKutu ikon={Radio} renk={canli.durum === "aktif" ? "#fff" : OYUN.ates} dolu={canli.durum !== "aktif"} />
+            </Nabiz>
+            <View style={{ flex: 1 }}>
+              <Metin tur="altbaslik" renk={canli.durum === "aktif" ? "#fff" : undefined}>{t("canli.baslik")}</Metin>
+              <Metin tur="kucuk" renk={canli.durum === "aktif" ? "#ffffffdd" : tema.soluk}>
+                {canli.durum === "aktif" ? t("canli.aciklama") : canli.baslangic ? t("canli.yakinda", { zaman: new Date(canli.baslangic).toLocaleString("tr-TR", { weekday: "long", hour: "2-digit", minute: "2-digit" }) }) : ""}
+              </Metin>
+            </View>
+          </View>
+          {canli.durum === "aktif" && <Dugme tur="altin" baslik={t("canli.katil")} onPress={() => router.push("/canli")} />}
         </Kart>
       )}
 
-      <Dugme
-        buyuk
-        baslik={t("arena.soruCoz")}
-        onPress={() => router.push({ pathname: "/soru", params: { mod: "antrenman", ...(secili ? { dersKodu: secili.kod, baslik: secili.ad } : {}) } })}
-      />
-      {vadesiGelen > 0 && <Dugme baslik={t("arena.tekrarZamani", { n: vadesiGelen })} onPress={() => router.push({ pathname: "/soru", params: { mod: "tekrar" } })} />}
-
       {ogrenci && oyun && oyun.gorevler.length > 0 && (
-        <Kart>
-          <Text accessibilityRole="header" style={{ color: tema.metin, fontWeight: "800", fontSize: 17 }}>{t("oyun.gorevler")}</Text>
-          {[{ ad: t("oyun.gunluk"), liste: gunluk }, { ad: t("oyun.haftalik"), liste: haftalik }].map((grup) => (
-            <View key={grup.ad} style={{ gap: 8 }}>
-              <Text style={{ color: tema.soluk, fontSize: 12, fontWeight: "700" }}>{grup.ad.toLocaleUpperCase("tr-TR")}</Text>
+        <>
+          <Bolum baslik={t("oyun.gorevler")} ikon={CalendarCheck} />
+          {[{ ad: t("oyun.gunluk"), liste: gunluk }, { ad: t("oyun.haftalik"), liste: haftalik }].filter((g) => g.liste.length > 0).map((grup, gi) => (
+            <Kart key={grup.ad} sira={5 + gi}>
+              <Metin tur="etiket" soluk>{grup.ad}</Metin>
               {grup.liste.map((g) => (
-                <View key={g.id} style={{ gap: 4, opacity: g.tamamlandi ? 0.6 : 1 }}>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}>
-                    <Text style={{ color: tema.metin, flex: 1 }}>{g.tamamlandi ? "✅ " : ""}{g.baslik}</Text>
-                    <Text style={{ color: tema.soluk, fontSize: 12 }}>{g.ilerleme}/{g.hedef}</Text>
+                <View key={g.id} style={{ gap: 6, opacity: g.tamamlandi ? 0.65 : 1 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    {g.tamamlandi ? <CheckCircle2 size={20} color={tema.dogru} /> : <Target size={20} color={tema.soluk} />}
+                    <Metin stil={{ flex: 1 }}>{g.baslik}</Metin>
+                    <Metin tur="kucuk" soluk>{g.ilerleme}/{g.hedef}</Metin>
                   </View>
-                  <Cubuk oran={g.ilerleme / g.hedef} renk={g.tamamlandi ? tema.dogru : tema.vurgu} />
-                  <Text style={{ color: tema.soluk, fontSize: 11 }}>{t("oyun.odul", { xp: g.xp, altin: g.altin })}</Text>
+                  <Cubuk oran={g.ilerleme / g.hedef} gradyan={g.tamamlandi ? GRADYAN.dogru : undefined} yukseklik={8} />
+                  <View style={{ flexDirection: "row", gap: 8 }}>
+                    <Etiket metin={`+${g.xp} XP`} renk={OYUN.xp} />
+                    {g.altin > 0 && <Etiket metin={`+${g.altin}`} renk={OYUN.altinKoyu} ikon={Coins} />}
+                  </View>
                 </View>
               ))}
-            </View>
+            </Kart>
           ))}
-        </Kart>
+        </>
       )}
 
       {ogrenci && (
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
-          <Dugme ikincil baslik={`🏆 ${t("oyun.lig")} · ${lig.ad}`} onPress={() => router.push("/lig")} />
-          <Dugme ikincil baslik={`📓 ${t("arena.hataDefteri")} (${hatalar.length})`} onPress={() => router.push("/hata-defteri")} />
-          <Dugme ikincil baslik={`🛍️ ${t("oyun.magaza")}`} onPress={() => router.push("/magaza")} />
-          <Dugme ikincil baslik={`🎖️ ${t("oyun.rozetler")} (${oyun?.rozetler.length ?? 0})`} onPress={() => router.push("/rozetler")} />
-          <Dugme ikincil baslik={`🃏 ${t("oyun.album")}`} onPress={() => router.push("/album")} />
-        </View>
+        <>
+          <Bolum baslik={t("arena.kesfet")} ikon={Layers} />
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
+            <Kisayol sira={7} ikon={Trophy} renk={lig.renk} baslik={t("oyun.lig")} alt={lig.ad} onPress={() => router.push("/lig")} />
+            <Kisayol sira={8} ikon={BookMarked} renk="#FF7AB6" baslik={t("arena.hataDefteri")} alt={t("arena.kayit", { n: hatalar.length })} onPress={() => router.push("/hata-defteri")} />
+            <Kisayol sira={9} ikon={ShoppingBag} renk={OYUN.altin} baslik={t("oyun.magaza")} onPress={() => router.push("/magaza")} />
+            <Kisayol sira={10} ikon={Award} renk={OYUN.xp} baslik={t("oyun.rozetler")} alt={t("arena.kayit", { n: oyun?.rozetler.length ?? 0 })} onPress={() => router.push("/rozetler")} />
+            <Kisayol sira={11} ikon={Sparkles} renk={OYUN.elmas} baslik={t("oyun.album")} onPress={() => router.push("/album")} />
+          </View>
+        </>
       )}
     </Ekran>
   );

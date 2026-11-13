@@ -1,11 +1,24 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { Nunito_600SemiBold, Nunito_700Bold, Nunito_800ExtraBold, Nunito_900Black, useFonts } from "@expo-google-fonts/nunito";
 import { useEffect } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Platform, View } from "react-native";
 import { useOturum } from "@/lib/oturum";
 import { supabase } from "@/lib/supabase";
 import { useTema } from "@/lib/tema";
+
+// Web: Nunito değişken yazı tipi (tüm metinler) — native'de ağırlık başına aileler yüklenir
+if (Platform.OS === "web" && typeof document !== "undefined" && !document.getElementById("kmy-yazi")) {
+  const l = document.createElement("link");
+  l.id = "kmy-yazi";
+  l.rel = "stylesheet";
+  l.href = "https://fonts.googleapis.com/css2?family=Nunito:wght@500..900&display=swap";
+  document.head.appendChild(l);
+  const s = document.createElement("style");
+  s.textContent = "html,body,#root{background:#0B0C1A} [dir] div, [dir] span, [dir] input, [dir] textarea { font-family: Nunito, system-ui, sans-serif; }";
+  document.head.appendChild(s);
+}
 
 const sorguIstemcisi = new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1 } } });
 
@@ -15,6 +28,7 @@ function OturumKapisi() {
   const bolumler: readonly string[] = useSegments();
   const yonlendir = useRouter();
   const tema = useTema();
+  const [yaziHazir] = useFonts({ Nunito_600SemiBold, Nunito_700Bold, Nunito_800ExtraBold, Nunito_900Black });
 
   useEffect(() => {
     void supabase.auth.getSession().then(({ data }) => yukle(data.session));
@@ -30,7 +44,7 @@ function OturumKapisi() {
     else if (oturum && profil && authBolumunde) yonlendir.replace("/(sekmeler)");
   }, [hazir, oturum, profil, bolumler, yonlendir]);
 
-  if (!hazir) {
+  if (!hazir || (!yaziHazir && Platform.OS !== "web")) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: tema.zemin }}>
         <ActivityIndicator color={tema.vurgu} />
@@ -43,7 +57,7 @@ function OturumKapisi() {
 export default function KokDuzen() {
   return (
     <QueryClientProvider client={sorguIstemcisi}>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       <OturumKapisi />
     </QueryClientProvider>
   );

@@ -5,6 +5,7 @@ export const tr = {
     slogan: "Soru çöz, güçlen, kazan.",
   },
   ortak: {
+    harika: "Harika!",
     devam: "Devam",
     iptal: "İptal",
     kaydet: "Kaydet",
@@ -49,6 +50,10 @@ export const tr = {
     profil: "Profil",
   },
   arena: {
+    soruCozDers: "{ders} çöz",
+    tekrarAciklama: "Unutmadan önce pekiştir",
+    kesfet: "Keşfet",
+    kayit: "{n} kayıt",
     merhaba: "Merhaba, {ad}",
     soruCoz: "Soru Çöz",
     gunlukHedef: "Günlük hedef",
@@ -64,6 +69,12 @@ export const tr = {
     tespitOneri: "{ders} için seviye tespiti yapmadın. 10 soruda seviyeni bulalım.",
   },
   soru: {
+    dogru2: "Harika!",
+    dogru3: "Süpersin!",
+    dogru4: "Tam isabet!",
+    dogruAlt: "Böyle devam!",
+    dogruEtiket: "Doğru",
+    devamEt: "Devam et",
     klanaSor: "Klanıma sor",
     klanaSoruldu: "Klanına soruldu ✓",
     yukleniyor: "Soru geliyor…",
@@ -110,6 +121,11 @@ export const tr = {
     kapat: "Kapat",
   },
   oyun: {
+    seviyeAtladinBaslik: "Seviye atladın",
+    yeniRozetBaslik: "Yeni rozet",
+    seriEtiket: "Seri",
+    altin: "Altın",
+    karakter: "Karakter",
     karakterSec: "Karakterini seç",
     karakterAciklama: "Hepsi aynı güçte; fark yalnızca görünüşte. Doğru çözdüğün her soru karakterinin özelliklerini güçlendirir.",
     sec: "Bunu seç",
@@ -163,6 +179,7 @@ export const tr = {
     duello_efekti: "Düello efekti",
   },
   duello: {
+    kupaEtiket: "Kupa",
     baslik: "Düello",
     aciklama: "İki öğrenci aynı soruyu aynı anda görür; ilk doğru cevap turu alır. 5 soruda 3 puana ilk ulaşan kazanır.",
     dereceli: "Dereceli düello",
