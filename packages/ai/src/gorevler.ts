@@ -4,7 +4,7 @@
  * Öncelik: dershane > paket > genel (Merkez Panel, `ai_gorev_ayari` tablosu)
  *          > ortam değişkenleri > koddaki varsayılan.
  * Model adları kodda sabit DEĞİLDİR; ortam değişkeninden ve Merkez Panelden
- * değiştirilebilir. Üretici ve doğrulayıcı farklı model aileleridir (karar #4, 2026-11-13).
+ * değiştirilebilir. Üretici ve doğrulayıcı claude-haiku-5-5 (karar #4, 2026-11-13).
  */
 
 export const AI_GOREVLERI = [
@@ -31,7 +31,7 @@ export interface GorevAyari {
 export type OrtamDegiskenleri = Readonly<Record<string, string | undefined>>;
 
 const VARSAYILAN_MODELLER = {
-  uretici: "gemini-3.6-flash",
+  uretici: "claude-haiku-5-5",
   dogrulayici: "claude-haiku-5-5",
   ogretmen: "claude-sonnet-5-5",
   asistan: "claude-sonnet-5-5",
@@ -68,7 +68,7 @@ export function ortamdanVarsayilanlar(env: OrtamDegiskenleri): Record<AiGorevi, 
     modelBirincil: model, modelYedek: m.yedek, sicaklik, maxToken, zamanAsimiMs, yenidenDeneme: deneme,
   });
   return {
-    soru_uretim: { ...ayar(m.uretici, 0.8, 4000, uretimMs), modelYedek: m.dogrulayici, yenidenDeneme: Math.min(deneme, 1) },
+    soru_uretim: { ...ayar(m.uretici, 0.8, 4000, uretimMs), yenidenDeneme: Math.min(deneme, 1) },
     // Doğrulayıcı da yedeğe düşerse doğrulama gücü azalır; yedek olarak
     // yine güçlü model kalır, haiku'ya düşülmez.
     // Doğrulayıcıya ulaşılamazsa daha zayıf bir modele düşülmez: soru atılır, sonra yeniden üretilir.

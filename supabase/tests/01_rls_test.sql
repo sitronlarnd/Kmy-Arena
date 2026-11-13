@@ -356,13 +356,12 @@ do $$ begin
 end $$;
 rollback;
 
-\echo '▶ 11. AI modelleri: üretici ve doğrulayıcı kararlaştırılan, farklı aileden modeller'
+\echo '▶ 11. AI modelleri: üretici ve doğrulayıcı kararlaştırılan modeller'
 do $$ begin
-  perform test.dogrula((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_uretim' and durum = 'yayinda') = 'gemini-3.6-flash', 'üretici modeli');
+  perform test.dogrula((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_uretim' and durum = 'yayinda') = 'claude-haiku-5-5', 'üretici modeli');
   perform test.dogrula(not exists (select 1 from public.ai_gorev_ayari where durum = 'yayinda' and 'claude-sonnet-4-6' in (model_birincil, coalesce(model_yedek, ''))), 'sonnet-4-6 yayında');
   perform test.dogrula((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_dogrulama' and durum = 'yayinda') = 'claude-haiku-5-5', 'doğrulayıcı modeli');
-  perform test.dogrula(split_part((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_uretim' and durum = 'yayinda'), '-', 1)
-    <> split_part((select model_birincil from public.ai_gorev_ayari where gorev = 'soru_dogrulama' and durum = 'yayinda'), '-', 1), 'üretici ve doğrulayıcı aynı aileden');
+  perform test.dogrula(not exists (select 1 from public.ai_gorev_ayari where durum = 'yayinda' and 'gemini-3.6-flash' in (model_birincil, coalesce(model_yedek, ''))), 'gemini yayında');
 end $$;
 
 \echo '▶ 12. Soru döngüsü: seçim, cevap işleme, yarış kontrolü, hata defteri, tespit'

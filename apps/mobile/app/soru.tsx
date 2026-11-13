@@ -1,5 +1,5 @@
 import type { CevapYaniti, IpucuYaniti, IstemciSorusu, Sik, SiradakiYaniti, SoruModu } from "@kmy/shared";
-import { SIKLAR } from "@kmy/shared";
+import { ROZETLER, SIKLAR } from "@kmy/shared";
 import { t, type MetinAnahtari } from "@kmy/shared/i18n";
 import { useQueryClient } from "@tanstack/react-query";
 import { Stack, router, useLocalSearchParams } from "expo-router";
@@ -9,6 +9,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Dugme } from "@/bilesenler/Dugme";
 import { Kart } from "@/bilesenler/Kart";
 import { MatematikMetni } from "@/bilesenler/MatematikMetni";
+import { SeviyeKutlama } from "@/bilesenler/SeviyeKutlama";
+import { useOyun } from "@/lib/oyun";
 import { api, ApiHatasi } from "@/lib/api";
 import { BOYUT, useTema } from "@/lib/tema";
 
@@ -44,6 +46,8 @@ export default function SoruEkrani() {
   const [tespit, setTespit] = useState<{ cevaplanan: number; toplam: number } | null>(null);
   const [oturum, setOturum] = useState({ n: 0, dogru: 0, xp: 0, altin: 0 });
   const [gecen, setGecen] = useState(0);
+  const [kutlama, setKutlama] = useState<number | null>(null);
+  const karakter = useOyun().data?.karakter ?? null;
   const baslangic = useRef(0);
   const zamanlayici = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -112,6 +116,8 @@ export default function SoruEkrani() {
       const c = await api<CevapYaniti>("/api/soru/cevap", { soruId: soru.id, secilen: bos ? null : secilen, sureMs: Date.now() - baslangic.current });
       setOturum((o) => ({ n: o.n + 1, dogru: o.dogru + (c.sonuc === "dogru" ? 1 : 0), xp: o.xp + c.xp, altin: o.altin + c.altin }));
       setEkran({ ad: "sonuc", c });
+      if (c.seviyeAtladi) setKutlama(c.seviye);
+      void sorgu.invalidateQueries({ queryKey: ["oyun"] });
       void sorgu.invalidateQueries({ queryKey: ["ilerleme"] });
       void sorgu.invalidateQueries({ queryKey: ["beceri"] });
       void sorgu.invalidateQueries({ queryKey: ["hata-defteri"] });
@@ -169,6 +175,7 @@ export default function SoruEkrani() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: tema.zemin }} edges={["bottom"]}>
+      <SeviyeKutlama seviye={kutlama} karakter={karakter} kapat={() => setKutlama(null)} />
       <Stack.Screen options={{ headerShown: true, title: baslik, headerStyle: { backgroundColor: tema.yuzey }, headerTintColor: tema.metin }} />
       <ScrollView contentContainerStyle={{ padding: 16, gap: 14, maxWidth: 760, width: "100%", alignSelf: "center" }}>
         {(ekran.ad === "yukleniyor" || ekran.ad === "bekle") && (
@@ -274,6 +281,21 @@ export default function SoruEkrani() {
                   {sonuc.hataDefteri === "temizlendi" && <Text style={{ color: tema.dogru }}>{t("soru.temizlendi")}</Text>}
                   {sonuc.hataDefteri === "basa_dondu" && <Text style={{ color: tema.soluk }}>{t("soru.basaDondu")}</Text>}
                 </Kart>
+                {sonuc.oyun && (sonuc.oyun.hedefTamam || sonuc.oyun.tamamlananGorevler.length > 0 || sonuc.oyun.yeniRozetler.length > 0) && (
+                  <Kart stil={{ borderColor: tema.vurgu }}>
+                    {sonuc.oyun.hedefTamam && <Text style={{ color: tema.metin, fontWeight: "700" }}>🎯 {t("oyun.hedefTamam")}</Text>}
+                    {sonuc.oyun.seriDurum === "artti" && <Text style={{ color: tema.metin }}>{t("oyun.seriArtti", { n: sonuc.oyun.seriGun })}</Text>}
+                    {sonuc.oyun.seriDurum === "donduruldu" && <Text style={{ color: tema.metin }}>🧊 {t("oyun.seriDonduruldu", { n: sonuc.oyun.seriGun })}</Text>}
+                    {sonuc.oyun.seriDurum === "sifirlandi" && <Text style={{ color: tema.metin }}>{t("oyun.seriSifirlandi")}</Text>}
+                    {sonuc.oyun.tamamlananGorevler.map((g) => (
+                      <Text key={g.kod} style={{ color: tema.dogru, fontWeight: "600" }}>✅ {t("oyun.gorevTamam", { baslik: g.baslik })} · {t("oyun.odul", { xp: g.xp, altin: g.altin })}</Text>
+                    ))}
+                    {sonuc.oyun.yeniRozetler.map((kod) => {
+                      const rz = ROZETLER.find((x) => x.kod === kod);
+                      return <Text key={kod} style={{ color: tema.vurgu, fontWeight: "700" }}>{rz?.emoji ?? "🎖️"} {t("oyun.yeniRozet", { ad: rz?.ad ?? kod })}</Text>;
+                    })}
+                  </Kart>
+                )}
                 {sonuc.celdiriciNotu && secilen && (
                   <Kart>
                     <Text style={{ color: tema.metin, fontWeight: "700" }}>{t("soru.neden", { sik: secilen })}</Text>
