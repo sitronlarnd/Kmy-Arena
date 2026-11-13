@@ -27,6 +27,7 @@ import { arkaPlanIhtiyaci, havuzuDoldur } from "./havuz";
 import { IstemciHatasi } from "./http";
 import type { Kullanici } from "./kimlik";
 import { kmyai, kmyaiErisilebilir } from "./kmyai";
+import { katki as klanKatki } from "./klan-servisi";
 import { cevapSonrasiOyun } from "./oyun-servisi";
 import { servisIstemcisi } from "./supabase";
 
@@ -384,6 +385,15 @@ export async function cevapVer(k: Kullanici, istek: CevapIstegi, deneme = 0): Pr
       gunlukSoru: d.gunluk?.gunluk_soru ?? 0, gunlukHedef: d.gunluk?.gunluk_hedef ?? 10, hedefTamam: Boolean(d.gunluk?.hedef_tamam),
       seriGun: d.gunluk?.seri_gun ?? 0, seriDurum: d.gunluk?.seri_durum ?? null, tamamlananGorevler: [], yeniRozetler: [],
     };
+  }
+  // Klan katkısı (görev, boss, savaş) — ayrı korunur, cevabı asla bozmaz
+  if (h.sayildi) {
+    try {
+      const klan = await klanKatki(k, { dogru: sonuc === "dogru", zorluk, beklenen: h.beklenen, kazanimId: kz.id, ozellik: kz.ozellik ?? null });
+      if (klan) oyun.klan = { seviye: klan.seviye, seviyeAtladi: klan.seviye_atladi, tamamlananGorevler: klan.tamamlanan_gorevler, boss: klan.boss, savas: klan.savas };
+    } catch (hata) {
+      console.error("klan katkısı işlenemedi", hata);
+    }
   }
   return {
     sonuc,

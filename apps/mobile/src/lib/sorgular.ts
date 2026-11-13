@@ -37,6 +37,7 @@ export interface Ders {
   kod: string;
   ad: string;
   sinav_turu: string;
+  ozellik?: string;
 }
 
 export interface HaritaKazanimi {
@@ -72,7 +73,7 @@ export function useMufredat() {
       if (idler.length === 0) return [];
       const { data, error } = await supabase
         .from("ders")
-        .select("id, kod, ad, sinav_turu, sira, uniteler:unite (id, ad, sira, kazanimlar:kazanim (id, kod, aciklama, on_kosullar, sira))")
+        .select("id, kod, ad, sinav_turu, ozellik, sira, uniteler:unite (id, ad, sira, kazanimlar:kazanim (id, kod, aciklama, on_kosullar, sira))")
         .in("id", idler)
         .order("sira");
       if (error) throw error;

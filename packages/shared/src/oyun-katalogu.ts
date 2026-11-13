@@ -145,6 +145,9 @@ export interface OyunMetrikleri {
   envanter: number;
   duello_galibiyet?: number;
   en_uzun_duello_seri?: number;
+  klan_uyesi?: number;
+  boss_hasar_max?: number;
+  klan_savas_galibiyet?: number;
 }
 
 export type RozetKategorisi = "soru" | "seri" | "ustalik" | "tekrar" | "beceri" | "gorev" | "karakter" | "lig" | "sosyal";
@@ -218,8 +221,8 @@ export const ROZETLER: readonly Rozet[] = [
   // Sosyal (sonraki fazlarda açılır) (6)
   { kod: "duello_ilk", ad: "İlk zafer", aciklama: "İlk düellonu kazan.", kategori: "sosyal", altin: 50, emoji: "⚔️", kosul: k("duello_galibiyet", 1) },
   { kod: "duello_seri_10", ad: "Yenilmez", aciklama: "Üst üste 10 düello kazan.", kategori: "sosyal", altin: 300, emoji: "🛡️", unvan: "Yenilmez", kosul: k("en_uzun_duello_seri", 10) },
-  { kod: "klan_katil", ad: "Takım oyuncusu", aciklama: "Bir klana katıl.", kategori: "sosyal", altin: 30, emoji: "🤝", faz: 4 },
-  { kod: "boss_vurus", ad: "Boss avcısı", aciklama: "Bir klan boss'una 100 hasar ver.", kategori: "sosyal", altin: 100, emoji: "🐉", faz: 4 },
+  { kod: "klan_katil", ad: "Takım oyuncusu", aciklama: "Bir klana katıl.", kategori: "sosyal", altin: 30, emoji: "🤝", kosul: k("klan_uyesi", 1) },
+  { kod: "boss_vurus", ad: "Boss avcısı", aciklama: "Bir klan boss'una 100 hasar ver.", kategori: "sosyal", altin: 100, emoji: "🐉", kosul: k("boss_hasar_max", 100) },
   { kod: "topluluk_10", ad: "Yardımsever", aciklama: "Toplulukta 10 kabul edilmiş cevap ver.", kategori: "sosyal", altin: 150, emoji: "💬", unvan: "Yardımsever", faz: 5 },
   { kod: "hata_avcisi", ad: "Hata avcısı", aciklama: "Öğretmenin onayladığı bir soru hatası bildir.", kategori: "sosyal", altin: 50, emoji: "🐞", faz: 6 },
 ];

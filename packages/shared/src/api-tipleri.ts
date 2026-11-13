@@ -78,6 +78,14 @@ export interface CevapOyunSonucu {
   seriDurum: "artti" | "donduruldu" | "sifirlandi" | "basladi" | null;
   tamamlananGorevler: Array<{ kod: string; baslik: string; xp: number; altin: number }>;
   yeniRozetler: string[];
+  /** Klan üyesiyse bu cevabın klana etkisi */
+  klan?: {
+    seviye: number;
+    seviyeAtladi: boolean;
+    tamamlananGorevler: string[];
+    boss: { hasar: number; kalan_can: number; can: number; yenildi: boolean; ad: string } | null;
+    savas: { bolge: string; etki: number; hak_kalan: number } | null;
+  };
 }
 
 export interface OyunGorevi {

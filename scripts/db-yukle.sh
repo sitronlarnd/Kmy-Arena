@@ -17,7 +17,10 @@ KOK="$(cd "$(dirname "$0")/.." && pwd)"
 : "${SUPABASE_DB_URL:?SUPABASE_DB_URL tanımlı değil}"
 
 SEED=0
+TEK_SEED=""
 [[ "${1:-}" == "--seed" ]] && SEED=1
+# --seed-dosya 03_klan_demo.sql: yalnızca o seed dosyasını (tekrar çalıştırılabilir olanlar) yükler
+[[ "${1:-}" == "--seed-dosya" ]] && TEK_SEED="${2:?dosya adı gerekli}"
 
 PSQL=(psql "$SUPABASE_DB_URL" -X -q -v ON_ERROR_STOP=1 --no-psqlrc)
 
@@ -49,6 +52,12 @@ if [[ "$SEED" == "1" ]]; then
     echo "• Seed: $(basename "$f")"
     "${PSQL[@]}" -1 -f "$f" >/dev/null
   done
+fi
+
+if [[ -n "$TEK_SEED" ]]; then
+  [[ "$TEK_SEED" =~ ^[0-9a-z_]+\.sql$ && -f "$KOK/supabase/seed/$TEK_SEED" ]] || { echo "Seed dosyası yok: $TEK_SEED"; exit 1; }
+  echo "• Seed (tek): $TEK_SEED"
+  "${PSQL[@]}" -1 -f "$KOK/supabase/seed/$TEK_SEED" >/dev/null
 fi
 
 echo "✔ Veritabanı güncel"

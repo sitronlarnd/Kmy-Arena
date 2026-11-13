@@ -740,6 +740,145 @@ do $$ begin
 end $$;
 rollback;
 
+\echo '▶ 16. Klan: kurma koşulları, katılım, roller, katkı, görev, boss, savaş, sohbet, şikâyet'
+begin;
+do $$
+declare
+  u uuid[] := array(select app.sabit_uuid(format('kullanici:ogrenci%s@demo.kmyarena.demo', i)) from generate_series(15, 20) i);
+  dm uuid := app.sabit_uuid('dershane:demo');
+  kz uuid := app.sabit_uuid('kazanim:M.8.1.3.2');
+  k uuid; k2 uuid; r jsonb; n integer; b public.boss; sv uuid; m bigint;
+begin
+  insert into public.ogrenci_ilerleme (kullanici_id, dershane_id) select x, dm from unnest(u) x on conflict do nothing;
+  -- Koşullar: seviye 5 ve 7 günde 50 soru
+  begin perform public.sistem_klan_kur(u[1], 'Testçiler', 'Uçarız', '{}', 'acik', false, 5, 50); raise exception 'TEST BAŞARISIZ: seviye koşulu';
+  exception when others then perform test.dogrula(sqlerrm = 'klan.seviyeYetersiz', sqlerrm); end;
+  update public.ogrenci_ilerleme set seviye = 6 where kullanici_id = u[1];
+  begin perform public.sistem_klan_kur(u[1], 'Testçiler', 'Uçarız', '{}', 'acik', false, 5, 50); raise exception 'TEST BAŞARISIZ: soru koşulu';
+  exception when others then perform test.dogrula(sqlerrm = 'klan.soruYetersiz', sqlerrm); end;
+  k := public.sistem_klan_kur(u[1], 'Testçiler', 'Uçarız', '{}', 'acik', false, 5, 0);
+  perform test.dogrula((select rol from public.klan_uyelik where kullanici_id = u[1]) = 'lider', 'kurucu lider olmadı');
+  perform test.dogrula((select count(*) from public.klan_gorev where klan_id = k) = 2 and exists (select 1 from public.boss where klan_id = k), 'haftalık görev/boss hazırlanmadı');
+  begin perform public.sistem_klan_kur(u[2], 'TESTÇİLER', null, '{}', 'acik', false, 0, 0); raise exception 'TEST BAŞARISIZ: aynı ad';
+  exception when others then perform test.dogrula(sqlerrm = 'klan.adKullaniliyor', sqlerrm); end;
+
+  -- Katılım: açık → doğrudan; başvurulu → onay; kapasite
+  perform test.dogrula(public.sistem_klan_katil(u[2], k, 30) = 'katildi', 'açık klana katılınamadı');
+  begin perform public.sistem_klan_katil(u[2], k, 30); raise exception 'TEST BAŞARISIZ: iki kez üye';
+  exception when others then perform test.dogrula(sqlerrm = 'klan.zatenUye', sqlerrm); end;
+  update public.klan set katilim_turu = 'basvurulu' where id = k;
+  perform test.dogrula(public.sistem_klan_katil(u[3], k, 30) = 'basvuruldu', 'başvuru oluşmadı');
+  begin perform public.sistem_klan_basvuru_yanit(u[2], (select id from public.klan_basvuru where kullanici_id = u[3] and durum = 'bekliyor'), true, 30);
+    raise exception 'TEST BAŞARISIZ: üye başvuru onayladı';
+  exception when others then perform test.dogrula(sqlerrm = 'klan.yetkisiz', sqlerrm); end;
+  perform public.sistem_klan_basvuru_yanit(u[1], (select id from public.klan_basvuru where kullanici_id = u[3] and durum = 'bekliyor'), true, 30);
+  update public.klan set katilim_turu = 'davet' where id = k;
+  begin perform public.sistem_klan_katil(u[4], k, 30); raise exception 'TEST BAŞARISIZ: davetsiz katılım';
+  exception when others then perform test.dogrula(sqlerrm = 'klan.davetGerekli', sqlerrm); end;
+  perform public.sistem_klan_davet(u[1], u[4]);
+  perform test.dogrula(public.sistem_klan_katil(u[4], k, 30) = 'katildi', 'davetle katılınamadı');
+  begin perform public.sistem_klan_davet(u[1], u[5]); perform public.sistem_klan_katil(u[5], k, 4); raise exception 'TEST BAŞARISIZ: kapasite';
+  exception when others then perform test.dogrula(sqlerrm = 'klan.dolu', sqlerrm); end;
+
+  -- Roller: yardımcı en fazla 3; yardımcı yardımcıyı çıkaramaz
+  perform public.sistem_klan_yonet(u[1], u[2], 'yardimci_yap');
+  perform public.sistem_klan_yonet(u[1], u[3], 'yardimci_yap');
+  begin perform public.sistem_klan_yonet(u[2], u[3], 'cikar'); raise exception 'TEST BAŞARISIZ: yardımcı yardımcıyı çıkardı';
+  exception when others then perform test.dogrula(sqlerrm = 'klan.yetkisiz', sqlerrm); end;
+  perform public.sistem_klan_yonet(u[1], u[2], 'lider_devret');
+  perform test.dogrula((select lider_id from public.klan where id = k) = u[2] and (select rol from public.klan_uyelik where kullanici_id = u[1]) = 'yardimci', 'liderlik devri');
+  -- 14 gün pasif lider → en aktif yardımcı
+  update public.klan_uyelik set son_katki = now() - interval '20 days', katilma = now() - interval '30 days' where kullanici_id = u[2];
+  update public.kullanici set son_giris = now() - interval '20 days' where id = u[2];
+  update public.klan_uyelik set son_katki = now() where kullanici_id = u[3];
+  perform test.dogrula(app.klan_lider_sec(k) = u[3], 'pasif lider devredilmedi');
+
+  -- Katkı: seviye, görev, boss (yalnız boss kazanımından doğru), klan dışı → null
+  update public.boss set kazanim_id = kz, can = 20, kalan_can = 20 where klan_id = k;
+  update public.ogrenci_ilerleme set ozellik_puanlari = '{"zeka": 40}' where kullanici_id = u[4];
+  r := public.sistem_klan_katki(jsonb_build_object('kullanici_id', u[4], 'dogru', true, 'zorluk', 4, 'beklenen', 0.6, 'kazanim_id', kz, 'ozellik', 'zeka'));
+  -- özellik seviyesi(40) = 1 + floor(sqrt(4)) = 3 → hasar 12
+  perform test.dogrula((r -> 'boss' ->> 'hasar')::int = 12 and (r -> 'boss' ->> 'kalan_can')::int = 8, 'boss hasarı: ' || r::text);
+  r := public.sistem_klan_katki(jsonb_build_object('kullanici_id', u[4], 'dogru', false, 'zorluk', 4, 'beklenen', 0.6, 'kazanim_id', kz, 'ozellik', 'zeka'));
+  perform test.dogrula(r -> 'boss' = 'null'::jsonb, 'yanlış cevap boss''a vurdu');
+  n := (select altin from public.ogrenci_ilerleme where kullanici_id = u[4]);
+  r := public.sistem_klan_katki(jsonb_build_object('kullanici_id', u[4], 'dogru', true, 'zorluk', 4, 'beklenen', 0.6, 'kazanim_id', kz, 'ozellik', 'zeka'));
+  perform test.dogrula((r -> 'boss' ->> 'yenildi')::boolean, 'boss yenilmedi');
+  perform test.dogrula((select altin from public.ogrenci_ilerleme where kullanici_id = u[4]) = n + 60, 'boss sandığı verilmedi');
+  perform test.dogrula((select boss_hasar_toplam from public.ogrenci_ilerleme where kullanici_id = u[4]) = 24, 'boss hasarı ilerlemeye yazılmadı');
+  perform test.dogrula((select katki_toplam from public.klan where id = k) = 3, 'klan katkısı');
+  perform test.dogrula(public.sistem_klan_katki(jsonb_build_object('kullanici_id', u[6], 'dogru', true)) is null, 'klansız katkı');
+  update public.klan_gorev set hedef = 4 where klan_id = k and kod = 'toplam_soru';
+  n := (select altin from public.ogrenci_ilerleme where kullanici_id = u[1]);
+  r := public.sistem_klan_katki(jsonb_build_object('kullanici_id', u[3], 'dogru', true, 'zorluk', 2, 'kazanim_id', kz, 'ozellik', 'zeka'));
+  perform test.dogrula(r -> 'tamamlanan_gorevler' ? 'toplam_soru' and (select altin from public.ogrenci_ilerleme where kullanici_id = u[1]) = n + 100, 'klan görevi ödülü: ' || r::text);
+
+  -- Savaş: ikinci klan, eşleştir (hemen), 30 hak, etki 10 × (1 + (1 − E)), katılım çarpanı, kapanış
+  update public.ogrenci_ilerleme set seviye = 6 where kullanici_id = u[5];
+  k2 := public.sistem_klan_kur(u[5], 'Aslanlar', null, '{}', 'acik', false, 5, 0);
+  perform public.sistem_klan_katil(u[6], k2, 30);
+  delete from public.klan_savasi where dershane_id = dm;
+  perform test.dogrula(public.sistem_klan_savas_esle(app.hafta_basi(app.bugun()), 2, true, dm) >= 1, 'savaş eşleşmedi');
+  sv := (select id from public.klan_savasi where klan_a in (k, k2) and klan_b in (k, k2));
+  perform test.dogrula(sv is not null, 'iki klan birbiriyle eşleşmedi');
+  r := public.sistem_klan_katki(jsonb_build_object('kullanici_id', u[5], 'dogru', true, 'zorluk', 3, 'beklenen', 0.5, 'kazanim_id', kz, 'ozellik', 'zeka'));
+  -- strateji seviyesi 1 → ×1,01 · 10 × 1,5 = 15,15
+  perform test.dogrula((r -> 'savas' ->> 'etki')::numeric = 15.15 and (r -> 'savas' ->> 'hak_kalan')::int = 29, 'savaş etkisi: ' || r::text);
+  update public.klan_savas_katki set kullanilan_hak = 30 where savas_id = sv and kullanici_id = u[5];
+  r := public.sistem_klan_katki(jsonb_build_object('kullanici_id', u[5], 'dogru', true, 'zorluk', 3, 'beklenen', 0.5, 'kazanim_id', kz, 'ozellik', 'zeka'));
+  perform test.dogrula((r -> 'savas' ->> 'etki')::numeric = 0 and (r -> 'savas' ->> 'hak_kalan')::int = 0, 'hak sınırı aşıldı');
+  perform public.sistem_klan_katki(jsonb_build_object('kullanici_id', u[6], 'dogru', true, 'zorluk', 3, 'beklenen', 0.9, 'kazanim_id', kz, 'ozellik', 'bilgelik'));
+  r := public.sistem_klan_durum(u[5]);
+  perform test.dogrula((r -> 'savas' ->> 'aktif')::boolean and (r -> 'savas' -> 'bolgeler' -> 'mat' ->> 'ben')::numeric = 15.15, 'savaş durumu: ' || (r -> 'savas')::text);
+  n := (select kupa from public.ogrenci_ilerleme where kullanici_id = u[5]);
+  perform test.dogrula(public.sistem_klan_savas_kapat(30, true) >= 1, 'savaş kapanmadı');
+  perform test.dogrula((select kazanan from public.klan_savasi where id = sv) = k2 and (select carpan_b from public.klan_savasi where id = sv) = 1.3, 'savaş sonucu / katılım çarpanı');
+  perform test.dogrula((select kupa from public.klan where id = k2) = 30 and (select kupa from public.ogrenci_ilerleme where kullanici_id = u[5]) = n + 10, 'savaş Kupası');
+
+  -- Sohbet: üye olmayan yazamaz, soru paylaşımı yalnız görülen soru, hız sınırı; şikâyet (3 → gizle)
+  begin perform public.sistem_klan_mesaj(app.sabit_uuid('kullanici:ogrenci30@demo.kmyarena.demo'), 'hazir', 'selam', null, null); raise exception 'TEST BAŞARISIZ: üye olmayan yazdı';
+  exception when others then perform test.dogrula(sqlerrm = 'klan.uyeDegil', sqlerrm); end;
+  begin perform public.sistem_klan_mesaj(u[1], 'serbest', null, 'merhaba', null); raise exception 'TEST BAŞARISIZ: serbest kapalıyken yazıldı';
+  exception when others then perform test.dogrula(sqlerrm = 'klan.serbestKapali', sqlerrm); end;
+  begin perform public.sistem_klan_mesaj(u[1], 'soru', null, null, app.sabit_uuid('soru:duello1')); raise exception 'TEST BAŞARISIZ: görülmemiş soru paylaşıldı';
+  exception when others then perform test.dogrula(sqlerrm in ('klan.mesajGecersiz'), sqlerrm); end;
+  m := public.sistem_klan_mesaj(u[1], 'hazir', 'selam', null, null);
+  begin perform public.sistem_klan_mesaj(u[1], 'hazir', 'hadi', null, null); raise exception 'TEST BAŞARISIZ: hız sınırı';
+  exception when others then perform test.dogrula(sqlerrm = 'klan.cokHizli', sqlerrm); end;
+  perform test.dogrula(jsonb_array_length(public.sistem_klan_mesajlar(u[2], 0)) >= 1, 'mesajlar okunamadı');
+  perform test.dogrula(jsonb_array_length(public.sistem_klan_mesajlar(u[5], 0)) = 0 or not exists (
+    select 1 from jsonb_array_elements(public.sistem_klan_mesajlar(u[5], 0)) e where (e ->> 'id')::bigint = m), 'başka klanın mesajı göründü');
+  perform public.sistem_sikayet(u[2], 'klan_mesaj', m::text, 'zorbalik', null);
+  perform public.sistem_sikayet(u[3], 'klan_mesaj', m::text, 'kufur', null);
+  perform test.dogrula((select oncelikli from public.sikayet where sikayet_eden = u[2] and hedef_id = m::text), 'zorbalık öncelikli değil');
+  perform public.sistem_sikayet(u[4], 'klan_mesaj', m::text, 'kufur', null);
+  perform test.dogrula((select gizli from public.klan_mesaj where id = m), '3 şikâyette mesaj gizlenmedi');
+  begin perform public.sistem_sikayet(u[1], 'klan_mesaj', m::text, 'kufur', null); raise exception 'TEST BAŞARISIZ: kendi mesajını şikâyet';
+  exception when others then perform test.dogrula(sqlerrm = 'sikayet.gecersiz', sqlerrm); end;
+
+  -- Ayrılma: lider ayrılırsa devir; son üye ayrılırsa klan silinir
+  perform public.sistem_klan_ayril(u[6]);
+  perform public.sistem_klan_ayril(u[5]);
+  perform test.dogrula(not exists (select 1 from public.klan where id = k2), 'boş klan silinmedi');
+  r := public.sistem_klan_durum(u[5]);
+  perform test.dogrula(not (r ->> 'uye')::boolean and jsonb_array_length(r -> 'klanlar') >= 1, 'klansız durum');
+  r := public.sistem_oyun_metrikleri(u[4]);
+  perform test.dogrula((r ->> 'klan_uyesi')::int = 1 and (r ->> 'boss_hasar_max')::int = 24, 'klan rozet metrikleri');
+end $$;
+
+-- İstemci: klan tablolarına yazamaz, klan fonksiyonlarını çağıramaz
+select test.oturum('ogrenci15@demo.kmyarena.demo');
+set local role authenticated;
+do $$ begin
+  begin perform public.sistem_klan_katki(jsonb_build_object('kullanici_id', auth.uid(), 'dogru', true)); raise exception 'TEST BAŞARISIZ: istemci klan katkısı';
+  exception when insufficient_privilege then null; end;
+  begin insert into public.klan (dershane_id, ad) values (app.dershane_id(), 'Hile'); raise exception 'TEST BAŞARISIZ: istemci klan kurdu';
+  exception when insufficient_privilege then null; end;
+  begin update public.klan set kupa = 999; raise exception 'TEST BAŞARISIZ: istemci klan Kupası yazdı';
+  exception when insufficient_privilege then null; end;
+end $$;
+rollback;
+
 \echo '✔ Tüm veritabanı testleri geçti'
 
 

@@ -7,3 +7,5 @@ export * from "./havuz";
 export * from "./soru-dongusu";
 export * from "./api-tipleri";
 export * from "./oyun-katalogu";
+export * from "./moderasyon";
+export * from "./klan-katalogu";

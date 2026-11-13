@@ -11,6 +11,10 @@ on:
         description: "Demo verilerini de yükle (yalnızca demo veritabanı için)"
         type: boolean
         default: false
+      seed_dosya:
+        description: "Yalnızca bu (tekrar çalıştırılabilir) seed dosyasını yükle, ör. 03_klan_demo.sql"
+        type: string
+        default: ""
 
 concurrency:
   group: supabase-yukle
@@ -26,4 +30,7 @@ jobs:
       - name: Migration'lar${{ inputs.seed && ' + demo verisi' || '' }}
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: bash scripts/db-yukle.sh ${{ inputs.seed && '--seed' || '' }}
+          SEED_DOSYA: ${{ inputs.seed_dosya }}
+        run: |
+          if [ -n "$SEED_DOSYA" ]; then bash scripts/db-yukle.sh --seed-dosya "$SEED_DOSYA"
+          else bash scripts/db-yukle.sh ${{ inputs.seed && '--seed' || '' }}; fi

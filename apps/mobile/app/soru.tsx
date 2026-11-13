@@ -43,6 +43,7 @@ export default function SoruEkrani() {
   const [gonderiyor, setGonderiyor] = useState(false);
   const [hata, setHata] = useState<string | null>(null);
   const [bildirildi, setBildirildi] = useState(false);
+  const [klanaSoruldu, setKlanaSoruldu] = useState<string | null>(null);
   const [tespit, setTespit] = useState<{ cevaplanan: number; toplam: number } | null>(null);
   const [oturum, setOturum] = useState({ n: 0, dogru: 0, xp: 0, altin: 0 });
   const [gecen, setGecen] = useState(0);
@@ -146,6 +147,16 @@ export default function SoruEkrani() {
     try {
       await api("/api/soru/hata-bildir", { soruId: soru.id });
       setBildirildi(true);
+    } catch (h) {
+      setHata(metin(h instanceof ApiHatasi ? h.message : "ortak.hata"));
+    }
+  };
+
+  const klanaSor = async () => {
+    if (!soru || klanaSoruldu === soru.id) return;
+    try {
+      await api("/api/klan/mesaj", { tur: "soru", soruId: soru.id });
+      setKlanaSoruldu(soru.id);
     } catch (h) {
       setHata(metin(h instanceof ApiHatasi ? h.message : "ortak.hata"));
     }
@@ -296,6 +307,22 @@ export default function SoruEkrani() {
                     })}
                   </Kart>
                 )}
+                {sonuc.oyun?.klan && (sonuc.oyun.klan.boss || (sonuc.oyun.klan.savas && sonuc.oyun.klan.savas.etki > 0) || sonuc.oyun.klan.tamamlananGorevler.length > 0 || sonuc.oyun.klan.seviyeAtladi) && (
+                  <Kart>
+                    {sonuc.oyun.klan.boss && (
+                      <Text style={{ color: tema.metin, fontWeight: "700" }}>
+                        {sonuc.oyun.klan.boss.yenildi ? t("klan.bossYenildi", { ad: sonuc.oyun.klan.boss.ad }) : t("klan.bossHasar", { n: sonuc.oyun.klan.boss.hasar, kalan: sonuc.oyun.klan.boss.kalan_can })}
+                      </Text>
+                    )}
+                    {sonuc.oyun.klan.savas && sonuc.oyun.klan.savas.etki > 0 && (
+                      <Text style={{ color: tema.metin }}>{t("klan.savasEtki", { n: Math.round(sonuc.oyun.klan.savas.etki), hak: sonuc.oyun.klan.savas.hak_kalan })}</Text>
+                    )}
+                    {sonuc.oyun.klan.tamamlananGorevler.map((g) => (
+                      <Text key={g} style={{ color: tema.dogru, fontWeight: "600" }}>✅ {t(`klan.gorev_${g === "toplam_soru" ? "toplam_soru" : "herkes_30"}`, { hedef: "" })}</Text>
+                    ))}
+                    {sonuc.oyun.klan.seviyeAtladi && <Text style={{ color: tema.vurgu, fontWeight: "700" }}>{t("klan.seviyeAtladi", { n: sonuc.oyun.klan.seviye })}</Text>}
+                  </Kart>
+                )}
                 {sonuc.celdiriciNotu && secilen && (
                   <Kart>
                     <Text style={{ color: tema.metin, fontWeight: "700" }}>{t("soru.neden", { sik: secilen })}</Text>
@@ -313,6 +340,9 @@ export default function SoruEkrani() {
                 <Dugme baslik={sonuc.tespitBitti ? t("soru.bitir") : t("soru.sonraki")} onPress={sonraki} />
                 <View style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
                   <Dugme ikincil baslik={bildirildi ? t("soru.hataBildirildi") : t("soru.hataBildir")} onPress={() => void hataBildir()} />
+                  {sonuc.oyun?.klan && (
+                    <Dugme ikincil baslik={klanaSoruldu === soru?.id ? t("soru.klanaSoruldu") : t("soru.klanaSor")} onPress={() => void klanaSor()} />
+                  )}
                   <Dugme ikincil baslik={t("soru.bitir")} onPress={() => (oturum.n > 0 && mod === "antrenman" ? setEkran({ ad: "ozet" }) : router.back())} />
                 </View>
               </View>

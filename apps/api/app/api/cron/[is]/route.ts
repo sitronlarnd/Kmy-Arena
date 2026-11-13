@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ortam } from "@/lib/ortam";
 import { havuzDoldurIsi, kalibrasyonIsi } from "@/lib/isler";
+import { OYUN_AYARLARI } from "@kmy/shared";
 import { bugunIst, haftaBasi } from "@/lib/oyun-servisi";
 import { servisIstemcisi } from "@/lib/supabase";
 
@@ -35,6 +36,28 @@ const ISLER: Record<string, Is> = {
     const { data, error } = await servisIstemcisi().rpc("sistem_lig_kapat", { p_hafta: gecen.toISOString().slice(0, 10) });
     if (error) throw error;
     return data as Record<string, unknown>;
+  },
+  // Perşembe 09:00 (İstanbul): klan savaşı eşleştirme (savaş Cuma 18:00 – Pazar 21:00) + liderlik devri
+  "klan-savas-esle": async () => {
+    const { data, error } = await servisIstemcisi().rpc("sistem_klan_savas_esle", {
+      p_hafta: haftaBasi(bugunIst()), p_min_uye: OYUN_AYARLARI.klan.savasMinUye, p_hemen: false, p_dershane: null,
+    });
+    if (error) throw error;
+    return { eslesen: data };
+  },
+  // Elle (demo/pilot): savaşı hemen başlat (bitiş yine Pazar 21:00), en az 2 üyeli klanlar
+  "klan-savas-hemen": async () => {
+    const { data, error } = await servisIstemcisi().rpc("sistem_klan_savas_esle", {
+      p_hafta: haftaBasi(bugunIst()), p_min_uye: 2, p_hemen: true, p_dershane: null,
+    });
+    if (error) throw error;
+    return { eslesen: data };
+  },
+  // Pazar 21:05 (İstanbul): savaşları kapat, ödülleri ver
+  "klan-savas-kapat": async () => {
+    const { data, error } = await servisIstemcisi().rpc("sistem_klan_savas_kapat", { p_kupa: OYUN_AYARLARI.klan.savasKupa, p_hepsi: false });
+    if (error) throw error;
+    return { kapanan: data };
   },
 };
 

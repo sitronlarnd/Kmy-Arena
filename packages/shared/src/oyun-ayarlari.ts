@@ -131,6 +131,8 @@ export const OYUN_AYARLARI = {
     yardimciMax: 3,
     liderPasifGun: 14,
     savasSaldiriHakki: 30,
+    savasMinUye: 5,
+    savasKupa: 30,
     katilimCarpanlari: [
       { altSinir: 1, carpan: 1.3 },
       { altSinir: 0.8, carpan: 1.2 },
