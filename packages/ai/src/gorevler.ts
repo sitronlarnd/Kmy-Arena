@@ -34,8 +34,9 @@ const VARSAYILAN_MODELLER = {
   uretici: "claude-haiku-5-5",
   dogrulayici: "claude-haiku-5-5",
   ogretmen: "claude-sonnet-5-5",
-  asistan: "claude-sonnet-5-5",
-  gorsel: "claude-sonnet-5-5",
+  // Maliyet kararı (2026-11-13): asistan ve görsel okuma da Haiku 5.5; AI Merkezinden değiştirilebilir.
+  asistan: "claude-haiku-5-5",
+  gorsel: "claude-haiku-5-5",
   veliRaporu: "claude-sonnet-5-5",
   yedek: "claude-haiku-4-5",
 } as const;
@@ -74,8 +75,8 @@ export function ortamdanVarsayilanlar(env: OrtamDegiskenleri): Record<AiGorevi, 
     // Doğrulayıcıya ulaşılamazsa daha zayıf bir modele düşülmez: soru atılır, sonra yeniden üretilir.
     soru_dogrulama: { ...ayar(m.dogrulayici, 0, 2500, uretimMs), modelYedek: "", yenidenDeneme: Math.min(deneme, 1) },
     asistan: ayar(m.asistan, 0.4, 900, asistanMs),
-    gorsel_okuma: ayar(m.gorsel, 0, 1500, asistanMs),
-    topluluk_degerlendirme: ayar(m.yedek, 0, 400, 20_000),
+    gorsel_okuma: ayar(m.gorsel, 0, 2000, 45_000),
+    topluluk_degerlendirme: ayar(m.dogrulayici, 0, 600, 30_000),
     moderasyon: ayar(m.yedek, 0, 200, 20_000),
     veli_raporu: ayar(m.veliRaporu, 0.5, 600, asistanMs),
     ogretmen_soru_uretim: ayar(m.ogretmen, 0.7, 4000, uretimMs),

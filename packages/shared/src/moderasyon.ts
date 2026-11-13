@@ -67,3 +67,18 @@ export function metniDenetle(metin: string): ModerasyonSonucu {
   if (tekHarfler.length >= 5 && kokler.some((k) => k.length >= 5 && tekHarfler.includes(k))) return { temiz: false, sebep: "kufur" };
   return { temiz: true, sebep: null };
 }
+
+/**
+ * Kendine zarar / ciddi sıkıntı ifadeleri (asistan ve topluluk). Eşleşirse AI'ye
+ * gönderilmez; öğrenciye destek mesajı gösterilir ve rehberlik servisine kısa
+ * bir bildirim düşer. Yanlış pozitif, yanlış negatiften iyidir.
+ */
+const DESTEK_IFADELERI = [
+  "intihar", "kendimi oldur", "kendimi oldurecegim", "olmek istiyorum", "yasamak istemiyorum", "yasamak istemiyom",
+  "kendime zarar", "kendimi kes", "bilegimi kes", "bileklerimi", "canima kiy", "her seye son ver", "hayatima son",
+  "kimse beni sevmiyor", "dayanamiyorum artik", "beni dovuyor", "bana dokunuyor", "taciz",
+];
+export function destekGerekli(metin: string): boolean {
+  const n = normallestir(metin).replace(/[^a-z ]+/g, " ").replace(/\s+/g, " ");
+  return DESTEK_IFADELERI.some((i) => n.includes(normallestir(i)));
+}

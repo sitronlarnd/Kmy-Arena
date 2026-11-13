@@ -259,7 +259,7 @@ begin
   select * into v_s from public.topluluk_soru where id = p_soru;
   if not found or not app.topluluk_gorebilir(p_kullanici, v_s) then raise exception 'topluluk.bulunamadi'; end if;
   if v_s.soran_id = p_kullanici then raise exception 'topluluk.kendiSorun'; end if;
-  if v_s.durum <> 'acik' then raise exception 'topluluk.kapali'; end if;
+  if v_s.durum <> 'acik' then raise exception 'topluluk.kapaliSoru'; end if;
   if not exists (select 1 from public.kullanici where id = p_kullanici and tur = 'ogrenci') then raise exception 'topluluk.yetkisiz'; end if;
   insert into public.topluluk_cevap (soru_id, dershane_id, cevaplayan_id, sik, aciklama, gorsel_yol)
   values (p_soru, v_s.dershane_id, p_kullanici, nullif(p_sik, ''), p_aciklama, p_gorsel_yol)
@@ -690,3 +690,19 @@ begin
     execute format('grant execute on function %s to service_role', f);
   end loop;
 end $$;
+
+-- Proje sahibi maliyet kararı (2026-11-13): asistan, görsel okuma ve topluluk
+-- değerlendirmesi de claude-haiku-5-5 (yedek claude-haiku-4-5).
+with eski as (
+  update public.ai_gorev_ayari
+  set durum = 'arsiv'
+  where durum = 'yayinda' and kapsam = 'genel' and gorev in ('asistan', 'gorsel_okuma', 'topluluk_degerlendirme')
+  returning *
+)
+insert into public.ai_gorev_ayari (gorev, kapsam, kapsam_id, model_birincil, model_yedek, sicaklik, max_token,
+                                   zaman_asimi_ms, yeniden_deneme, surum, durum, yayin_tarihi)
+select gorev, kapsam, kapsam_id, 'claude-haiku-5-5', 'claude-haiku-4-5', sicaklik,
+       case gorev when 'gorsel_okuma' then 2000 when 'topluluk_degerlendirme' then 600 else max_token end,
+       case gorev when 'gorsel_okuma' then 45000 else zaman_asimi_ms end,
+       yeniden_deneme, surum + 1, 'yayinda', now()
+from eski;

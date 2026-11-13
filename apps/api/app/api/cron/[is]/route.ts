@@ -3,6 +3,7 @@ import { ortam } from "@/lib/ortam";
 import { havuzDoldurIsi, kalibrasyonIsi } from "@/lib/isler";
 import { OYUN_AYARLARI } from "@kmy/shared";
 import { bugunIst, haftaBasi } from "@/lib/oyun-servisi";
+import { aiBekleyenleriIsle } from "@/lib/topluluk-servisi";
 import { servisIstemcisi } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
@@ -44,6 +45,14 @@ const ISLER: Record<string, Is> = {
     });
     if (error) throw error;
     return { eslesen: data };
+  },
+  // Her 5 dk: cevapsız topluluk sorularına ipucu (15 dk), çözümsüzlere tam çözüm (2 sa)
+  "topluluk-ai": async () => aiBekleyenleriIsle(),
+  // Her gece: asistan sohbetleri 180 günden eskiyse silinir
+  "asistan-temizle": async () => {
+    const { data, error } = await servisIstemcisi().rpc("sistem_asistan_temizle");
+    if (error) throw error;
+    return { silinen: data };
   },
   // Elle (demo/pilot): savaşı hemen başlat (bitiş yine Pazar 21:00), en az 2 üyeli klanlar
   "klan-savas-hemen": async () => {

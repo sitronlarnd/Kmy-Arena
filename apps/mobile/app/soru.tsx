@@ -17,6 +17,7 @@ import { MatematikMetni } from "@/bilesenler/MatematikMetni";
 import { RozetMadalya } from "@/bilesenler/sanat";
 import { Basilabilir, Cubuk, Dugme, Etiket, IkonKutu, Kart, Metin, titret, useSarsinti } from "@/bilesenler/ui";
 import { useOyun } from "@/lib/oyun";
+import { useOturum } from "@/lib/oturum";
 import { api, ApiHatasi } from "@/lib/api";
 import { BOYUT, GRADYAN, OYUN, golge, useTema } from "@/lib/tema";
 
@@ -58,6 +59,7 @@ export default function SoruEkrani() {
   const [konfeti, setKonfeti] = useState(0);
   const [ardisik, setArdisik] = useState(0);
   const sarsinti = useSarsinti();
+  const asistanAcik = useOturum((x) => x.ozellikler.asistan !== false);
   const karakter = useOyun().data?.karakter ?? null;
   const baslangic = useRef(0);
   const zamanlayici = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -409,6 +411,9 @@ export default function SoruEkrani() {
                 {sonuc.sayilmadi && <Metin tur="kucuk" soluk>{t("soru.hizliCevap")}</Metin>}
                 <View style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
                   <Dugme kucuk tur="hayalet" ikon={Flag} baslik={bildirildi ? t("soru.hataBildirildi") : t("soru.hataBildir")} onPress={() => void hataBildir()} />
+                  {(mod === "antrenman" || mod === "tekrar" || mod === "tespit") && asistanAcik && (
+                    <Dugme kucuk tur="ikincil" ikon={Sparkles} baslik={t("asistan.sor")} onPress={() => router.push({ pathname: "/asistan", params: { soruId: soru.id } })} />
+                  )}
                   {sonuc.oyun?.klan && (
                     <Dugme kucuk tur="hayalet" ikon={MessageCircleQuestion} baslik={klanaSoruldu === soru.id ? t("soru.klanaSoruldu") : t("soru.klanaSor")} onPress={() => void klanaSor()} />
                   )}

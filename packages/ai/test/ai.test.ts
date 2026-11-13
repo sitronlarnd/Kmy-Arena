@@ -15,8 +15,8 @@ describe("Görev ayarları", () => {
     const a = ortamdanVarsayilanlar({});
     assert.equal(a.soru_uretim.modelBirincil, "claude-haiku-5-5");
     assert.equal(a.soru_dogrulama.modelBirincil, "claude-haiku-5-5");
-    assert.equal(a.asistan.modelBirincil, "claude-sonnet-5-5");
-    assert.equal(a.gorsel_okuma.modelBirincil, "claude-sonnet-5-5");
+    assert.equal(a.asistan.modelBirincil, "claude-haiku-5-5");
+    assert.equal(a.gorsel_okuma.modelBirincil, "claude-haiku-5-5");
     assert.equal(a.veli_raporu.modelBirincil, "claude-sonnet-5-5");
     assert.equal(a.soru_uretim.modelYedek, "claude-haiku-4-5");
     assert.equal(a.ogretmen_soru_uretim.modelBirincil, "claude-sonnet-5-5");

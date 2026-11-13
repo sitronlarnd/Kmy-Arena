@@ -3,7 +3,7 @@ import { t } from "@kmy/shared/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import {
-  Award, BookMarked, CalendarCheck, CheckCircle2, Coins, Flame, Layers, Play, Radio, RotateCcw, ShoppingBag, Snowflake, Sparkles, Target, Trophy, type LucideIcon,
+  Award, BookMarked, CalendarCheck, CheckCircle2, Coins, Flame, Layers, MessagesSquare, Play, Radio, RotateCcw, ScanLine, ShoppingBag, Snowflake, Sparkles, Target, Trophy, type LucideIcon,
 } from "lucide-react-native";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -35,6 +35,8 @@ export default function Arena() {
   const { profil, dershane } = useOturum();
   const oyun = useOyun().data;
   const canliAcik = useOturum((s) => s.ozellikler.canli_soru_saati !== false);
+  const toplulukAcik = useOturum((s) => s.ozellikler.topluluk !== false);
+  const fotoAcik = useOturum((s) => s.ozellikler.fotograftan_coz !== false);
   const canli = useQuery({
     queryKey: ["canli-ozet"],
     enabled: profil?.tur === "ogrenci" && canliAcik,
@@ -222,6 +224,8 @@ export default function Arena() {
             <Kisayol sira={9} ikon={ShoppingBag} renk={OYUN.altin} baslik={t("oyun.magaza")} onPress={() => router.push("/magaza")} />
             <Kisayol sira={10} ikon={Award} renk={OYUN.xp} baslik={t("oyun.rozetler")} alt={t("arena.kayit", { n: oyun?.rozetler.length ?? 0 })} onPress={() => router.push("/rozetler")} />
             <Kisayol sira={11} ikon={Sparkles} renk={OYUN.elmas} baslik={t("oyun.album")} onPress={() => router.push("/album")} />
+            {toplulukAcik && <Kisayol sira={12} ikon={MessagesSquare} renk="#3CF0A0" baslik={t("topluluk.baslik")} alt={t("arena.toplulukAlt")} onPress={() => router.push("/topluluk")} />}
+            {fotoAcik && <Kisayol sira={13} ikon={ScanLine} renk="#5CC8FF" baslik={t("fotograf.baslik")} alt={t("arena.fotoAlt")} onPress={() => router.push("/fotograf")} />}
           </View>
         </>
       )}
