@@ -6,7 +6,7 @@
 - Paket kimliği: `cloud.kmyai.arena`
 - Kategori: Eğitim (ikincil: Oyun › Bilgi yarışması yok — yalnız Eğitim)
 - Yaş sınırı: 9+ (iOS), "Herkes" / 10+ (Play). Uygulama içi satın alma yok, reklam yok.
-- Hesap: yalnızca dershanenin verdiği davet koduyla açılır → **inceleme için demo hesabı zorunlu** (aşağıda).
+- Hesap: yalnızca dershanenin verdiği davet koduyla açılır → **inceleme hesabı zorunlu** (aşağıda).
 
 ## Kısa açıklama (Play, 80 kr)
 Dershanenin öğrencilerine seviyesine göre özgün sorular, düello ve klan savaşları.
@@ -39,11 +39,14 @@ lgs,yks,tyt,ayt,soru bankası,deneme,dershane,test çöz,matematik,fen,düello,k
 7. Karakter ve rozetler — "Karakterini geliştir"
 8. Lig podyumu — "Haftalık ligde yüksel"
 
-Üretim: `npx expo export --platform web` + Playwright betikleri (`/tmp/ekran.py` mantığı) ya da gerçek cihazda demo öğrenciyle (ogrenci01). Gerçek öğrenci verisi **kullanılmaz**.
+Üretim: `npx expo export --platform web` + Playwright betikleri (`/tmp/ekran.py` mantığı) ya da gerçek cihazda inceleme öğrencisiyle (`ogrenci@inceleme.kmyarena.app`). Gerçek öğrenci verisi **kullanılmaz**.
 
 ## İnceleme notları (App Review / Play)
-- Demo hesap: `ogrenci01@demo.kmyarena.demo` / `KmyDemo!2026` (öğrenci). Veli: `veli01@demo.kmyarena.demo`.
-- Hesap oluşturma dershane davet koduyla yapılır (B2B); demo kod `DEMA8AKD`.
+- Hesaplar (App Store Connect → App Review Information ve Play Console → App access bölümüne yazılır; şifre repoda değil, proje sahibinde):
+  - Öğrenci (LGS): `ogrenci@inceleme.kmyarena.app`
+  - Öğrenci (YKS): `yks@inceleme.kmyarena.app`
+  - Veli: `veli@inceleme.kmyarena.app`
+- Hesap oluşturma dershane davet koduyla yapılır (B2B); inceleme kodu `KMYARENA`.
 - Hesap silme: Profil → Hesabımı sil (Apple 5.1.1(v)).
 - Kamera/galeri izni yalnızca "Fotoğraftan çöz" ve topluluk görseli için; fotoğraf saklanmaz.
 - Kullanıcı içeriği (topluluk, klan sohbeti): filtre, şikâyet, gizleme ve engelleme mevcut (Apple 1.2).
@@ -52,11 +55,12 @@ lgs,yks,tyt,ayt,soru bankası,deneme,dershane,test çöz,matematik,fen,düello,k
 ## Gizlilik etiketleri
 - Toplanan: Ad (takma ad), e-posta, kullanım verisi (cevaplar), kullanıcı içeriği (topluluk/sohbet). Kimliğe bağlı, izleme için **kullanılmaz**.
 - Toplanmayan: konum, kişiler, reklam kimliği, sağlık, finans.
-- Gizlilik politikası URL'si: tanıtım sitesinde `/#kvkk` (yayına çıkmadan önce ayrı bir `/gizlilik` sayfası eklenmeli).
+- Gizlilik politikası URL'si: `<site>/gizlilik`; hesap silme URL'si (Google Play zorunlu): `<site>/hesap-silme`.
 
 ## Yayın öncesi kontrol listesi
 - [ ] `eas init`, EAS ortam değişkenleri, ikon (1024×1024) ve açılış ekranı
-- [ ] KMYAI anahtarı canlıda, asistan/fotoğraf/topluluk AI uçtan uca test
-- [ ] Gizlilik politikası ve kullanım koşulları sayfaları
+- [x] KMYAI anahtarı canlıda; soru üretimi (mimo-v2.6-flash + gpt-6-luna) ve asistan uçtan uca test edildi
+- [ ] Fotoğraftan çöz gerçek cihazda test
+- [x] Gizlilik politikası, kullanım koşulları ve hesap silme sayfaları (`/gizlilik`, `/kosullar`, `/hesap-silme`) — avukat kontrolü önerilir
 - [ ] Resend alan adı doğrulaması (`EPOSTA_GONDEREN`)
-- [ ] Demo veri yalnızca inceleme dershanesinde
+- [x] Demo veri kaldırıldı, yalnızca inceleme dershanesi var

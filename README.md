@@ -75,7 +75,14 @@ API'nin zamanlanmış işleri (`apps/api/vercel.json`): `havuz-doldur` her 10 da
 
 Fonksiyon bölgesi `fra1` (Frankfurt) — veritabanıyla aynı bölge. Mobil derlemeler Vercel'de değil, EAS Build'de alınır (`eas build --profile magaza`).
 
-## Demo hesapları (yalnızca `02_demo.sql` yüklenen ortamda)
+## Canlı ortam (2026-11-14'ten beri)
+
+Canlı veritabanında demo verisi **yoktur** (`supabase/yayin/01_demo_kaldir_inceleme.sql`). Yalnızca:
+
+- Merkez sahibi `sahip@kmyarena.demo` (şifre yenilendi, proje sahibinde).
+- Mağaza incelemesi için **KMY Arena İnceleme** dershanesi: `ogrenci@`, `yks@`, `veli@`, `ogretmen@`, `kurucu@inceleme.kmyarena.app` ve 6 sınıf arkadaşı (`sinif1-6@…`). Ortak şifre proje sahibinde; davet kodu `KMYARENA`.
+
+## Demo hesapları (yalnızca yerel / test ortamında, `02_demo.sql`)
 
 Şifre hepsi için `KmyDemo!2026`.
 
