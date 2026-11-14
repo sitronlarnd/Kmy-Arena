@@ -262,3 +262,12 @@ Emoji tabanlı arayüz kaldırıldı: lucide ikonları, özgün SVG karakter/bos
 - **Merkez panel:** Teklifler ve pilotlar (huni, durum, sonraki adım tarihi, "bugün aranacak"); Dershaneler (lisans durumu, koltuk, bitiş, 30 gün kullanım); yazdırılabilir **pilot raporu** (aktif öğrenci, çözülen soru, süre, ilk→son hafta doğruluk, ustalık, günlük grafik).
 - **Hesap silme:** mobil Profil → Hesabımı sil (`POST /api/hesap/sil`), 30 gün sonra `hesap-sil` gece işi (00:45) Auth hesabını siler.
 - **Belgeler:** `docs/MAGAZA.md` (mağaza metinleri, ekran görüntüsü listesi, inceleme notları), KVKK güncellemesi, README (uygulamalar, demo sınıfları, EAS adımları).
+
+## Yayın hazırlığı (2026-11-14)
+
+- **AI modelleri:** soru üretimi `mimo-v2.6-flash` (yedek `claude-haiku-5-5`), doğrulama `gpt-6-luna` (0022). Canlı test: doğrulayıcı, üreticinin "şıklarda yok" diye kendi kendini yalanlayan sorularını doğru yakaladı → üretim promptu v4 ve bu soruları doğrulamaya göndermeden eleyen tereddüt filtresi; doğrulayıcı cevabı "C)", "C şıkkı" gibi biçimlerde de okunur.
+- **Marka:** KMY Arena amblemi (`marka/`), uygulama ikonu, Android uyarlanabilir ikon, açılış ekranı, bildirim ikonu, site/panel favicon ve logoları. `app.json` 1.0.0, Türkçe izin metinleri, gereksiz izinler (mikrofon, konum) engellendi.
+- **Site:** `/gizlilik` (KVKK aydınlatma), `/kosullar`, `/hesap-silme` (Google Play zorunlu).
+- **Canlı veri:** demo dershaneler ve hesaplar silindi; mağaza inceleme dershanesi kuruldu; merkez sahibi şifresi yenilendi (`supabase/yayin/`, iş akışında `yayin_dosya`).
+- **Bildirimler (0023):** push (düello daveti, ödev, topluluk cevabı/kabulü, seri hatırlatması), sessiz saatler, veliye haftalık e-posta; profil ve veli ekranında ortak Hesap ayarları (veli ekranına hesap silme de eklendi).
+- **Güvenlik:** 18 yaş altında veli onayı olmadan topluluk ve klan sohbeti sunucuda kapalı.

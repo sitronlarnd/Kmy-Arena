@@ -44,11 +44,12 @@ export function HesapAyarlari() {
   }
 
   const sessiz = t1 ? t1.sessiz_baslangic === 22 && t1.sessiz_bitis === 8 : true;
+  const satirVar = Platform.OS !== "web" || profil?.tur === "veli";
   return (
     <>
-      {t1 && (
+      {t1 && satirVar && (
         <Kart>
-          <Metin tur="baslik">{t("bildirim.baslik")}</Metin>
+          <Metin tur="altbaslik">{t("bildirim.baslik")}</Metin>
           <View style={{ gap: 14, marginTop: 10 }}>
             {Platform.OS !== "web" && (
               <Satir ikon={Bell} baslik={t("bildirim.anlik")} aciklama={t("bildirim.anlikAciklama")} deger={t1.bildirim_acik} degis={(v) => void guncelle({ acik: v })} />

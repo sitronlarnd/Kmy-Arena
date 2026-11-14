@@ -70,8 +70,10 @@ Belirsiz kalan noktalarda en makul varsayım yapıldı ve buraya yazıldı.
 40. **Moderasyon filtresi** kelime listesi + kalıp tabanlıdır (Türkçe normalizasyon, leet, harf tekrarı). Görsel moderasyonu Faz 5'te (fotoğraf yükleme ile) eklenecek.
 41. **Topluluk AI** ön değerlendirmesi isteği bekletmemek için `after()` ile yanıt sonrası çalışır; KMYAI kapalıysa cevap öğretmen/öğrenci kabulüne kalır, hiçbir akış AI'ya bağımlı değildir.
 42. **Risk puanı** basit kurallarla (0-100): 7+ gün hareketsizlik, son hafta doğruluk düşüşü, geciken ödev, hiç başlamamış. Makine öğrenmesi modeli yerine açıklanabilir kurallar seçildi; nedenler panelde metin olarak görünür.
-43. **Push bildirimleri ve sessiz saatler** henüz yok (Expo Notifications + mağaza kimlik bilgileri gerekiyor); uygulama içi kartlar kullanılıyor.
-44. **Veliye haftalık e-posta** ertelendi (e-posta sağlayıcısı alan adı doğrulaması ve AI özet metni gerekiyor); veli şimdilik uygulamadaki veli ekranını görür.
+43. **Push bildirimleri** Expo Push ile (0023). Sessiz saat varsayılanı 22:00–08:00 (Türkiye); sessiz saatte biriken bildirim sabah gönderilir, 12 saatten eskisi atılır. EAS proje kimliği olmadan (eas init öncesi) uygulama bildirimsiz çalışır.
+44. **Veliye haftalık e-posta** şablon metinle (AI yok, kişisel veri sağlayıcıya gitmez); Resend anahtarı ve doğrulanmış gönderen alan adı tanımlanınca gönderilmeye başlar. Veli uygulamadan kapatabilir.
 45. **Öğretmenin sınıf klanı kurması, sınıf turnuvası, dershaneler arası turnuva ve dershane sezon ödülleri** ertelendi; mevcut klan/düello altyapısının üzerine eklenebilir.
 46. **Fiyat** tanıtım sitesinde gösterilmez ("Teklif alın"); öğrenci başı aylık lisans varsayıldı. Ödeme alma (iyzico vb.) kapsam dışı; lisans durumu Merkez panelinden elle yönetilir.
 47. **Hesap silme** 30 gün bekletmeli (yanlışlıkla silmeye karşı); bu sürede hesap kapalıdır, geri alma dershane yöneticisi aracılığıyla.
+48. **18 yaş altı sosyal özellikler** (topluluk sorusu/cevabı, klan sohbeti) veli onayı olmadan sunucuda reddedilir; doğum yılı bilinmeyen öğrenci reşit değil sayılır.
+49. **Canlı veritabanı** 2026-11-14'te demodan çıkarıldı; yalnızca merkez sahibi ve mağaza inceleme dershanesi kaldı. Demo verisi yalnızca yerel testte kullanılır.

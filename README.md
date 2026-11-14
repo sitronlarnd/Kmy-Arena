@@ -67,11 +67,11 @@ Aynı depodan 4 proje; her birinde **Root Directory** farklı, gerisi `vercel.js
 | Proje | Root Directory | Ortam değişkenleri |
 |---|---|---|
 | kmy-arena-panel | `apps/panel` | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_API_URL` |
-| kmy-arena-api | `apps/api` | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `KMYAI_*`, `CRON_SECRET`, `RESEND_API_KEY`, `SAHIP_EPOSTA` |
+| kmy-arena-api | `apps/api` | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `KMYAI_*`, `CRON_SECRET`, `RESEND_API_KEY`, `SAHIP_EPOSTA`, `EPOSTA_GONDEREN`, `EXPO_ACCESS_TOKEN` (isteğe bağlı) |
 | kmy-arena-web | `apps/mobile` | `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_API_URL` |
-| kmy-arena-tanitim | `apps/landing` | — |
+| kmy-arena-tanitim | `apps/landing` | İsteğe bağlı: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_DESTEK_EPOSTA`, `NEXT_PUBLIC_SIRKET_UNVANI` |
 
-API'nin zamanlanmış işleri (`apps/api/vercel.json`): `havuz-doldur` her 10 dakikada (soru havuzunu doldurur), `kalibrasyon` her gece (20+ cevaplı soruların gerçek zorluğu), `cevap-bolumu` her ayın 25'i.
+API'nin zamanlanmış işleri (`apps/api/vercel.json`): `havuz-doldur` her 10 dakikada (soru havuzunu doldurur), `kalibrasyon` her gece (20+ cevaplı soruların gerçek zorluğu), `cevap-bolumu` her ayın 25'i, `bildirim-gonder` her 5 dakikada (push kuyruğu, sessiz saatlere uyar), `seri-hatirlat` her akşam 19:00, `veli-haftalik` pazar 17:00 (Resend tanımlıysa), `hesap-sil` her gece (30 günü dolan silme talepleri).
 
 Fonksiyon bölgesi `fra1` (Frankfurt) — veritabanıyla aynı bölge. Mobil derlemeler Vercel'de değil, EAS Build'de alınır (`eas build --profile magaza`).
 
@@ -115,7 +115,7 @@ Davet kodları: `DEMA8AKD` (8-A öğrenci), `DEMTYTKD` (12-SAY öğrenci), `DEMH
 
 1. `npm i -g eas-cli && eas login` (Expo hesabı).
 2. `cd apps/mobile && eas init` — proje kimliği `app.json`'a yazılır. Paket kimliği `cloud.kmyai.arena`.
-3. EAS ortam değişkenleri: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `EXPO_PUBLIC_API_URL` (gizli anahtar **asla** `EXPO_PUBLIC_` olmaz).
+3. EAS ortam değişkenleri: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (Supabase publishable anahtarı), `EXPO_PUBLIC_API_URL` (gizli anahtar **asla** `EXPO_PUBLIC_` olmaz).
 4. İç test: `eas build -p android --profile onizleme` (APK) / `eas build -p ios --profile onizleme`.
 5. Mağaza: `eas build -p all --profile magaza`, ardından `eas submit -p ios --profile magaza` ve `eas submit -p android --profile magaza`.
 6. Mağaza metinleri, ekran görüntüsü listesi ve inceleme notları: `docs/MAGAZA.md`.
