@@ -56,6 +56,10 @@ export interface CevapYaniti {
   cozumAdimlari: string[];
   /** Öğrencinin seçtiği yanlış şık için çeldirici notu */
   celdiriciNotu: string | null;
+  /** Öğretmen sorusunda hocanın çözümü (video/görsel bağlantısı süreli imzalıdır) */
+  hocaCozumu?: { tur: "video" | "gorsel" | "metin" | "baglanti"; url?: string | null; metin?: string | null } | null;
+  /** Aynı kazanımda hocanın konu anlatımı kartı */
+  konuAnlatimi?: { baslik: string; tur: "video" | "metin" | "baglanti"; url?: string | null; metin?: string | null; ogretmen: string } | null;
   xp: number;
   altin: number;
   xpToplam: number;

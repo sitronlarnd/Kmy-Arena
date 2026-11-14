@@ -6,6 +6,7 @@ import { bugunIst, haftaBasi } from "@/lib/oyun-servisi";
 import { aiBekleyenleriIsle } from "@/lib/topluluk-servisi";
 import { servisIstemcisi } from "@/lib/supabase";
 import { bildirimleriGonder, veliHaftalikGonder } from "@/lib/bildirim";
+import { turnuvaMaclariniHazirla } from "@/lib/duello-servisi";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -20,7 +21,7 @@ type Is = () => Promise<Record<string, unknown>>;
  *  Faz 7: pilot-raporu (30 gün sonunda dershaneye otomatik etki raporu)
  */
 const ISLER: Record<string, Is> = {
-  "bildirim-gonder": async () => bildirimleriGonder(),
+  "bildirim-gonder": async () => ({ turnuva: await turnuvaMaclariniHazirla().catch((e: unknown) => ({ hata: String(e) })), ...(await bildirimleriGonder()) }),
   "seri-hatirlat": async () => {
     const { data, error } = await servisIstemcisi().rpc("sistem_seri_hatirlat");
     if (error) throw error;

@@ -13,6 +13,7 @@ import Animated, { FadeIn, FadeInDown, FadeInUp, SlideInDown, ZoomIn } from "rea
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SikKarti } from "@/bilesenler/SikKarti";
 import { Konfeti, RozetKutlama, SeviyeKutlama, UcanOdul } from "@/bilesenler/Kutlama";
+import { HocaIcerigi } from "@/bilesenler/HocaIcerigi";
 import { MatematikMetni } from "@/bilesenler/MatematikMetni";
 import { RozetMadalya } from "@/bilesenler/sanat";
 import { Basilabilir, Cubuk, Dugme, Etiket, IkonKutu, Kart, Metin, titret, useSarsinti } from "@/bilesenler/ui";
@@ -424,6 +425,7 @@ export default function SoruEkrani() {
                     ))}
                   </Kart>
                 )}
+                <HocaIcerigi sonuc={sonuc} />
                 {sonuc.sayilmadi && <Metin tur="kucuk" soluk>{t("soru.hizliCevap")}</Metin>}
                 <View style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
                   <Dugme kucuk tur="hayalet" ikon={Flag} baslik={bildirildi ? t("soru.hataBildirildi") : t("soru.hataBildir")} onPress={() => void hataBildir()} />

@@ -1,12 +1,13 @@
 import { SIKLAR, type Sik } from "@kmy/shared";
 import { t, type MetinAnahtari } from "@kmy/shared/i18n";
-import { Stack } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import Animated, { FadeIn, ZoomIn } from "react-native-reanimated";
-import { Radio, Trophy } from "lucide-react-native";
+import { KeyRound, Radio, Trophy } from "lucide-react-native";
+import { Alan } from "@/bilesenler/Alan";
 import { SikKarti } from "@/bilesenler/SikKarti";
-import { Bolum, Etiket, Halka, Kart, Metin, Nabiz, titret } from "@/bilesenler/ui";
+import { Bolum, Dugme, Etiket, Halka, Kart, Metin, Nabiz, titret } from "@/bilesenler/ui";
 import { Ekran } from "@/bilesenler/Ekran";
 import { MatematikMetni } from "@/bilesenler/MatematikMetni";
 import { api, ApiHatasi } from "@/lib/api";
@@ -23,6 +24,7 @@ interface CanliSoru {
 }
 interface Durum {
   durum: "kapali" | "yakinda" | "aktif";
+  ad?: string | null;
   baslangic?: string;
   sunucu_zamani?: number;
   oturum?: { id: string; baslangic: string; sure_sn: number; aralik_sn: number; sunucu_zamani: number; sorular: CanliSoru[]; subeler: Array<{ sube: string; dogru: number; katilimci: number }> | null };
@@ -33,22 +35,35 @@ export default function Canli() {
   const [d, setD] = useState<Durum | null>(null);
   const [simdi, setSimdi] = useState(sunucuSimdi());
   const [hata, setHata] = useState<string | null>(null);
+  const [pin, setPin] = useState("");
+  // Öğretmenin başlattığı sınıf yarışması (PIN ile) ya da günlük Canlı Soru Saati
+  const { oturum: sinifOturumu } = useLocalSearchParams<{ oturum?: string }>();
+
+  const pinleKatil = async () => {
+    setHata(null);
+    try {
+      const r = await api<{ oturum: string }>("/api/canli/pin", { pin: pin.trim() });
+      router.replace({ pathname: "/canli", params: { oturum: r.oturum } });
+    } catch (h) {
+      setHata(t((h instanceof ApiHatasi ? h.message : "ortak.hata") as MetinAnahtari));
+    }
+  };
 
   const yenile = useCallback(async () => {
     const t0 = Date.now();
     try {
-      const y = await api<Durum>("/api/canli/durum", {});
+      const y = sinifOturumu ? await api<Durum>("/api/canli/oturum", { oturum: sinifOturumu }) : await api<Durum>("/api/canli/durum", {});
       const sz = y.oturum?.sunucu_zamani ?? y.sunucu_zamani;
       if (sz) saatGuncelle(sz, t0, Date.now());
       setD(y);
     } catch (h) {
       setHata(t((h instanceof ApiHatasi ? h.message : "ortak.hata") as MetinAnahtari));
     }
-  }, []);
+  }, [sinifOturumu]);
 
   useEffect(() => {
     void yenile();
-    const i = setInterval(() => void yenile(), 3000);
+    const i = setInterval(() => void yenile(), sinifOturumu ? 1500 : 3000);
     const s = setInterval(() => setSimdi(sunucuSimdi()), 200);
     return () => {
       clearInterval(i);
@@ -78,8 +93,17 @@ export default function Canli() {
   const bekleSn = siradaki ? Math.max(0, Math.ceil((Date.parse(siradaki.acilis) - simdi) / 1000)) : 0;
 
   return (
-    <Ekran baslik={t("canli.baslik")} altBaslik={t("canli.aciklama")}>
+    <Ekran baslik={sinifOturumu ? (d?.ad ?? t("canli.sinifBaslik")) : t("canli.baslik")} altBaslik={sinifOturumu ? t("canli.sinifAciklama") : t("canli.aciklama")}>
       <Stack.Screen options={{ headerShown: false }} />
+      {!sinifOturumu && (
+        <Kart>
+          <Metin tur="altbaslik">{t("canli.pinBaslik")}</Metin>
+          <View style={{ flexDirection: "row", gap: 10, alignItems: "flex-end" }}>
+            <View style={{ flex: 1 }}><Alan etiket={t("canli.pinEtiket")} value={pin} onChangeText={(x) => setPin(x.replace(/\D/g, "").slice(0, 6))} keyboardType="number-pad" /></View>
+            <Dugme kucuk genis={false} ikon={KeyRound} baslik={t("canli.katil")} onPress={() => void pinleKatil()} />
+          </View>
+        </Kart>
+      )}
       {hata && <Metin renk={tema.yanlis}>{hata}</Metin>}
       {d?.durum === "kapali" && <Kart><Metin soluk ortala>{t("canli.kapali")}</Metin></Kart>}
       {d?.durum === "yakinda" && d.baslangic && (

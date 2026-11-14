@@ -3,7 +3,7 @@ import { t } from "@kmy/shared/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import {
-  Award, BookMarked, CalendarCheck, CheckCircle2, ClipboardList, Coins, Flame, Layers, Megaphone, MessagesSquare, Play, Radio, RotateCcw, ScanLine, ShoppingBag, Snowflake, Sparkles, Target, Trophy, type LucideIcon,
+  Award, BookMarked, CalendarCheck, CheckCircle2, ClipboardList, Coins, Crown, Flame, Layers, Megaphone, MessagesSquare, Play, Radio, RotateCcw, ScanLine, ShoppingBag, Snowflake, Sparkles, Target, Trophy, type LucideIcon,
 } from "lucide-react-native";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -278,6 +278,8 @@ export default function Arena() {
             <Kisayol sira={10} ikon={Award} renk={OYUN.xp} baslik={t("oyun.rozetler")} alt={t("arena.kayit", { n: oyun?.rozetler.length ?? 0 })} onPress={() => router.push("/rozetler")} />
             <Kisayol sira={11} ikon={Sparkles} renk={OYUN.elmas} baslik={t("oyun.album")} onPress={() => router.push("/album")} />
             {toplulukAcik && <Kisayol sira={12} ikon={MessagesSquare} renk="#3CF0A0" baslik={t("topluluk.baslik")} alt={t("arena.toplulukAlt")} onPress={() => router.push("/topluluk")} />}
+            <Kisayol sira={15} ikon={Radio} renk={OYUN.ates} baslik={t("canli.sinifBaslik")} alt={t("arena.canliAlt")} onPress={() => router.push("/canli")} />
+            <Kisayol sira={14} ikon={Crown} renk={OYUN.altin} baslik={t("turnuva.baslik")} alt={t("arena.turnuvaAlt")} onPress={() => router.push("/turnuva")} />
             {fotoAcik && <Kisayol sira={13} ikon={ScanLine} renk="#5CC8FF" baslik={t("fotograf.baslik")} alt={t("arena.fotoAlt")} onPress={() => router.push("/fotograf")} />}
           </View>
         </>

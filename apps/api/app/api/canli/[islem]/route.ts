@@ -1,4 +1,4 @@
-import { canliCevap, canliDurum, canliHemenBaslat } from "@/lib/canli-servisi";
+import { canliCevap, canliDurum, canliHemenBaslat, canliOturumDurumu, canliPin } from "@/lib/canli-servisi";
 import { govdeOku, guvenli, IstemciHatasi, json, onUcus } from "@/lib/http";
 import { kimlikDogrula, merkezYetkisiVar, ogrenciGetir } from "@/lib/kimlik";
 import { ortam } from "@/lib/ortam";
@@ -30,6 +30,8 @@ export async function POST(istek: Request, baglam: { params: Promise<{ islem: st
     }
     const k = await ogrenciGetir(istek);
     if (islem === "durum") return json(await canliDurum(k));
+    if (islem === "pin") return json(await canliPin(k, String(g.pin ?? "")));
+    if (islem === "oturum") return json(await canliOturumDurumu(k, String(g.oturum ?? "")));
     if (islem === "cevap") {
       const secilen = typeof g.secilen === "string" && /^[A-E]$/.test(g.secilen) ? g.secilen : null;
       return json(await canliCevap(k, String(g.oturum ?? ""), Number(g.sira), secilen, Number(g.rttMs) || 0));

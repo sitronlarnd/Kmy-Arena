@@ -72,3 +72,20 @@ export async function canliHemenBaslat(dershaneId: string): Promise<void> {
     if (error && !error.message.includes("canli.soruYok")) throw error;
   }
 }
+
+/** Canlı sınıf yarışması: öğrenci öğretmenin verdiği 6 haneli PIN ile katılır. */
+export async function canliPin(k: Kullanici, pin: string): Promise<{ oturum: string }> {
+  if (!/^\d{6}$/.test(pin)) throw new IstemciHatasi("canli.pinGecersiz", 400);
+  const { data } = await servisIstemcisi().rpc("sistem_canli_pin", { p_kullanici: k.id, p_pin: pin });
+  if (!data) throw new IstemciHatasi("canli.pinGecersiz", 404);
+  return { oturum: data as string };
+}
+
+export async function canliOturumDurumu(k: Kullanici, oturum: string): Promise<unknown> {
+  const s = servisIstemcisi();
+  const { data: o } = await s.from("canli_oturum").select("dershane_id, ad").eq("id", oturum).maybeSingle();
+  if (!o || o.dershane_id !== k.dershaneId) throw new IstemciHatasi("canli.yok", 404);
+  const { data, error } = await s.rpc("sistem_canli_durum", { p_oturum: oturum, p_kullanici: k.id });
+  if (error) throw error;
+  return { durum: "aktif", ad: o.ad, oturum: data };
+}

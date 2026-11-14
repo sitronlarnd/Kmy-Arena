@@ -268,8 +268,18 @@ export async function siradakiSoru(k: Kullanici, istek: SiradakiIstegi): Promise
     if (od.kalan <= 0) return { durum: "odev_bitti" };
     const okz = m.kazanimlar.get(od.kazanim_id);
     if (!okz) throw new IstemciHatasi("soru.kazanimYok", 404);
-    const { data: oo } = await s.from("odev").select("soru_sayisi").eq("id", istek.odevId).single();
+    const { data: oo } = await s.from("odev").select("soru_sayisi, soru_ids").eq("id", istek.odevId).single();
     const toplam = (oo?.soru_sayisi as number | undefined) ?? od.kalan;
+    // Öğretmenin arşivinden sabit sorulu ödev: sorular sırayla
+    if (oo?.soru_ids) {
+      const { data: v, error: ve } = await s.rpc("sistem_odev_soru_ver", { p_kullanici: k.id, p_odev: istek.odevId });
+      if (ve) throw ve;
+      const sr = (v as { soru: SoruSatiri | null } | null)?.soru;
+      if (!sr) return { durum: "odev_bitti" };
+      const skz = m.kazanimlar.get(sr.kazanim_id);
+      if (!skz) throw new IstemciHatasi("soru.kazanimYok", 404);
+      return { durum: "soru", mod, soru: istemciSorusu(sr, skz), odev: { cozulen: toplam - od.kalan, toplam, baslik: od.baslik } };
+    }
     const b = await beceriGetir(k.id, okz.id);
     const hedef = od.zorluk_modu === "sabit" && od.sabit_zorluk ? od.sabit_zorluk : antrenmanZorlugu(b.theta, 0, a);
     const r = await soruSec(k, { kazanimId: okz.id, hedef, baglam: "odev" });
@@ -434,9 +444,24 @@ export async function cevapVer(k: Kullanici, istek: CevapIstegi, deneme = 0): Pr
       console.error("ödev işlenemedi", hata);
     }
   }
+  // Hocanın çözümü (öğretmen sorusu) ve kazanımın konu anlatımı kartı
+  let hocaCozumu: CevapYaniti["hocaCozumu"] = null;
+  let konuAnlatimi: CevapYaniti["konuAnlatimi"] = null;
+  try {
+    const imza = async (yol: string | null | undefined) => (yol ? (await s.storage.from("ogretmen").createSignedUrl(yol, 3600)).data?.signedUrl ?? null : null);
+    const oc = (soru as unknown as { ogretmen_cozum?: { tur: "video" | "gorsel" | "metin" | "baglanti"; yol?: string; url?: string; metin?: string } | null }).ogretmen_cozum;
+    if (oc) hocaCozumu = { tur: oc.tur, url: oc.yol ? await imza(oc.yol) : (oc.url ?? null), metin: oc.metin ?? null };
+    const { data: ka } = await s.rpc("sistem_konu_anlatimi", { p_kullanici: k.id, p_kazanim: kz.id });
+    const a = ka as { baslik: string; tur: "video" | "metin" | "baglanti"; yol: string | null; url: string | null; metin: string | null; ogretmen: string } | null;
+    if (a) konuAnlatimi = { baslik: a.baslik, tur: a.tur, url: a.yol ? await imza(a.yol) : a.url, metin: a.metin, ogretmen: a.ogretmen };
+  } catch (hata) {
+    console.error("hoca içeriği alınamadı", hata);
+  }
   return {
     sonuc,
     odev,
+    hocaCozumu,
+    konuAnlatimi,
     dogru: soru.dogru,
     cozumAdimlari: soru.cozum_adimlari ?? [],
     celdiriciNotu: istek.secilen && istek.secilen !== soru.dogru ? (soru.celdirici_notlari?.[istek.secilen] ?? null) : null,

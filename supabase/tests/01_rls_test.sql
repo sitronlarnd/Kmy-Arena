@@ -1129,6 +1129,74 @@ do $$ begin
 end $$;
 rollback;
 
+\echo '▶ 21. Öğretmen araçları: soru arşivi, arşivden ödev, turnuva ağacı, canlı sınıf yarışması'
+begin;
+set local role authenticated;
+select test.oturum('ogretmen.mat@demo.kmyarena.demo');
+do $$
+declare
+  kz uuid := (select k.id from public.kazanim k where k.sinav_turu = 'LGS' order by k.kod limit 1);
+  d uuid := app.sabit_uuid('dershane:demo'); ids uuid[] := '{}'; v uuid; i int; od uuid; tid uuid; r jsonb;
+begin
+  for i in 1..4 loop
+    insert into public.soru (kaynak, dershane_id, ogretmen_id, kazanim_id, sinav_turu, soru_tipi, zorluk, govde_md, siklar, dogru, durum, paylasim)
+    values ('ogretmen', d, auth.uid(), kz, 'LGS', 'islem', 4, format('Arşiv sorusu %s: 2+%s kaçtır?', i, i), jsonb_build_object('A', '1', 'B', (2 + i)::text, 'C', '9', 'D', '10'), 'B', 'dogrulandi',
+            case when i = 1 then 'kendim' else 'dershane' end)
+    returning id into v;
+    ids := ids || v;
+  end loop;
+  perform test.dogrula((select count(*) from public.soru where kaynak = 'ogretmen') = 4, 'öğretmen kendi sorularını görmüyor');
+  -- Başka dershanenin adına soru yazamaz
+  begin
+    insert into public.soru (kaynak, dershane_id, ogretmen_id, kazanim_id, sinav_turu, soru_tipi, zorluk, govde_md, siklar, dogru)
+    values ('ogretmen', app.sabit_uuid('dershane:rakip'), auth.uid(), kz, 'LGS', 'islem', 4, 'x', '{"A":"1","B":"2","C":"3","D":"4"}', 'A');
+    raise exception 'TEST BAŞARISIZ: başka dershaneye soru';
+  exception when insufficient_privilege then null; end;
+  od := public.panel_odev_arsivden('Arşiv ödevi', ids, array[app.sabit_uuid('sinif:8A')], null, now() + interval '2 days');
+  perform set_config('test.odev', od::text, true);
+  perform set_config('test.sorular', array_to_string(ids, ','), true);
+  tid := public.panel_turnuva_olustur('8-A Kupası', app.sabit_uuid('sinif:8A'), (select id from public.ders where kod like 'lgs_mat%' limit 1), 8, null, 'Kitap seti');
+  perform set_config('test.turnuva', tid::text, true);
+  perform test.dogrula((select count(*) from public.turnuva_mac where turnuva_id = tid and tur = 1) = 4, 'turnuva 1. tur 4 maç');
+  r := public.panel_canli_baslat(app.sabit_uuid('sinif:8A'), null, 10, 30, ids, 'Deneme');
+  perform set_config('test.canli', r ->> 'id', true);
+  perform set_config('test.pin', r ->> 'pin', true);
+  perform test.dogrula((public.panel_canli_ekran((r ->> 'id')::uuid) ->> 'soru_sayisi')::int = 4, 'canlı ekran');
+end $$;
+-- Diğer öğretmen "kendim" sorusunu görmez
+select test.oturum('ogretmen.fen@demo.kmyarena.demo');
+do $$ begin
+  perform test.dogrula((select count(*) from public.soru where kaynak = 'ogretmen') = 3, 'kendim sorusu başkasına göründü');
+end $$;
+-- Öğrenci: arşivden ödev sorusu sırayla gelir; turnuva görünür
+reset role;
+do $$
+declare o1 uuid := app.sabit_uuid('kullanici:ogrenci01@demo.kmyarena.demo'); r jsonb; tid uuid := current_setting('test.turnuva')::uuid; m record;
+begin
+  r := public.sistem_odev_soru_ver(o1, current_setting('test.odev')::uuid);
+  perform test.dogrula(r -> 'soru' ->> 'govde_md' like 'Arşiv sorusu 1%', 'ödev ilk soru: ' || coalesce(r::text, 'null'));
+  perform test.dogrula(public.sistem_canli_pin(o1, current_setting('test.pin')) = current_setting('test.canli')::uuid, 'PIN ile katılım');
+  perform test.dogrula(public.sistem_canli_pin(app.sabit_uuid('kullanici:ogrenci1@rakip.kmyarena.demo'), current_setting('test.pin')) is null, 'rakip dershane PIN');
+  -- 1. turu bitir → 2. tur kurulur
+  for m in select * from public.turnuva_mac where turnuva_id = tid and tur = 1 loop
+    update public.turnuva_mac set durum = 'bitti', kazanan = m.a where id = m.id;
+  end loop;
+  perform app.turnuva_ilerlet(tid);
+  perform test.dogrula((select count(*) from public.turnuva_mac where turnuva_id = tid and tur = 2) = 2, 'turnuva 2. tur');
+  for m in select * from public.turnuva_mac where turnuva_id = tid and tur = 2 loop update public.turnuva_mac set durum = 'bitti', kazanan = m.a where id = m.id; end loop;
+  perform app.turnuva_ilerlet(tid);
+  for m in select * from public.turnuva_mac where turnuva_id = tid and tur = 3 loop update public.turnuva_mac set durum = 'bitti', kazanan = m.a where id = m.id; end loop;
+  perform app.turnuva_ilerlet(tid);
+  perform test.dogrula((select durum from public.turnuva where id = tid) = 'bitti' and (select kazanan_id from public.turnuva where id = tid) is not null, 'turnuva bitmedi');
+end $$;
+select test.oturum('ogrenci01@demo.kmyarena.demo');
+set local role authenticated;
+do $$ begin
+  perform test.dogrula(jsonb_array_length(public.turnuvalarim()) >= 1, 'öğrenci turnuvayı görmüyor');
+  perform test.dogrula((select count(*) from public.soru) = 0, 'öğrenci soru tablosunu okudu');
+end $$;
+rollback;
+
 \echo '✔ Tüm veritabanı testleri geçti'
 
 

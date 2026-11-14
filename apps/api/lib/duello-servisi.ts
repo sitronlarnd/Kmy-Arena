@@ -272,3 +272,28 @@ export async function gecmis(k: Kullanici): Promise<unknown[]> {
     };
   });
 }
+
+/** Turnuva: düellosu açılmamış hazır maçlar için 24 saatlik (asenkron) düello açar; süresi dolanları sonuçlandırır. */
+export async function turnuvaMaclariniHazirla(): Promise<{ acilan: number; suresiDolan: number; hata: number }> {
+  const s = servisIstemcisi();
+  const { data: dolan } = await s.rpc("sistem_turnuva_sure_doldu");
+  const { data, error } = await s.rpc("sistem_turnuva_hazir_maclar");
+  if (error) throw error;
+  const m = await mufredatGetir();
+  const dersler = new Map([...m.dersKodla.values()].map((d) => [d.id, d]));
+  let acilan = 0, hata = 0;
+  for (const x of (data ?? []) as { mac_id: string; dershane_id: string; ders_id: string; a: string; b: string; turnuva: string }[]) {
+    try {
+      const ders = dersler.get(x.ders_id);
+      if (!ders) throw new Error("ders yok");
+      const k: Kullanici = { id: x.a, dershaneId: x.dershane_id, tur: "ogrenci", yasakliDegerler: [], sosyalAcik: true };
+      const d = await olustur({ k, mod: "asenkron", ders: { id: ders.id, sinav: ders.sinav as SinavTuru }, b: x.b });
+      await s.rpc("sistem_turnuva_mac_bagla", { p_mac: x.mac_id, p_duello: d.id, p_a: x.a, p_b: x.b, p_ad: x.turnuva });
+      acilan++;
+    } catch (e) {
+      hata++;
+      console.error("turnuva maçı açılamadı", x.mac_id, e);
+    }
+  }
+  return { acilan, suresiDolan: Number(dolan ?? 0), hata };
+}
