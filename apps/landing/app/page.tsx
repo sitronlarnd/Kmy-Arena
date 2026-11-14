@@ -157,7 +157,7 @@ export default function Tanitim() {
       </main>
 
       <footer>
-        <div className="kap"><span>© {new Date().getFullYear()} KMY Arena · KMYAI altyapısıyla</span><span><a href="#kvkk">KVKK</a> · <a href="#sss">SSS</a> · <a href="#pilot">İletişim</a></span></div>
+        <div className="kap"><span>© {new Date().getFullYear()} KMY Arena · KMYAI altyapısıyla</span><span><a href="/gizlilik">Gizlilik ve KVKK</a> · <a href="/kosullar">Kullanım koşulları</a> · <a href="/hesap-silme">Hesap silme</a> · <a href="#pilot">İletişim</a></span></div>
       </footer>
     </>
   );

@@ -3,7 +3,7 @@ import { jsonAyikla, TOPLULUK_COZUM_V1, TOPLULUK_DEGERLENDIRME_V1, TOPLULUK_IPUC
 import { destekGerekli, metniDenetle, SIKAYET_SEBEPLERI, SIKLAR } from "@kmy/shared";
 import { aiAyarlari } from "./ayarlar";
 import { IstemciHatasi } from "./http";
-import type { Kullanici } from "./kimlik";
+import { sosyalGerekli, type Kullanici } from "./kimlik";
 import { kmyai, kmyaiErisilebilir } from "./kmyai";
 import { servisIstemcisi } from "./supabase";
 
@@ -81,6 +81,7 @@ async function imzala<T extends { gorsel_yol?: string | null }>(x: T): Promise<T
 }
 
 export async function sor(k: Kullanici, g: { dersId?: unknown; kazanimId?: unknown; metin?: unknown; gorsel?: unknown; gorunurluk?: unknown }): Promise<{ id: string }> {
+  sosyalGerekli(k);
   if (!(await ozellikAcik(k.dershaneId))) throw new IstemciHatasi("topluluk.kapali", 403);
   const metin = typeof g.metin === "string" ? g.metin.trim() : "";
   if (metin.length < 5 || metin.length > 2000) throw new IstemciHatasi("topluluk.metinGecersiz");
@@ -114,6 +115,7 @@ export async function detay(k: Kullanici, soruId: string) {
 
 /** Cevap: kaydedilir, AI ön değerlendirmesi arka planda (after) yapılır. */
 export async function cevapla(k: Kullanici, g: { soruId?: unknown; sik?: unknown; aciklama?: unknown; gorsel?: unknown }): Promise<{ id: string }> {
+  sosyalGerekli(k);
   if (typeof g.soruId !== "string" || !/^[0-9a-f-]{36}$/i.test(g.soruId)) throw new IstemciHatasi("topluluk.bulunamadi", 404);
   const aciklama = typeof g.aciklama === "string" ? g.aciklama.trim() : "";
   if (aciklama.length < 10 || aciklama.length > 2000) throw new IstemciHatasi("topluluk.aciklamaKisa");

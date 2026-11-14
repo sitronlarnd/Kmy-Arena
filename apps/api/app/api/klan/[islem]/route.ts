@@ -1,6 +1,6 @@
 import * as KL from "@/lib/klan-servisi";
 import { govdeOku, guvenli, IstemciHatasi, json, onUcus } from "@/lib/http";
-import { kimlikDogrula, ogrenciGetir } from "@/lib/kimlik";
+import { kimlikDogrula, ogrenciGetir, sosyalGerekli } from "@/lib/kimlik";
 import { rozetleriKontrolEt } from "@/lib/oyun-servisi";
 
 export const dynamic = "force-dynamic";
@@ -52,7 +52,7 @@ export async function POST(istek: Request, baglam: { params: Promise<{ islem: st
       }
       case "yonet": await KL.yonet(k, uuid(g.hedef), String(g.islem ?? "")); return json({ tamam: true });
       case "mesajlar": return json(await KL.mesajlar(k, Number(g.sonra) || 0));
-      case "mesaj": return json(await KL.mesaj(k, g));
+      case "mesaj": sosyalGerekli(k); return json(await KL.mesaj(k, g));
       case "sikayet": await KL.sikayet(k, g); return json({ tamam: true });
       default: throw new IstemciHatasi("ortak.hata", 404);
     }

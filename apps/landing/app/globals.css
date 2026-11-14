@@ -101,3 +101,10 @@ footer .kap { display: flex; justify-content: space-between; flex-wrap: wrap; ga
   .form { grid-template-columns: 1fr; }
 }
 .logo img { border-radius: 11px; box-shadow: 0 6px 20px #8b5cf680; }
+.belge { max-width: 820px; padding-top: 50px; padding-bottom: 80px; line-height: 1.7; color: #dcdbf5; }
+.belge h1 { font-size: clamp(30px, 4vw, 42px); margin-bottom: 6px; }
+.belge h2 { font-size: 22px; margin: 34px 0 10px; color: #fff; }
+.belge a { color: #b69cff; text-decoration: underline; }
+.belge li { margin: 6px 0; }
+.soluk { color: var(--soluk); }
+.belge h1 { line-height: 1.15; }

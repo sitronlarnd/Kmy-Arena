@@ -8,6 +8,18 @@ export interface Kullanici {
   tur: "ogrenci" | "veli" | "personel" | "merkez";
   /** AI isteklerinde geçmemesi gereken kişisel değerler (KVKK) */
   yasakliDegerler: string[];
+  /** Sosyal özellikler (topluluk, klan sohbeti) açık mı? 18 yaş altında veli onayı gerekir. */
+  sosyalAcik: boolean;
+}
+
+/** Doğum yılı bilinmiyorsa reşit değil sayılır (temkinli varsayılan). */
+export function sosyalAcikMi(dogumYili: number | null, veliOnayi: boolean, tur: string, simdi = new Date()): boolean {
+  if (tur !== "ogrenci" || veliOnayi) return true;
+  return dogumYili !== null && simdi.getUTCFullYear() - dogumYili > 18;
+}
+
+export function sosyalGerekli(k: Kullanici): void {
+  if (!k.sosyalAcik) throw new IstemciHatasi("sosyal.veliOnayiGerekli", 403);
 }
 
 /** Bearer JWT'yi doğrular (Supabase imza anahtarları) ve kullanıcı kaydını getirir. */
@@ -26,7 +38,7 @@ export async function ogrenciGetir(istek: Request): Promise<Kullanici> {
   const k = await kimlikDogrula(istek);
   const { data, error } = await servisIstemcisi()
     .from("kullanici")
-    .select("id, dershane_id, tur, ad, soyad, takma_ad, silinme_talebi")
+    .select("id, dershane_id, tur, ad, soyad, takma_ad, silinme_talebi, dogum_yili, veli_onayi")
     .eq("id", k.id)
     .maybeSingle();
   if (error) throw error;
@@ -37,6 +49,7 @@ export async function ogrenciGetir(istek: Request): Promise<Kullanici> {
     dershaneId: data.dershane_id,
     tur: data.tur,
     yasakliDegerler: [data.ad, data.soyad, data.takma_ad, k.eposta].filter((x): x is string => typeof x === "string" && x.length >= 3),
+    sosyalAcik: sosyalAcikMi(data.dogum_yili as number | null, Boolean(data.veli_onayi), data.tur as string),
   };
 }
 

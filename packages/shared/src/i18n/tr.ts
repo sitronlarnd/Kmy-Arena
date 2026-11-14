@@ -486,6 +486,9 @@ export const tr = {
     filtre_kisisel_bilgi: "Telefon, adres veya sosyal medya bilgisi paylaşılamaz.",
     filtre_baglanti: "Bağlantı paylaşılamaz.",
   },
+  sosyal: {
+    veliOnayiGerekli: "Topluluk ve klan sohbeti için velinin onayı gerekiyor. Onay gelince açılır.",
+  },
   sikayet: {
     gecersiz: "Şikâyet gönderilemedi.",
   },
