@@ -1197,6 +1197,53 @@ do $$ begin
 end $$;
 rollback;
 
+\echo '▶ 22. Kurucu araçları: deneme raporu, etki raporu, yıl sonu, ödül, hedefli duyuru, öğretmen takibi'
+begin;
+do $$
+declare d1 uuid; d2 uuid; o record; i int := 0;
+begin
+  insert into public.deneme (dershane_id, ad, tarih, sinav_turu) values (app.sabit_uuid('dershane:demo'), 'LGS-1', current_date - 30, 'LGS') returning id into d1;
+  insert into public.deneme (dershane_id, ad, tarih, sinav_turu) values (app.sabit_uuid('dershane:demo'), 'LGS-2', current_date - 1, 'LGS') returning id into d2;
+  for o in select u.kullanici_id from public.sinif_uyelik u where u.sinif_id = app.sabit_uuid('sinif:8A') and u.rol = 'ogrenci' loop
+    i := i + 1;
+    insert into public.deneme_sonuc values (d1, o.kullanici_id, app.sabit_uuid('dershane:demo'), 'Matematik', 10, 4, 9), (d1, o.kullanici_id, app.sabit_uuid('dershane:demo'), 'Türkçe', 15, 2, 14.5),
+                                           (d2, o.kullanici_id, app.sabit_uuid('dershane:demo'), 'Matematik', 12 + i % 3, 3, 11 + i % 3), (d2, o.kullanici_id, app.sabit_uuid('dershane:demo'), 'Türkçe', 16, 2, 15.5);
+  end loop;
+  perform set_config('test.d2', d2::text, true);
+end $$;
+set local role authenticated;
+select test.oturum('kurucu@demo.kmyarena.demo');
+do $$
+declare r jsonb;
+begin
+  r := public.panel_deneme_rapor(current_setting('test.d2')::uuid);
+  perform test.dogrula(jsonb_array_length(r -> 'ogrenciler') >= 10 and r -> 'siniflar' -> 0 ->> 'en_zayif' = 'Matematik', 'deneme raporu: ' || left(r::text, 200));
+  r := public.panel_etki_raporu('LGS');
+  perform test.dogrula((r ->> 'ogrenci')::int >= 10 and jsonb_array_length(r -> 'gruplar') = 3, 'etki raporu: ' || r::text);
+  perform test.dogrula(jsonb_array_length(public.panel_net_egilimi('LGS')) = 2, 'net eğilimi');
+  perform public.panel_ders_zayif_odev(app.sabit_uuid('sinif:8A'), 'Matematik');
+  perform public.panel_duyuru_ogrencilere('Tebrikler', 'Denemede çok iyiydin', array[app.sabit_uuid('kullanici:ogrenci01@demo.kmyarena.demo')]);
+  r := public.panel_yil_sonu(jsonb_build_array(jsonb_build_object('sinif', app.sabit_uuid('sinif:8B'), 'islem', 'seviye'), jsonb_build_object('sinif', app.sabit_uuid('sinif:12EA'), 'islem', 'mezun')));
+  perform test.dogrula((r ->> 'seviye')::int = 1 and (r ->> 'mezun')::int = 1, 'yıl sonu');
+  perform test.dogrula((select seviye from public.sinif where id = app.sabit_uuid('sinif:8B')) = 9, 'seviye artmadı');
+  perform test.dogrula(jsonb_array_length(public.panel_ogretmenler()) >= 3, 'öğretmen takibi');
+  insert into public.odul (dershane_id, kaynak, baslik, kazanan_id, odul) values (app.dershane_id(), 'diger', 'Ayın öğrencisi', app.sabit_uuid('kullanici:ogrenci01@demo.kmyarena.demo'), 'Kitap');
+end $$;
+select test.oturum('ogrenci01@demo.kmyarena.demo');
+do $$ begin
+  perform test.dogrula(exists (select 1 from jsonb_array_elements(public.duyurularim()) d where d ->> 'baslik' = 'Tebrikler'), 'hedefli duyuru görünmedi');
+  perform test.dogrula((select count(*) from public.deneme_sonuc) = 4, 'öğrenci kendi deneme sonuçları');
+  perform test.dogrula((select count(*) from public.odul) = 1, 'öğrenci kendi ödülü');
+end $$;
+select test.oturum('ogrenci02@demo.kmyarena.demo');
+do $$ begin
+  perform test.dogrula(not exists (select 1 from jsonb_array_elements(public.duyurularim()) d where d ->> 'baslik' = 'Tebrikler'), 'hedefli duyuru başkasına göründü');
+  perform test.dogrula((select count(*) from public.odul) = 0, 'başkasının ödülü göründü');
+  begin perform public.panel_deneme_rapor(current_setting('test.d2')::uuid); raise exception 'TEST BAŞARISIZ: öğrenci deneme raporu';
+  exception when raise_exception then perform test.dogrula(sqlerrm = 'panel.yetkisiz', sqlerrm); end;
+end $$;
+rollback;
+
 \echo '✔ Tüm veritabanı testleri geçti'
 
 

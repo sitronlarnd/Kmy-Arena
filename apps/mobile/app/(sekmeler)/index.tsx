@@ -60,6 +60,14 @@ export default function Arena() {
       return (data ?? []) as Array<{ id: string; baslik: string; metin: string; olusturma: string }>;
     },
   }).data ?? [];
+  const etkinlikler = useQuery({
+    queryKey: ["etkinliklerim"],
+    enabled: profil?.tur === "ogrenci",
+    queryFn: async () => {
+      const { data } = await supabase.rpc("etkinliklerim");
+      return (data ?? []) as Array<{ id: string; ad: string; aciklama: string | null; baslangic: string; bitis: string | null; odul: string | null }>;
+    },
+  }).data ?? [];
   const mufredat = useMufredat();
   const dersler = mufredat.data ?? [];
   const tespitler = useTespitler().data;
@@ -169,6 +177,22 @@ export default function Arena() {
             <View style={{ flex: 1 }}>
               <Metin tur="altbaslik" stil={{ fontSize: 15 }}>{d.baslik}</Metin>
               <Metin tur="kucuk" soluk>{d.metin}</Metin>
+            </View>
+          </View>
+        </Kart>
+      ))}
+
+      {etkinlikler.slice(0, 2).map((e, i) => (
+        <Kart key={e.id} sira={5 + i} vurgu={OYUN.altin}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <IkonKutu ikon={CalendarCheck} renk={OYUN.altin} boyut={36} />
+            <View style={{ flex: 1 }}>
+              <Metin tur="altbaslik" stil={{ fontSize: 15 }}>{e.ad}</Metin>
+              <Metin tur="kucuk" soluk>
+                {new Date(e.baslangic).toLocaleString("tr-TR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}
+                {e.odul ? ` · ${t("turnuva.odul", { odul: e.odul })}` : ""}
+              </Metin>
+              {e.aciklama ? <Metin tur="kucuk">{e.aciklama}</Metin> : null}
             </View>
           </View>
         </Kart>

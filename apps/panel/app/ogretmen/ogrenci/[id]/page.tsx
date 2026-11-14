@@ -30,7 +30,7 @@ export default async function OgrenciDetay({ params }: { params: Promise<{ id: s
   return (
     <PanelKabugu baslik={d.ad} panel={paneleErisebilir(y, "dershane") ? "dershane" : "ogretmen"} aktif={paneleErisebilir(y, "dershane") ? "/dershane/ogrenciler" : "/ogretmen"}
       yol={<span>{d.sube} · {d.sinif} · {d.takma_ad}</span>}
-      sag={<EylemDugmesi eylem={zayifKonularaOdev.bind(null, null, id)} etiket="Zayıf konularına ödev ver" />}>
+      sag={<div className="form">{paneleErisebilir(y, "dershane") && <><a className="dugme ikincil" href={`/dershane/rapor/ogrenci/${id}`}>Veli raporu</a><a className="dugme ikincil" href={`/dershane/ogrenci/${id}`}>Hesap</a></>}<EylemDugmesi eylem={zayifKonularaOdev.bind(null, null, id)} etiket="Zayıf konularına ödev ver" /></div>}>
       <Metrik deger={i?.seviye ?? 1} etiket="Seviye" renk="#7c5cfa" ikon="★" />
       <Metrik deger={i?.toplam_cevap ?? 0} etiket={`Toplam soru · %${i && i.toplam_cevap ? Math.round((i.toplam_dogru / i.toplam_cevap) * 100) : 0} doğru`} renk="#3fa9f5" ikon="✓" />
       <Metrik deger={`${dk28} dk`} etiket="Son 28 gün çalışma" renk="#12b76a" ikon="◷" />

@@ -27,7 +27,7 @@ export default async function Kayit() {
   type Kod = { kod: string; rol_kod: string; sinif: { ad: string } | null; sube: { ad: string } | null; ogrenci: { ad: string; soyad: string } | null; max_kullanim: number; kullanim: number; son_gecerlilik: string };
   return (
     <PanelKabugu baslik="Öğrenci kaydı ve davet kodları" panel="dershane" aktif="/dershane/kayit" yol={`Lisans: ${ogrenci ?? 0} / ${(d?.ogrenci_limiti as number) ?? "?"} öğrenci`}>
-      <Kart genis baslik="Excel ile toplu öğrenci yükleme" aciklama="Sütunlar: Ad, Soyad, Sınıf (zorunlu); Şube, Doğum yılı, E-posta (isteğe bağlı). E-postası olmayan öğrenciye kullanıcı adı üretilir. Sonuçta yazdırılabilir giriş kartları çıkar.">
+      <Kart genis baslik="Excel ile toplu öğrenci yükleme" aciklama="Sütunlar: Ad, Soyad, Sınıf (zorunlu); Şube, Doğum yılı, E-posta, Öğrenci no (isteğe bağlı; deneme sonuçlarını eşleştirmek için önerilir). E-postası olmayan öğrenciye kullanıcı adı üretilir. Sonuçta yazdırılabilir giriş kartları çıkar.">
         <p className="kucuk" style={{ margin: "6px 0 12px" }}><a href="/dershane/kayit/sablon">Örnek Excel şablonunu indir</a></p>
         <KayitFormu eylem={topluYukle} dugme="Yükle ve hesapları aç" dosya>
           <input type="file" name="dosya" accept=".xlsx,.csv" required className="alan" />

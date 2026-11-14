@@ -135,7 +135,10 @@ export async function topluYukle(_o: KayitSonucu, f: FormData): Promise<KayitSon
       if (!sinif) continue;
       try {
         await yetkiIste("ogrenci.ekle", sinif.sube_id);
-        hesaplar.push(await hesapAc({ ad, soyad, rol: "ogrenci", dershaneId: k.dershaneId, subeId: sinif.sube_id, sinifId: sinif.id, dogumYili: yil(r.dogumyili ?? r.dogum ?? ""), eposta: (r.eposta ?? r.email ?? "") || null }));
+        const h = await hesapAc({ ad, soyad, rol: "ogrenci", dershaneId: k.dershaneId, subeId: sinif.sube_id, sinifId: sinif.id, dogumYili: yil(r.dogumyili ?? r.dogum ?? ""), eposta: (r.eposta ?? r.email ?? "") || null });
+        const no = (r.ogrencino ?? r.numara ?? r.no ?? "").trim().slice(0, 20);
+        if (no) await servis().from("kullanici").update({ ogrenci_no: no }).eq("id", h.id);
+        hesaplar.push(h);
       } catch (e) {
         hatalar.push(`${sat} (${ad} ${soyad}): ${hataMetni(e)}`);
         if (e instanceof Error && e.message.includes("lisansDolu")) break;

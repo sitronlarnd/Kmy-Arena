@@ -209,3 +209,24 @@ pre.rapor { background: var(--yuzey2); padding: 12px; border-radius: 12px; overf
 .canli-ekran .mini li { font-size: 18px; padding: 8px 14px; }
 .canli-ekran .sonuc { max-width: 900px; margin: 0 auto; width: 100%; display: grid; gap: 20px; }
 .canli-ekran .sonuc h1 { font-size: 54px; text-align: center; margin: 0; }
+.veli-rapor { background: #fff; color: #1d1b3a; border-radius: 18px; padding: 28px 32px; display: grid; gap: 16px; box-shadow: var(--golge); }
+.veli-rapor header { display: flex; justify-content: space-between; border-bottom: 3px solid #6d5cff; padding-bottom: 12px; }
+.veli-rapor header h2 { margin: 0; font-size: 24px; }
+.veli-rapor header span { color: #6b6a8a; font-size: 13px; display: block; }
+.veli-rapor .sag { text-align: right; }
+.vr-kartlar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.vr-kartlar div { background: #f4f2ff; border-radius: 12px; padding: 10px; text-align: center; }
+.vr-kartlar b { display: block; font-size: 18px; color: #4b3ae0; }
+.vr-kartlar span { font-size: 11px; color: #6b6a8a; }
+.vr-iki { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.veli-rapor h3 { font-size: 14px; margin: 0 0 6px; color: #4b3ae0; }
+.veli-rapor ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.6; }
+.veli-rapor table { width: 100%; font-size: 13px; border-collapse: collapse; }
+.veli-rapor td { padding: 4px 0; border-bottom: 1px solid #eee; }
+.veli-rapor p { margin: 0; font-size: 13px; color: #1d1b3a; }
+.vr-not div { height: 26px; border-bottom: 1px solid #bbb; }
+@media print {
+  .veli-rapor { box-shadow: none; border-radius: 0; padding: 0; break-after: page; }
+  body:has(.veli-rapor) .yan, body:has(.veli-rapor) .ust, body:has(.veli-rapor) .yazdirma-yok { display: none !important; }
+  body:has(.veli-rapor) .kabuk, body:has(.veli-rapor) main { display: block !important; padding: 0 !important; background: #fff !important; }
+}
