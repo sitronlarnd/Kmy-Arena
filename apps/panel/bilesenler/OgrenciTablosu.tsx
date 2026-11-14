@@ -13,7 +13,7 @@ function once(iso: string | null): string {
   return g === 0 ? "bugün" : `${g} gün önce`;
 }
 
-export function OgrenciTablosu({ ogrenciler }: { ogrenciler: OgrenciSatiri[] }) {
+export function OgrenciTablosu({ ogrenciler, yonet }: { ogrenciler: OgrenciSatiri[]; yonet?: boolean }) {
   const [ara, setAra] = useState("");
   const [sube, setSube] = useState("");
   const [sadeceRisk, setSadeceRisk] = useState(false);
@@ -40,7 +40,7 @@ export function OgrenciTablosu({ ogrenciler }: { ogrenciler: OgrenciSatiri[] }) 
           <tbody>
             {liste.map((o) => (
               <tr key={o.id}>
-                <td><a href={`/ogretmen/ogrenci/${o.id}`}>{o.ad}</a><div className="soluk kucuk">{o.takma_ad}</div></td>
+                <td><a href={`/ogretmen/ogrenci/${o.id}`}>{o.ad}</a><div className="soluk kucuk">{o.takma_ad}{yonet ? <> · <a href={`/dershane/ogrenci/${o.id}`}>yönet</a></> : null}</div></td>
                 <td>{o.sube}<div className="soluk kucuk">{o.sinif}</div></td>
                 <td>{o.seviye}</td>
                 <td>{o.soru7}</td>

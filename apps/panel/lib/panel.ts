@@ -16,8 +16,21 @@ export const HATALAR: Record<string, string> = {
   "panel.ogrenciYok": "Seçilen hedefte öğrenci yok.",
   "panel.veriYok": "Bu sınıf için henüz yeterli çözüm verisi yok.",
   "panel.bulunamadi": "Kayıt bulunamadı.",
+  "panel.rolGecersiz": "Geçersiz rol.",
+  "panel.ogrenciGerekli": "Veli kodu bir öğrenciye bağlı olmalı.",
+  "panel.epostaKayitli": "Bu e-posta ile zaten bir hesap var.",
+  "panel.kullaniciAdiUretilemedi": "Kullanıcı adı üretilemedi, tekrar deneyin.",
+  "panel.sinifDolu": "Sınıfta öğrenci varken silinemez; önce arşivleyin veya öğrencileri taşıyın.",
+  "panel.dosyaGecersiz": "Dosya okunamadı. Şablondaki sütunları kullanın (Excel .xlsx veya CSV).",
+  "giris.lisansDolu": "Lisanstaki öğrenci sınırına ulaşıldı. Merkezle iletişime geçin.",
+  "giris.lisansPasif": "Dershane lisansı pasif.",
+  "giris.takmaAdAlinmis": "Bu takma ad alınmış.",
+  "giris.takmaAdGecersiz": "Takma ad 3-20 harf/rakam olmalı.",
 };
-export const hataMetni = (e: unknown) => HATALAR[e instanceof Error ? e.message : ""] ?? "Bir şeyler ters gitti, tekrar dene.";
+export const hataMetni = (e: unknown) => {
+  const m = e instanceof Error ? e.message : "";
+  return HATALAR[m] ?? HATALAR[m.match(/(panel|giris)\.\w+/)?.[0] ?? ""] ?? "Bir şeyler ters gitti, tekrar dene.";
+};
 
 export function tarih(iso: string | null | undefined, saat = false): string {
   if (!iso) return "—";

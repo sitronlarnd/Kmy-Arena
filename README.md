@@ -68,7 +68,7 @@ Aynı depodan 4 proje; her birinde **Root Directory** farklı, gerisi `vercel.js
 |---|---|---|
 | kmy-arena-panel | `apps/panel` | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_API_URL` |
 | kmy-arena-api | `apps/api` | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `KMYAI_*`, `CRON_SECRET`, `RESEND_API_KEY`, `SAHIP_EPOSTA`, `EPOSTA_GONDEREN`, `EXPO_ACCESS_TOKEN` (isteğe bağlı) |
-| kmy-arena-web | `apps/mobile` | `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_API_URL` |
+| kmy-arena-web | `apps/mobile` | `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_API_URL`, `EXPO_PUBLIC_SITE_URL` (tanıtım sitesi adresi; gizlilik bağlantısı) |
 | kmy-arena-tanitim | `apps/landing` | İsteğe bağlı: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_DESTEK_EPOSTA`, `NEXT_PUBLIC_SIRKET_UNVANI` |
 
 API'nin zamanlanmış işleri (`apps/api/vercel.json`): `havuz-doldur` her 10 dakikada (soru havuzunu doldurur), `kalibrasyon` her gece (20+ cevaplı soruların gerçek zorluğu), `cevap-bolumu` her ayın 25'i, `bildirim-gonder` her 5 dakikada (push kuyruğu, sessiz saatlere uyar), `seri-hatirlat` her akşam 19:00, `veli-haftalik` pazar 17:00 (Resend tanımlıysa), `hesap-sil` her gece (30 günü dolan silme talepleri).

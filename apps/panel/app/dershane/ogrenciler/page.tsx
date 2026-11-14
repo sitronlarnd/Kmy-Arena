@@ -11,7 +11,8 @@ export default async function Ogrenciler() {
   return (
     <PanelKabugu baslik="Öğrenciler" panel="dershane" aktif="/dershane/ogrenciler">
       <Kart genis aciklama="Risk skoru destek içindir: uzun süre çalışmama, haftalık düşüş, kaçırılan ödev, doğrulukta düşüş ve tek konuya sıkışma sinyallerinden hesaplanır. Bir öğrenciye tıklayınca 360° görünüm açılır.">
-        <OgrenciTablosu ogrenciler={o} />
+        <div className="form" style={{ justifyContent: "flex-end", marginBottom: 10 }}><a className="dugme kucuk ikincil" href="/dershane/ogrenciler/excel">Excel olarak indir</a><a className="dugme kucuk" href="/dershane/kayit">+ Öğrenci ekle</a></div>
+        <OgrenciTablosu ogrenciler={o} yonet />
       </Kart>
     </PanelKabugu>
   );

@@ -10,7 +10,7 @@ export default async function Dershaneler() {
   await paneliKoru("merkez");
   await merkezYetkisi("merkez.dershane_yonet");
   const s = servis();
-  const { data: dershaneler } = await s.from("dershane").select("id, ad, lisans_durumu, lisans_baslangic, lisans_bitis, ogrenci_limiti").order("ad");
+  const { data: dershaneler } = await s.from("dershane").select("id, ad, lisans_durumu, lisans_baslangic, lisans_bitis, ogrenci_limiti").eq("bireysel", false).order("ad");
   const satirlar = await Promise.all((dershaneler ?? []).map(async (d) => {
     const [{ count: ogrenci }, { count: soru30 }] = await Promise.all([
       s.from("kullanici").select("id", { count: "exact", head: true }).eq("dershane_id", d.id).eq("tur", "ogrenci"),
@@ -19,7 +19,7 @@ export default async function Dershaneler() {
     return { ...d, ogrenci: ogrenci ?? 0, soru30: soru30 ?? 0 };
   }));
   return (
-    <PanelKabugu baslik="Dershaneler" panel="merkez" aktif="/merkez/dershaneler">
+    <PanelKabugu baslik="Dershaneler" panel="merkez" aktif="/merkez/dershaneler" sag={<a className="dugme" href="/merkez/dershaneler/yeni">+ Yeni dershane</a>}>
       <Kart genis aciklama="Lisans durumu, koltuk ve son 30 gün kullanımı. Pilot raporu satış görüşmesi için yazdırılabilir / PDF olarak kaydedilebilir.">
         <div className="kaydir" style={{ marginTop: 12 }}>
           <table className="tablo">

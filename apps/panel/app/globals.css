@@ -146,3 +146,18 @@ pre.rapor { background: var(--yuzey2); padding: 12px; border-radius: 12px; overf
 
 @media print { .yan, .ust .dugme { display: none !important; } .kabuk { display: block; background: none; } .kart { box-shadow: none; break-inside: avoid; } body { background: #fff; } }
 .logo img { border-radius: 10px; box-shadow: 0 6px 18px rgba(124, 92, 250, .5); }
+.giris-kartlari { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; margin-top: 10px; }
+.giris-karti { display: grid; gap: 4px; padding: 14px; border: 2px dashed var(--kenar); border-radius: 14px; background: var(--yuzey2); font-size: 14px; }
+.giris-karti code { font-size: 15px; font-weight: 800; color: var(--vurgu); }
+.giris-karti small { color: var(--soluk); }
+.matris td, .matris th { text-align: center; }
+.matris td:first-child, .matris th:first-child { text-align: left; }
+@media print {
+  body:has(.yazdir-alan) .kabuk > *:not(main), body:has(.yazdir-alan) main > *:not(.icerik) { display: none !important; }
+  body:has(.yazdir-alan) .kart:not(:has(.yazdir-alan)), body:has(.yazdir-alan) form, body:has(.yazdir-alan) .yazdir-alan .form button { display: none !important; }
+  .giris-karti { break-inside: avoid; border-color: #999; background: #fff; color: #000; }
+  .giris-karti code { color: #000; }
+}
+.izgara-form { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; width: 100%; }
+.izgara-form h3 { margin: 10px 0 0; font-size: 15px; }
+.izgara-form label { display: grid; gap: 6px; font-size: 13px; color: var(--soluk); font-weight: 800; }

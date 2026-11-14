@@ -46,6 +46,7 @@ export default async function Teklifler() {
                       <input type="date" name="sonraki" defaultValue={x.sonraki_adim_tarihi ?? ""} className="alan" />
                       <button className="dugme kucuk">Kaydet</button>
                     </form>
+                    {!["kazanildi", "kaybedildi"].includes(x.durum) && <a className="kucuk" href={`/merkez/dershaneler/yeni?teklif=${x.id}`}>Dershaneyi aç →</a>}
                   </td>
                 </tr>
               ))}

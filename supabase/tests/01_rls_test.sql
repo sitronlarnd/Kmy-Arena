@@ -1060,6 +1060,75 @@ begin
 end $$;
 rollback;
 
+\echo '▶ 20. Kayıt yönetimi: panel yetkisi, rol bazlı davet, veli kodu bağı, panelden hesap kurma'
+begin;
+set local role authenticated;
+select test.oturum('sekreter@demo.kmyarena.demo');
+do $$
+declare k text; o1 uuid := app.sabit_uuid('kullanici:ogrenci02@demo.kmyarena.demo');
+begin
+  perform test.dogrula((public.panel_yetki('ogrenci.ekle', app.sabit_uuid('sube:kadikoy')) ->> 'var')::boolean, 'sekreter öğrenci ekleyemiyor');
+  perform test.dogrula((public.panel_yetki('ogrenci.ekle') ->> 'var')::boolean and not (public.panel_yetki('ogrenci.ekle') ->> 'tum')::boolean and jsonb_array_length(public.panel_yetki('ogrenci.ekle') -> 'subeler') = 1, 'sekreter şube kapsamı');
+  perform test.dogrula(not (public.panel_yetki('dershane.rol_ata') ->> 'var')::boolean, 'sekreter rol atayabiliyor');
+  k := public.panel_davet_olustur('ogrenci', null, app.sabit_uuid('sinif:8A'), 30, 30, null);
+  perform test.dogrula(length(k) = 8, 'öğrenci kodu');
+  -- Sekreter öğretmen veya kurucu kodu üretemez
+  begin perform public.panel_davet_olustur('ogretmen', app.sabit_uuid('sube:kadikoy')); raise exception 'TEST BAŞARISIZ: sekreter öğretmen kodu';
+  exception when raise_exception then perform test.dogrula(sqlerrm = 'panel.yetkisiz', sqlerrm); end;
+  begin perform public.panel_davet_olustur('kurucu'); raise exception 'TEST BAŞARISIZ: sekreter kurucu kodu';
+  exception when raise_exception then perform test.dogrula(sqlerrm = 'panel.yetkisiz', sqlerrm); end;
+  begin perform public.panel_davet_olustur('merkez_sahip'); raise exception 'TEST BAŞARISIZ: merkez kodu';
+  exception when raise_exception then perform test.dogrula(sqlerrm = 'panel.rolGecersiz', sqlerrm); end;
+  -- Veli kodu öğrenciye bağlı
+  k := public.panel_davet_olustur('veli', null, null, 1, 30, o1);
+  perform set_config('test.veli_kod', k, true);
+  perform test.dogrula(jsonb_array_length(public.panel_veli_kodlari(app.sabit_uuid('sinif:8A'))) >= 8, 'toplu veli kodu');
+end $$;
+-- Yeni veli bu kodla katılır → bağ ve veli onayı
+reset role;
+insert into auth.users (id, email) values (app.sabit_uuid('kullanici:yeniveli@test'), 'yeniveli@test');
+select test.oturum('yeniveli@test');
+set local role authenticated;
+do $$
+declare o1 uuid := app.sabit_uuid('kullanici:ogrenci02@demo.kmyarena.demo');
+begin
+  perform public.davet_kodu_kullan(current_setting('test.veli_kod'), 'Yeni', 'Veli', null, null);
+  perform test.dogrula(exists (select 1 from public.veli_bag where veli_id = auth.uid() and ogrenci_id = o1 and onay_tarihi is not null), 'veli bağı kurulmadı');
+  perform test.dogrula((select veli_onayi from public.kullanici where id = o1), 'veli onayı verilmedi');
+end $$;
+-- Pasif kod kullanılamaz
+reset role;
+update public.davet_kodu set aktif = false where kod = 'DEMTYTKD';
+insert into auth.users (id, email) values (app.sabit_uuid('kullanici:pasif@test'), 'pasif@test');
+select test.oturum('pasif@test');
+set local role authenticated;
+do $$ begin
+  perform public.davet_kodu_kullan('DEMTYTKD', 'Pasif', 'Kod', 'pasifkod', 2008);
+  raise exception 'TEST BAŞARISIZ: pasif kod';
+exception when raise_exception then perform test.dogrula(sqlerrm = 'giris.kodGecersiz', sqlerrm); end $$;
+-- Panelden hesap kurma (service)
+reset role;
+insert into auth.users (id, email) values (app.sabit_uuid('kullanici:panelogr@test'), 'panelogr@test');
+do $$
+declare v jsonb;
+begin
+  v := public.sistem_hesap_kur(app.sabit_uuid('kullanici:panelogr@test'), app.sabit_uuid('dershane:demo'), app.sabit_uuid('sube:kadikoy'),
+                               app.sabit_uuid('sinif:8A'), 'ogrenci', 'Panel', 'Öğrenci', 'panel_ogr', 2012, true);
+  perform test.dogrula(v ->> 'tur' = 'ogrenci', 'hesap kurulmadı');
+  perform test.dogrula((select sifre_degismeli from public.kullanici where id = app.sabit_uuid('kullanici:panelogr@test')), 'şifre değiştirme bayrağı');
+  begin perform public.sistem_hesap_kur(gen_random_uuid(), app.sabit_uuid('dershane:demo'), null, null, 'merkez_sahip', 'x', 'y', null, null, true);
+    raise exception 'TEST BAŞARISIZ: merkez rolü';
+  exception when raise_exception then perform test.dogrula(sqlerrm = 'panel.rolGecersiz', sqlerrm); end;
+end $$;
+select test.oturum('panelogr@test');
+set local role authenticated;
+select public.sifre_degisti();
+reset role;
+do $$ begin
+  perform test.dogrula(not (select sifre_degismeli from public.kullanici where id = app.sabit_uuid('kullanici:panelogr@test')), 'şifre bayrağı kalkmadı');
+end $$;
+rollback;
+
 \echo '✔ Tüm veritabanı testleri geçti'
 
 

@@ -1,5 +1,5 @@
 import { t } from "@kmy/shared/i18n";
-import { Bell, LogOut, Mail, Moon, Trash2, type LucideIcon } from "lucide-react-native";
+import { Bell, KeyRound, LogOut, Mail, Moon, Trash2, type LucideIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Platform, Switch, View } from "react-native";
 import { api } from "@/lib/api";
@@ -7,6 +7,7 @@ import { bildirimKaydiniSil } from "@/lib/bildirim";
 import { useOturum } from "@/lib/oturum";
 import { supabase } from "@/lib/supabase";
 import { useTema } from "@/lib/tema";
+import { Alan } from "./Alan";
 import { Dugme, IkonKutu, Kart, Metin } from "./ui";
 
 interface Tercih { bildirim_acik: boolean; sessiz_baslangic: number; sessiz_bitis: number; veli_eposta_acik: boolean }
@@ -31,6 +32,16 @@ export function HesapAyarlari() {
   const profil = useOturum((d) => d.profil);
   const [t1, setT] = useState<Tercih | null>(null);
   const [silOnay, setSilOnay] = useState(false);
+  const [sifreAcik, setSifreAcik] = useState(false);
+  const [yeniSifre, setYeniSifre] = useState("");
+  const [sifreMesaj, setSifreMesaj] = useState<string | null>(null);
+
+  async function sifreDegistir() {
+    if (yeniSifre.length < 8) { setSifreMesaj(t("sifre.kurallar")); return; }
+    const { error } = await supabase.auth.updateUser({ password: yeniSifre });
+    setSifreMesaj(error ? t("ortak.hata") : t("sifre.degisti"));
+    if (!error) { setYeniSifre(""); setSifreAcik(false); }
+  }
 
   useEffect(() => {
     if (!profil) return;
@@ -64,6 +75,17 @@ export function HesapAyarlari() {
           </View>
         </Kart>
       )}
+      <Kart>
+        {sifreAcik ? (
+          <View style={{ gap: 10 }}>
+            <Alan etiket={t("sifre.yeni")} value={yeniSifre} onChangeText={setYeniSifre} secureTextEntry autoComplete="new-password" />
+            <Dugme kucuk ikon={KeyRound} baslik={t("sifre.degistir")} onPress={() => void sifreDegistir()} />
+          </View>
+        ) : (
+          <Dugme kucuk tur="ikincil" ikon={KeyRound} baslik={t("sifre.degistir")} onPress={() => { setSifreAcik(true); setSifreMesaj(null); }} />
+        )}
+        {sifreMesaj && <Metin tur="kucuk" soluk>{sifreMesaj}</Metin>}
+      </Kart>
       <Dugme tur="hayalet" ikon={LogOut} baslik={t("giris.cikisYap")} onPress={() => void bildirimKaydiniSil().then(() => supabase.auth.signOut())} />
       <Kart vurgu={tema.yanlis}>
         <Metin tur="kucuk" soluk>{t("profil.silmeAciklama")}</Metin>

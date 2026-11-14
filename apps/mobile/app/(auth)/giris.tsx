@@ -32,7 +32,9 @@ export default function Giris() {
   async function girisYap() {
     setBekliyor(true);
     setHata(null);
-    const { error } = await supabase.auth.signInWithPassword({ email: eposta.trim(), password: sifre });
+    // Panelden açılan öğrenci hesapları kullanıcı adıyla girer (ayse.yilmaz42)
+    const g = eposta.trim().toLowerCase();
+    const { error } = await supabase.auth.signInWithPassword({ email: g.includes("@") ? g : `${g}@ogrenci.kmyarena.app`, password: sifre });
     setBekliyor(false);
     if (error) setHata(t("ortak.hata"));
   }
@@ -55,7 +57,7 @@ export default function Giris() {
             <Metin soluk ortala>{t("uygulama.slogan")}</Metin>
           </Animated.View>
           <Animated.View entering={FadeInUp.delay(300).springify().damping(16)} style={{ gap: 14, padding: 20, borderRadius: 28, backgroundColor: tema.yuzey, borderWidth: 1, borderColor: tema.kenar, ...golge(3, "#000") }}>
-            <Alan etiket={t("giris.epostaEtiket")} value={eposta} onChangeText={setEposta} autoCapitalize="none" keyboardType="email-address" autoComplete="email" />
+            <Alan etiket={t("giris.epostaEtiket")} value={eposta} onChangeText={setEposta} autoCapitalize="none" keyboardType="email-address" autoComplete="username" />
             <Alan etiket={t("giris.sifreEtiket")} value={sifre} onChangeText={setSifre} secureTextEntry autoComplete="current-password" onSubmitEditing={() => void girisYap()} />
             {hata && <Metin renk={tema.yanlis}>{hata}</Metin>}
             <Dugme buyuk ikon={LogIn} baslik={t("giris.girisYap")} onPress={() => void girisYap()} yukleniyor={bekliyor} />

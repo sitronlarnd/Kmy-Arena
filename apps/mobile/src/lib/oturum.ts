@@ -8,6 +8,8 @@ export interface Profil {
   tur: "ogrenci" | "veli" | "personel" | "merkez";
   takma_ad: string | null;
   veli_onayi: boolean;
+  sifre_degismeli: boolean;
+  kvkk_onay_tarihi: string | null;
 }
 
 export interface DershaneTema {
@@ -38,7 +40,7 @@ export const useOturum = create<OturumDurumu>((set) => ({
       return;
     }
     const [{ data: profil }, { data: dershane }, { data: ozellikler }] = await Promise.all([
-      supabase.from("kullanici").select("id, dershane_id, tur, takma_ad, veli_onayi").eq("id", oturum.user.id).maybeSingle<Profil>(),
+      supabase.from("kullanici").select("id, dershane_id, tur, takma_ad, veli_onayi, sifre_degismeli, kvkk_onay_tarihi").eq("id", oturum.user.id).maybeSingle<Profil>(),
       supabase.from("dershane").select("ad, uygulama_ici_ad, ana_renk, logo_url").maybeSingle<DershaneTema>(),
       supabase.rpc("ozelliklerim"),
     ]);
