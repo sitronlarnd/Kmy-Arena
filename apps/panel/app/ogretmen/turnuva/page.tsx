@@ -1,3 +1,4 @@
+import { DersSec } from "@/bilesenler/DersSec";
 import { KayitDugmesi, KayitFormu } from "@/bilesenler/Kayit";
 import { Kart, PanelKabugu } from "@/bilesenler/PanelKabugu";
 import { yetkiIste } from "@/lib/hesap";
@@ -33,7 +34,7 @@ export default async function Turnuva() {
         <KayitFormu eylem={turnuvaOlustur} dugme="Turnuvayı başlat">
           <input name="ad" placeholder="Turnuva adı" className="alan" required />
           <select name="sinif" required className="alan">{sl.map((c) => <option key={c.id} value={c.id}>{c.ad}</option>)}</select>
-          <select name="ders" required className="alan">{dersler.map((d) => <option key={d.id} value={d.id}>{d.sinav_turu} · {d.ad}</option>)}</select>
+          <DersSec dersler={dersler} />
           <select name="boyut" className="alan" defaultValue="8"><option value="4">4 kişi</option><option value="8">8 kişi</option><option value="16">16 kişi</option><option value="32">32 kişi</option></select>
           <input name="odul" placeholder="Ödül (ör. kitap seti)" className="alan" />
         </KayitFormu>

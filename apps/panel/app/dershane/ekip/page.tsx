@@ -10,7 +10,7 @@ import { YetkiKutusu } from "./YetkiKutusu";
 
 export const dynamic = "force-dynamic";
 
-const ROLLER: Record<string, string> = { kurucu: "Kurucu", sube_muduru: "Şube müdürü", rehber_ogretmen: "Rehber öğretmen", ogretmen: "Öğretmen", sekreter: "Sekreter" };
+const ROLLER: Record<string, string> = { ogretmen: "Öğretmen", rehber_ogretmen: "Rehber öğretmen", sube_muduru: "Şube müdürü", sekreter: "Sekreter", kurucu: "Kurucu" };
 const AYARLANABILIR: RolKodu[] = ["sube_muduru", "rehber_ogretmen", "ogretmen", "sekreter"];
 const DERSHANE_YETKILERI = (Object.keys(YETKILER) as YetkiKodu[]).filter((y) => !y.startsWith("merkez.") && !y.startsWith("bayi.") && !["soru.coz", "duello.oyna", "klan.katil", "topluluk.yaz", "veli.rapor_oku"].includes(y));
 

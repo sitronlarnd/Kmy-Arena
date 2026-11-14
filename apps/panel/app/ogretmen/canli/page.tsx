@@ -1,3 +1,4 @@
+import { DersSec } from "@/bilesenler/DersSec";
 import { KayitFormu } from "@/bilesenler/Kayit";
 import { Kart, PanelKabugu } from "@/bilesenler/PanelKabugu";
 import { yetkiIste } from "@/lib/hesap";
@@ -24,7 +25,7 @@ export default async function Canli() {
         <KayitFormu eylem={canliBaslat} dugme="Başlat ve ekranı aç">
           <input name="ad" placeholder="Yarışma adı (isteğe bağlı)" className="alan" />
           <select name="sinif" required className="alan">{sl.map((c) => <option key={c.id} value={c.id}>{c.ad}</option>)}</select>
-          <select name="ders" required className="alan">{dersler.map((d) => <option key={d.id} value={d.id}>{d.sinav_turu} · {d.ad}</option>)}</select>
+          <DersSec dersler={dersler} />
           <label className="kucuk soluk">Soru <input name="adet" type="number" min={3} max={15} defaultValue={10} className="alan" style={{ width: 70 }} /></label>
           <label className="kucuk soluk">Süre (sn) <input name="sure" type="number" min={15} max={120} defaultValue={40} className="alan" style={{ width: 80 }} /></label>
         </KayitFormu>
