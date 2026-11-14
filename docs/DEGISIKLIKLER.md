@@ -271,3 +271,13 @@ Emoji tabanlı arayüz kaldırıldı: lucide ikonları, özgün SVG karakter/bos
 - **Canlı veri:** demo dershaneler ve hesaplar silindi; mağaza inceleme dershanesi kuruldu; merkez sahibi şifresi yenilendi (`supabase/yayin/`, iş akışında `yayin_dosya`).
 - **Bildirimler (0023):** push (düello daveti, ödev, topluluk cevabı/kabulü, seri hatırlatması), sessiz saatler, veliye haftalık e-posta; profil ve veli ekranında ortak Hesap ayarları (veli ekranına hesap silme de eklendi).
 - **Güvenlik:** 18 yaş altında veli onayı olmadan topluluk ve klan sohbeti sunucuda kapalı.
+
+## Şartname eksiklerinin kapatılması (2026-11-14)
+
+- **Kayıt yönetimi:** panelden tek tek / Excel ile öğrenci açma (kullanıcı adı + geçici şifre, ilk girişte şifre değiştirme ve KVKK onayı), rol bazlı davet kodları, veli bağlantı kodları, şube/sınıf yapısı, sınıf arşivi, ekip yönetimi.
+- **Öğretmen:** soru arşivi (AI ile üretme, PDF/fotoğraftan okuma, LaTeX önizleme, çözüm ve konu anlatımı ekleme), arşivden ödev, sınıf turnuvası (eleme ağacı), projeksiyonlu canlı sınıf yarışması (PIN ile katılım).
+- **Kurucu:** deneme sonuçları içe aktarma ve net raporları, etki raporu, öğrenci/sınıf raporları (veliye gönderilebilir), hedefli duyuru, yıl sonu devri, etkinlik ve ödüller, öğretmen takibi, destek talebi.
+- **Merkez:** genel bakış, dershaneler (oluştur, görüntüle, lisans), finans ve faturalar, AI maliyeti ve kâr marjı, ekonomi ayarları ve lig simülatörü, mağaza eşya ayarları, platform etkinlikleri (çift XP vb.), müfredat düzenleme ve dışa aktarım, moderasyon (yasaklı kelimeler, sosyal kısıt, puan dondurma), destek masası, platform duyurusu, e-posta şablonları, sistem sağlığı, denetim kaydı. 2FA, IP izin listesi, hareketsizlikte çıkış.
+- **Mobil:** turnuva ve canlı yarışma ekranları, personel için Yönetim ekranı, bildirim ayarları, şifre değiştirme, hesap silme, bakım / zorunlu güncelleme / duyuru kapısı.
+- Migrasyonlar 0024–0028, veritabanı test grupları 20–22.
+

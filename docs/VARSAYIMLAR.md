@@ -77,3 +77,10 @@ Belirsiz kalan noktalarda en makul varsayım yapıldı ve buraya yazıldı.
 47. **Hesap silme** 30 gün bekletmeli (yanlışlıkla silmeye karşı); bu sürede hesap kapalıdır, geri alma dershane yöneticisi aracılığıyla.
 48. **18 yaş altı sosyal özellikler** (topluluk sorusu/cevabı, klan sohbeti) veli onayı olmadan sunucuda reddedilir; doğum yılı bilinmeyen öğrenci reşit değil sayılır.
 49. **Canlı veritabanı** 2026-11-14'te demodan çıkarıldı; yalnızca merkez sahibi ve mağaza inceleme dershanesi kaldı. Demo verisi yalnızca yerel testte kullanılır.
+50. **Bayi/alt bayi sistemi** şartnamede isteğe bağlı olduğu için yapılmadı; dershaneler doğrudan merkezden yönetilir.
+51. **Turnuva maçları** eşzamansız düellodur (her maç 24 saat içinde); maçı oynamayan taraf hükmen yenilir, ikisi de oynamazsa sıralamada üstteki geçer.
+52. **Mağaza eşyalarının görseli** uygulama paketindedir; merkez panelinden fiyat/indirim/görünürlük değişir, yeni görsel için uygulama güncellemesi gerekir.
+53. **AI maliyeti** model başı token fiyatı × kullanım ile hesaplanır; fiyatlar `/merkez/sistem`'den girilir, TL karşılığı `USD_TL_KURU` ile. Kâr marjı dershanenin aylık ücretine göre gösterilir.
+54. **Merkez paneli** 2FA zorunlu; hata izleme (Sentry) entegre edilmedi, hatalar Vercel günlüklerinden ve `/merkez/sistem` sağlık ekranından izlenir.
+55. **Deneme sonuçları** Excel/CSV ile öğrenci no veya ad-soyad eşleşerek alınır; eşleşmeyen satırlar atlanır ve listelenir.
+

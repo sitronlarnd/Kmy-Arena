@@ -66,12 +66,12 @@ Aynı depodan 4 proje; her birinde **Root Directory** farklı, gerisi `vercel.js
 
 | Proje | Root Directory | Ortam değişkenleri |
 |---|---|---|
-| kmy-arena-panel | `apps/panel` | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_API_URL` |
+| kmy-arena-panel | `apps/panel` | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_API_URL`; isteğe bağlı `NEXT_PUBLIC_PANEL_URL`, `RESEND_API_KEY`, `EPOSTA_GONDEREN`, `USD_TL_KURU` (AI maliyetini TL'ye çevirir, varsayılan 34), `MERKEZ_IP_IZIN` (virgüllü IP listesi), `MERKEZ_IKI_ADIM=kapali` (yalnızca acil durumda 2FA'yı kapatır) |
 | kmy-arena-api | `apps/api` | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `KMYAI_*`, `CRON_SECRET`, `RESEND_API_KEY`, `SAHIP_EPOSTA`, `EPOSTA_GONDEREN`, `EXPO_ACCESS_TOKEN` (isteğe bağlı) |
 | kmy-arena-web | `apps/mobile` | `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_API_URL`; isteğe bağlı `EXPO_PUBLIC_SITE_URL`, `EXPO_PUBLIC_PANEL_URL`, `EXPO_PUBLIC_MAGAZA_URL` |
 | kmy-arena-tanitim | `apps/landing` | İsteğe bağlı: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_DESTEK_EPOSTA`, `NEXT_PUBLIC_SIRKET_UNVANI` |
 
-API'nin zamanlanmış işleri (`apps/api/vercel.json`): `havuz-doldur` her 10 dakikada (soru havuzunu doldurur), `kalibrasyon` her gece (20+ cevaplı soruların gerçek zorluğu), `cevap-bolumu` her ayın 25'i, `bildirim-gonder` her 5 dakikada (push kuyruğu, sessiz saatlere uyar), `seri-hatirlat` her akşam 19:00, `veli-haftalik` pazar 17:00 (Resend tanımlıysa), `hesap-sil` her gece (30 günü dolan silme talepleri).
+API'nin zamanlanmış işleri (`apps/api/vercel.json`): `havuz-doldur` her 10 dakikada (soru havuzunu doldurur), `kalibrasyon` her gece (20+ cevaplı soruların gerçek zorluğu), `cevap-bolumu` her ayın 25'i, `bildirim-gonder` her 5 dakikada (push kuyruğu, sessiz saatlere uyar), `seri-hatirlat` her akşam 19:00, `veli-haftalik` pazar 17:00 (Resend tanımlıysa), `hesap-sil` her gece (30 günü dolan silme talepleri), `lisans-takip` her sabah (vadesi geçen lisansı askıya alır, bitişe 14/3 gün kala uyarır).
 
 Fonksiyon bölgesi `fra1` (Frankfurt) — veritabanıyla aynı bölge. Mobil derlemeler Vercel'de değil, EAS Build'de alınır (`eas build --profile magaza`).
 
@@ -81,6 +81,10 @@ Canlı veritabanında demo verisi **yoktur** (`supabase/yayin/01_demo_kaldir_inc
 
 - Merkez sahibi `sahip@kmyarena.demo` (şifre yenilendi, proje sahibinde).
 - Mağaza incelemesi için **KMY Arena İnceleme** dershanesi: `ogrenci@`, `yks@`, `veli@`, `ogretmen@`, `kurucu@inceleme.kmyarena.app` ve 6 sınıf arkadaşı (`sinif1-6@…`). Ortak şifre proje sahibinde; davet kodu `KMYARENA`.
+
+## Merkez paneli güvenliği
+
+`/merkez` iki adımlı doğrulama (TOTP) ister: ilk girişte Google Authenticator / 1Password gibi bir uygulamayla QR okutulur. 30 dakika hareketsizlikte oturum kapanır. `MERKEZ_IP_IZIN` tanımlıysa yalnızca o IP'lerden açılır. Telefon kaybolursa: panel projesine geçici olarak `MERKEZ_IKI_ADIM=kapali` ekleyip yeniden kurulum yapılır, sonra değişken silinir.
 
 ## Demo hesapları (yalnızca yerel / test ortamında, `02_demo.sql`)
 
