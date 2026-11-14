@@ -39,13 +39,19 @@ function simule(a: OyunAyarlari): Sonuc {
   const sev = ogrenciler.map((o) => xpdenSeviye(o.xp));
   const seviyeDagilim = [0, 0, 0, 0, 0];
   for (const s of sev) { const i = s < 5 ? 0 : s < 10 ? 1 : s < 20 ? 2 : s < 35 ? 3 : 4; seviyeDagilim[i] = (seviyeDagilim[i] ?? 0) + 1; }
-  // Lig: 4 hafta, her hafta grubun ilk 'yukselen' kişisi bir kademe çıkar, son 'dusen' iner (grup = tüm 100 kişi, ölçekli)
+  // Lig: her hafta her kademe kendi içinde sıralanır; ilk 'yukselen/grup' oranı bir üst, son 'dusen/grup' oranı bir alt kademeye
   const kademe = ogrenciler.map(() => 0);
+  const grup = (a.lig.grupMin + a.lig.grupMax) / 2;
   for (let h = 0; h < 4; h++) {
-    const sira = ogrenciler.map((o, i) => ({ i, x: o.haftalik[h] ?? 0 })).sort((p, q) => q.x - p.x);
-    const n = Math.round((a.lig.yukselen / ((a.lig.grupMin + a.lig.grupMax) / 2)) * 100), d = Math.round((a.lig.dusen / ((a.lig.grupMin + a.lig.grupMax) / 2)) * 100);
-    sira.slice(0, n).forEach((s) => { kademe[s.i] = Math.min(5, (kademe[s.i] ?? 0) + 1); });
-    sira.slice(-d).forEach((s) => { kademe[s.i] = Math.max(0, (kademe[s.i] ?? 0) - 1); });
+    const yeni = [...kademe];
+    for (let k = 0; k <= 5; k++) {
+      const uyeler = ogrenciler.map((o, i) => ({ i, x: o.haftalik[h] ?? 0 })).filter((u) => kademe[u.i] === k).sort((p, q) => q.x - p.x);
+      if (!uyeler.length) continue;
+      const n = k < 5 ? Math.round((a.lig.yukselen / grup) * uyeler.length) : 0, d = k > 0 ? Math.round((a.lig.dusen / grup) * uyeler.length) : 0;
+      uyeler.slice(0, n).forEach((u) => { yeni[u.i] = k + 1; });
+      if (d) uyeler.slice(-d).forEach((u) => { yeni[u.i] = k - 1; });
+    }
+    kademe.splice(0, kademe.length, ...yeni);
   }
   const ligDagilim = [0, 0, 0, 0, 0, 0];
   for (const k of kademe) ligDagilim[k] = (ligDagilim[k] ?? 0) + 1;

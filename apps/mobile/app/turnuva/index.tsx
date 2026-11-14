@@ -58,7 +58,7 @@ export function TurnuvaListesi({ filtre }: { filtre?: string }) {
                 <Metin tur="altbaslik">{tr.ad}</Metin>
                 <Metin tur="kucuk" soluk>{tr.ders}{tr.odul ? ` · ${t("turnuva.odul", { odul: tr.odul })}` : ""}</Metin>
               </View>
-              {tr.durum === "bitti" ? <Etiket metin={t("turnuva.sampiyon", { ad: tr.kazanan ?? "" })} renk={OYUN.altin} /> : <Etiket metin={turAdi(tr.tur, turSayisi)} renk={tema.vurgu} />}
+              {tr.durum === "iptal" ? <Etiket metin={t("turnuva.iptal")} renk={tema.yanlis} /> : tr.durum === "bitti" ? <Etiket metin={t("turnuva.sampiyon", { ad: tr.kazanan ?? "" })} renk={OYUN.altin} /> : <Etiket metin={turAdi(tr.tur, turSayisi)} renk={tema.vurgu} />}
             </View>
             {tr.macim && tr.durum === "surdu" && (
               tr.macim.durum === "bitti" ? null :

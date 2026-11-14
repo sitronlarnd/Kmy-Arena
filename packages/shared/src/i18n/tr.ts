@@ -544,6 +544,7 @@ export const tr = {
     macHazirlaniyor: "Maçın hazırlanıyor…",
     elendin: "Bu turnuvada elendin. Diğer maçları izleyebilirsin.",
     sampiyon: "Şampiyon: {ad}",
+    iptal: "İptal edildi",
     tur: "{n}. tur",
     final: "Final",
     yariFinal: "Yarı final",
