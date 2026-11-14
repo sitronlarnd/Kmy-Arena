@@ -21,6 +21,9 @@ TEK_SEED=""
 [[ "${1:-}" == "--seed" ]] && SEED=1
 # --seed-dosya 03_klan_demo.sql: yalnızca o seed dosyasını (tekrar çalıştırılabilir olanlar) yükler
 [[ "${1:-}" == "--seed-dosya" ]] && TEK_SEED="${2:?dosya adı gerekli}"
+# --yayin-dosya 01_demo_kaldir_inceleme.sql: supabase/yayin/ altındaki tek seferlik canlı işlemi çalıştırır
+YAYIN=""
+[[ "${1:-}" == "--yayin-dosya" ]] && YAYIN="${2:?dosya adı gerekli}"
 
 PSQL=(psql "$SUPABASE_DB_URL" -X -q -v ON_ERROR_STOP=1 --no-psqlrc)
 
@@ -58,6 +61,12 @@ if [[ -n "$TEK_SEED" ]]; then
   [[ "$TEK_SEED" =~ ^[0-9a-z_]+\.sql$ && -f "$KOK/supabase/seed/$TEK_SEED" ]] || { echo "Seed dosyası yok: $TEK_SEED"; exit 1; }
   echo "• Seed (tek): $TEK_SEED"
   "${PSQL[@]}" -1 -f "$KOK/supabase/seed/$TEK_SEED" >/dev/null
+fi
+
+if [[ -n "$YAYIN" ]]; then
+  [[ "$YAYIN" =~ ^[0-9a-z_]+\.sql$ && -f "$KOK/supabase/yayin/$YAYIN" ]] || { echo "Yayın dosyası yok: $YAYIN"; exit 1; }
+  echo "• Yayın işlemi: $YAYIN"
+  "${PSQL[@]}" -1 -f "$KOK/supabase/yayin/$YAYIN" >/dev/null
 fi
 
 echo "✔ Veritabanı güncel"

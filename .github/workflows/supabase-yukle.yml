@@ -15,6 +15,10 @@ on:
         description: "Yalnızca bu (tekrar çalıştırılabilir) seed dosyasını yükle, ör. 03_klan_demo.sql"
         type: string
         default: ""
+      yayin_dosya:
+        description: "supabase/yayin/ altındaki tek seferlik canlı işlem, ör. 01_demo_kaldir_inceleme.sql"
+        type: string
+        default: ""
 
 concurrency:
   group: supabase-yukle
@@ -31,6 +35,8 @@ jobs:
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           SEED_DOSYA: ${{ inputs.seed_dosya }}
+          YAYIN_DOSYA: ${{ inputs.yayin_dosya }}
         run: |
-          if [ -n "$SEED_DOSYA" ]; then bash scripts/db-yukle.sh --seed-dosya "$SEED_DOSYA"
+          if [ -n "$YAYIN_DOSYA" ]; then bash scripts/db-yukle.sh --yayin-dosya "$YAYIN_DOSYA"
+          elif [ -n "$SEED_DOSYA" ]; then bash scripts/db-yukle.sh --seed-dosya "$SEED_DOSYA"
           else bash scripts/db-yukle.sh ${{ inputs.seed && '--seed' || '' }}; fi
