@@ -51,6 +51,7 @@ function OturumKapisi() {
     else if (oturum && profil && (profil.sifre_degismeli || !profil.kvkk_onay_tarihi) && bolumler[0] !== "sifre") yonlendir.replace("/sifre");
     else if (oturum && profil && (profil.sifre_degismeli || !profil.kvkk_onay_tarihi)) return;
     else if (oturum && profil && profil.tur === "veli" && bolumler[0] !== "veli") yonlendir.replace("/veli");
+    else if (oturum && profil && (profil.tur === "personel" || profil.tur === "merkez") && bolumler[0] !== "yonetim") yonlendir.replace("/yonetim");
     else if (oturum && profil && authBolumunde) yonlendir.replace("/(sekmeler)");
   }, [hazir, oturum, profil, bolumler, yonlendir]);
 

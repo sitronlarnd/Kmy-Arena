@@ -90,7 +90,7 @@ export async function eposta(kime: string, konu: string, metin: string): Promise
   return Boolean(r?.ok);
 }
 
-export const PANEL_ADRESI = process.env.NEXT_PUBLIC_PANEL_URL ?? "";
+export const PANEL_ADRESI = process.env.NEXT_PUBLIC_PANEL_URL ?? "https://panel-ten-green.vercel.app";
 
 /** Hoş geldin e-postası (Merkez › E-posta şablonları'ndaki "hos_geldin" şablonu). */
 export async function hosGeldinMetni(ad: string, giris: string, sifre: string, rolAdi: string, dershane: string): Promise<{ konu: string; govde: string }> {

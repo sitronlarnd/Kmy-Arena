@@ -9,7 +9,7 @@ import { useOturum } from "@/lib/oturum";
 import { supabase } from "@/lib/supabase";
 import { useTema } from "@/lib/tema";
 
-const SITE = process.env.EXPO_PUBLIC_SITE_URL;
+const SITE = process.env.EXPO_PUBLIC_SITE_URL ?? "https://landing-five-gamma-73.vercel.app";
 
 /** Panelden açılan hesapta ilk giriş: kendi şifresini belirleme ve KVKK aydınlatmasını onaylama. */
 export default function SifreBelirle() {
