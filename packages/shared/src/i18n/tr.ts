@@ -486,6 +486,15 @@ export const tr = {
     filtre_kisisel_bilgi: "Telefon, adres veya sosyal medya bilgisi paylaşılamaz.",
     filtre_baglanti: "Bağlantı paylaşılamaz.",
   },
+  bildirim: {
+    baslik: "Bildirimler",
+    anlik: "Anlık bildirimler",
+    anlikAciklama: "Düello davetleri, yeni ödevler, topluluk cevapları ve seri hatırlatması",
+    sessiz: "Sessiz saatler",
+    sessizAciklama: "22:00 – 08:00 arasında bildirim gönderilmez",
+    veliEposta: "Haftalık e-posta özeti",
+    veliEpostaAciklama: "Her pazar çocuğunuzun haftasını e-postayla gönderelim",
+  },
   sosyal: {
     veliOnayiGerekli: "Topluluk ve klan sohbeti için velinin onayı gerekiyor. Onay gelince açılır.",
   },

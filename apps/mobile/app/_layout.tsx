@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { Nunito_600SemiBold, Nunito_700Bold, Nunito_800ExtraBold, Nunito_900Black, useFonts } from "@expo-google-fonts/nunito";
 import { useEffect } from "react";
 import { ActivityIndicator, Platform, View } from "react-native";
+import { bildirimDinle, bildirimKaydet } from "@/lib/bildirim";
 import { useOturum } from "@/lib/oturum";
 import { supabase } from "@/lib/supabase";
 import { useTema } from "@/lib/tema";
@@ -35,6 +36,11 @@ function OturumKapisi() {
     const { data } = supabase.auth.onAuthStateChange((_olay, s) => void yukle(s));
     return () => data.subscription.unsubscribe();
   }, [yukle]);
+
+  useEffect(() => bildirimDinle(), []);
+  useEffect(() => {
+    if (profil && (profil.tur === "ogrenci" || profil.tur === "veli")) void bildirimKaydet();
+  }, [profil]);
 
   useEffect(() => {
     if (!hazir) return;

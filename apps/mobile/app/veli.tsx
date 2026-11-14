@@ -2,12 +2,13 @@ import { ROZETLER } from "@kmy/shared";
 import { t } from "@kmy/shared/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
-import { CalendarCheck, Clock, Flame, LogOut, Sprout, Star, Target } from "lucide-react-native";
+import { CalendarCheck, Clock, Flame, Sprout, Star, Target } from "lucide-react-native";
 import { View } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import { Ekran } from "@/bilesenler/Ekran";
+import { HesapAyarlari } from "@/bilesenler/HesapAyarlari";
 import { RozetMadalya } from "@/bilesenler/sanat";
-import { Bolum, Cubuk, Dugme, Etiket, IkonKutu, Kart, Metin } from "@/bilesenler/ui";
+import { Bolum, Cubuk, Etiket, IkonKutu, Kart, Metin } from "@/bilesenler/ui";
 import { supabase } from "@/lib/supabase";
 import { GRADYAN, OYUN, useTema } from "@/lib/tema";
 
@@ -116,7 +117,7 @@ export default function Veli() {
           </View>
         );
       })}
-      <Dugme tur="hayalet" ikon={LogOut} baslik={t("giris.cikisYap")} onPress={() => void supabase.auth.signOut()} />
+      <HesapAyarlari />
     </Ekran>
   );
 }

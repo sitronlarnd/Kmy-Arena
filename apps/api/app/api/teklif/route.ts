@@ -1,4 +1,5 @@
 import { govdeOku, guvenli, IstemciHatasi, json, onUcus } from "@/lib/http";
+import { epostaGonder } from "@/lib/eposta";
 import { servisIstemcisi } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
@@ -8,14 +9,7 @@ const IP_SAYAC = new Map<string, { n: number; bas: number }>();
 
 /** E-posta bildirimi (isteğe bağlı): RESEND_API_KEY ve SAHIP_EPOSTA tanımlıysa. */
 async function eposta(kime: string, konu: string, metin: string): Promise<void> {
-  const anahtar = process.env.RESEND_API_KEY;
-  const kimden = process.env.EPOSTA_GONDEREN ?? "KMY Arena <bildirim@kmyai.cloud>";
-  if (!anahtar) return;
-  await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { authorization: `Bearer ${anahtar}`, "content-type": "application/json" },
-    body: JSON.stringify({ from: kimden, to: [kime], subject: konu, text: metin }),
-  }).catch(() => undefined);
+  await epostaGonder(kime, konu, metin);
 }
 
 const metin = (d: unknown, max: number) => (typeof d === "string" ? d.trim().replace(/\s+/g, " ").slice(0, max) : "");

@@ -1,17 +1,15 @@
 import { OZELLIKLER } from "@kmy/shared";
 import { t } from "@kmy/shared/i18n";
 import { router } from "expo-router";
-import { Trash2, Award, BookOpen, Brain, Coins, Compass, LogOut, Palette, ShoppingBag, Sparkles, Target, Wind, Zap, type LucideIcon } from "lucide-react-native";
-import { useState } from "react";
+import { Award, BookOpen, Brain, Coins, Compass, Palette, ShoppingBag, Sparkles, Target, Wind, Zap, type LucideIcon } from "lucide-react-native";
 import { View } from "react-native";
 import { Ekran } from "@/bilesenler/Ekran";
+import { HesapAyarlari } from "@/bilesenler/HesapAyarlari";
 import { Avatar } from "@/bilesenler/sanat";
 import { Basilabilir, Bolum, Cubuk, Dugme, Etiket, Halka, IkonKutu, Kart, Metin } from "@/bilesenler/ui";
-import { api } from "@/lib/api";
 import { useOturum } from "@/lib/oturum";
 import { useOyun } from "@/lib/oyun";
 import { useIlerleme } from "@/lib/sorgular";
-import { supabase } from "@/lib/supabase";
 import { GRADYAN, OYUN, useTema } from "@/lib/tema";
 
 const OZ: Record<string, { ikon: LucideIcon; renk: readonly [string, string] }> = {
@@ -24,7 +22,6 @@ const OZ: Record<string, { ikon: LucideIcon; renk: readonly [string, string] }> 
 
 export default function Profil() {
   const tema = useTema();
-  const [silOnay, setSilOnay] = useState(false);
   const { profil, dershane } = useOturum();
   const i = useIlerleme().data;
   const oyun = useOyun().data;
@@ -98,12 +95,7 @@ export default function Profil() {
           </View>
         </>
       )}
-      <Dugme tur="hayalet" ikon={LogOut} baslik={t("giris.cikisYap")} onPress={() => void supabase.auth.signOut()} />
-      <Kart vurgu={tema.yanlis}>
-        <Metin tur="kucuk" soluk>{t("profil.silmeAciklama")}</Metin>
-        <Dugme kucuk tur={silOnay ? "tehlike" : "hayalet"} ikon={Trash2} baslik={silOnay ? t("profil.silmeOnay") : t("profil.hesabiSil")}
-          onPress={() => (silOnay ? void api("/api/hesap/sil", {}).then(() => supabase.auth.signOut()) : setSilOnay(true))} />
-      </Kart>
+      <HesapAyarlari />
     </Ekran>
   );
 }

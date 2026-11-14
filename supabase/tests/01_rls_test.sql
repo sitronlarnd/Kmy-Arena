@@ -1030,6 +1030,34 @@ begin
   for i in 1..5 loop r := public.sistem_odev_isle(o1, od, i % 2 = 0); end loop;
   perform test.dogrula((r ->> 'bitti')::boolean, 'ödev bitmedi: ' || r::text);
 end $$;
+
+-- 19 · Bildirimler (service)
+do $$
+declare o1 uuid := app.sabit_uuid('kullanici:ogrenci01@demo.kmyarena.demo'); n int; r record;
+begin
+  perform test.dogrula(exists (select 1 from public.bildirim_kuyruk where kullanici_id = o1 and tur = 'odev'), 'ödev bildirimi kuyruğa düşmedi');
+  perform public.sistem_bildirim_cihaz(o1, 'ExponentPushToken[test-1]', 'ios');
+  perform public.sistem_bildirim_cihaz(o1, 'ExponentPushToken[test-1]', 'ios'); -- tekrar: güncelleme
+  perform test.dogrula((select count(*) from public.bildirim_cihaz where kullanici_id = o1) = 1, 'cihaz kaydı');
+  begin perform public.sistem_bildirim_cihaz(o1, 'sahte', 'ios'); raise exception 'TEST BAŞARISIZ: geçersiz jeton';
+  exception when check_violation then null; end;
+  -- Sessiz saat her saati kapsayacak şekilde ayarlanınca hiçbir şey gönderilmez
+  perform public.sistem_bildirim_tercih(o1, true, 0::smallint, 0::smallint, null);
+  update public.kullanici set sessiz_baslangic = 0, sessiz_bitis = 23 where id = o1;
+  perform test.dogrula(not exists (select 1 from public.sistem_bildirim_bekleyenler() b where b.kullanici_id = o1)
+    or extract(hour from now() at time zone 'Europe/Istanbul') = 23, 'sessiz saatte bildirim');
+  update public.kullanici set sessiz_baslangic = 22, sessiz_bitis = 8 where id = o1;
+  update public.bildirim_kuyruk set olusturma = now() where kullanici_id = o1;
+  -- Kapatılan kullanıcıya yeni bildirim yazılmaz
+  perform public.sistem_bildirim_tercih(o1, false, null, null, null);
+  select count(*) into n from public.bildirim_kuyruk where kullanici_id = o1;
+  perform app.bildirim_ekle(o1, 'duyuru', 'x', 'y');
+  perform test.dogrula((select count(*) from public.bildirim_kuyruk where kullanici_id = o1) = n, 'kapalı bildirime yazıldı');
+  -- Veli haftalık: veli01'in çocuğu ogrenci01
+  select * into r from public.sistem_veli_haftalik() v where v.eposta = 'veli01@demo.kmyarena.demo';
+  perform test.dogrula(r.veli_id is not null and jsonb_array_length(r.cocuklar) = 1, 'veli haftalık özeti');
+  perform test.dogrula(public.sistem_seri_hatirlat() >= 0, 'seri hatırlatma');
+end $$;
 rollback;
 
 \echo '✔ Tüm veritabanı testleri geçti'

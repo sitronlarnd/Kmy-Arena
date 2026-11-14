@@ -2,16 +2,57 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "installCommand": "pnpm install --frozen-lockfile",
-  "regions": ["fra1"],
+  "regions": [
+    "fra1"
+  ],
   "crons": [
-    { "path": "/api/cron/cevap-bolumu", "schedule": "0 3 25 * *" },
-    { "path": "/api/cron/havuz-doldur", "schedule": "*/10 * * * *" },
-    { "path": "/api/cron/kalibrasyon", "schedule": "30 2 * * *" },
-    { "path": "/api/cron/lig-kapat", "schedule": "10 21 * * 0" },
-    { "path": "/api/cron/klan-savas-esle", "schedule": "0 6 * * 4" },
-    { "path": "/api/cron/klan-savas-kapat", "schedule": "5 18 * * 0" },
-    { "path": "/api/cron/topluluk-ai", "schedule": "*/5 * * * *" },
-    { "path": "/api/cron/asistan-temizle", "schedule": "30 0 * * *" },
-    { "path": "/api/cron/hesap-sil", "schedule": "45 0 * * *" }
+    {
+      "path": "/api/cron/cevap-bolumu",
+      "schedule": "0 3 25 * *"
+    },
+    {
+      "path": "/api/cron/havuz-doldur",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/kalibrasyon",
+      "schedule": "30 2 * * *"
+    },
+    {
+      "path": "/api/cron/lig-kapat",
+      "schedule": "10 21 * * 0"
+    },
+    {
+      "path": "/api/cron/klan-savas-esle",
+      "schedule": "0 6 * * 4"
+    },
+    {
+      "path": "/api/cron/klan-savas-kapat",
+      "schedule": "5 18 * * 0"
+    },
+    {
+      "path": "/api/cron/topluluk-ai",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/asistan-temizle",
+      "schedule": "30 0 * * *"
+    },
+    {
+      "path": "/api/cron/hesap-sil",
+      "schedule": "45 0 * * *"
+    },
+    {
+      "path": "/api/cron/bildirim-gonder",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/seri-hatirlat",
+      "schedule": "0 16 * * *"
+    },
+    {
+      "path": "/api/cron/veli-haftalik",
+      "schedule": "0 14 * * 0"
+    }
   ]
 }
