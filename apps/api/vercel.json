@@ -53,6 +53,10 @@
     {
       "path": "/api/cron/veli-haftalik",
       "schedule": "0 14 * * 0"
+    },
+    {
+      "path": "/api/cron/lisans-takip",
+      "schedule": "15 5 * * *"
     }
   ]
 }

@@ -1,5 +1,6 @@
 import { govdeOku, guvenli, IstemciHatasi, json, onUcus } from "@/lib/http";
 import { epostaGonder } from "@/lib/eposta";
+import { sablon } from "@/lib/sablon";
 import { servisIstemcisi } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
@@ -46,8 +47,9 @@ export async function POST(istek: Request) {
       await eposta(satis, `Yeni ${kayit.pilot_talebi ? "pilot" : "teklif"} talebi: ${kayit.dershane_adi} (${kayit.sehir})`,
         `${kayit.yetkili} · ${kayit.eposta} · ${kayit.telefon ?? "-"}\nŞube: ${kayit.sube_sayisi} · Öğrenci: ${kayit.ogrenci_sayisi}\n\n${kayit.not ?? ""}`);
     }
-    await eposta(kayit.eposta, "KMY Arena — talebinizi aldık",
-      `Merhaba ${kayit.yetkili},\n\n${kayit.dershane_adi} için ${kayit.pilot_talebi ? "30 günlük ücretsiz pilot" : "teklif"} talebinizi aldık. En geç bir iş günü içinde sizi arayacağız.\n\nKMY Arena`);
+    const t = await sablon("teklif_tesekkur", { yetkili: kayit.yetkili, dershane: kayit.dershane_adi, talep: kayit.pilot_talebi ? "30 günlük ücretsiz pilot" : "teklif" },
+      { konu: "KMY Arena — talebinizi aldık", govde: `Merhaba ${kayit.yetkili},\n\nTalebinizi aldık. En geç bir iş günü içinde sizi arayacağız.\n\nKMY Arena` });
+    await eposta(kayit.eposta, t.konu, t.govde);
     return json({ tamam: true });
   });
 }

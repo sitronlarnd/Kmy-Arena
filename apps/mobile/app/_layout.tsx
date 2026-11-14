@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { ActivityIndicator, Platform, View } from "react-native";
 import { bildirimDinle, bildirimKaydet } from "@/lib/bildirim";
 import { useOturum } from "@/lib/oturum";
+import { UygulamaKapisi } from "@/bilesenler/UygulamaKapisi";
 import { supabase } from "@/lib/supabase";
 import { useTema } from "@/lib/tema";
 
@@ -60,7 +61,11 @@ function OturumKapisi() {
       </View>
     );
   }
-  return <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: tema.zemin } }} />;
+  return (
+    <UygulamaKapisi>
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: tema.zemin } }} />
+    </UygulamaKapisi>
+  );
 }
 
 export default function KokDuzen() {

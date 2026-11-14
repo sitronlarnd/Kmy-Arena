@@ -1,5 +1,5 @@
 import { govdeOku, guvenli, json, onUcus } from "@/lib/http";
-import { ogrenciGetir } from "@/lib/kimlik";
+import { ogrenciGetir, yazmaGerekli } from "@/lib/kimlik";
 import { cevapIsteginiCoz, cevapVer } from "@/lib/soru-servisi";
 
 export const dynamic = "force-dynamic";
@@ -9,6 +9,7 @@ export const OPTIONS = onUcus;
 export async function POST(istek: Request) {
   return guvenli(async () => {
     const k = await ogrenciGetir(istek);
+    yazmaGerekli(k);
     return json(await cevapVer(k, cevapIsteginiCoz(await govdeOku(istek))));
   });
 }

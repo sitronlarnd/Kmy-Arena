@@ -1,6 +1,6 @@
 import type { SiradakiIstegi } from "@kmy/shared";
 import { govdeOku, guvenli, IstemciHatasi, json, onUcus } from "@/lib/http";
-import { ogrenciGetir } from "@/lib/kimlik";
+import { ogrenciGetir, yazmaGerekli } from "@/lib/kimlik";
 import { siradakiSoru } from "@/lib/soru-servisi";
 
 export const dynamic = "force-dynamic";
@@ -16,6 +16,7 @@ export const OPTIONS = onUcus;
 export async function POST(istek: Request) {
   return guvenli(async () => {
     const k = await ogrenciGetir(istek);
+    yazmaGerekli(k);
     if (k.tur !== "ogrenci") throw new IstemciHatasi("soru.yalnizcaOgrenci", 403);
     const g = await govdeOku(istek);
     const mod = typeof g.mod === "string" && MODLAR.has(g.mod) ? (g.mod as SiradakiIstegi["mod"]) : "antrenman";

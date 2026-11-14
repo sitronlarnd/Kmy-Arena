@@ -92,12 +92,13 @@ export async function eposta(kime: string, konu: string, metin: string): Promise
 
 export const PANEL_ADRESI = process.env.NEXT_PUBLIC_PANEL_URL ?? "";
 
-export function hosGeldinMetni(ad: string, giris: string, sifre: string, rolAdi: string, dershane: string): string {
-  return [
-    `Merhaba ${ad},`, "",
-    `${dershane} için KMY Arena ${rolAdi} hesabınız açıldı.`, "",
-    `Giriş: ${giris}`, `Geçici şifre: ${sifre}`, "",
-    PANEL_ADRESI ? `Panel: ${PANEL_ADRESI}` : "",
-    "İlk girişte şifrenizi değiştirmeniz istenecek.", "", "KMY Arena",
-  ].filter((x, i, a) => x !== "" || a[i - 1] !== "").join("\n");
+/** Hoş geldin e-postası (Merkez › E-posta şablonları'ndaki "hos_geldin" şablonu). */
+export async function hosGeldinMetni(ad: string, giris: string, sifre: string, rolAdi: string, dershane: string): Promise<{ konu: string; govde: string }> {
+  const { data } = await servis().from("eposta_sablon").select("konu, govde").eq("kod", "hos_geldin").maybeSingle();
+  const d: Record<string, string> = { ad, giris, sifre, rol: rolAdi, dershane, panel: PANEL_ADRESI ? `Panel: ${PANEL_ADRESI}` : "" };
+  const doldur = (x: string) => x.replace(/\{(\w+)\}/g, (_, k: string) => d[k] ?? "");
+  return {
+    konu: doldur((data?.konu as string) ?? "KMY Arena hesabınız açıldı"),
+    govde: doldur((data?.govde as string) ?? `Merhaba ${ad},\n\n${dershane} için KMY Arena ${rolAdi} hesabınız açıldı.\n\nGiriş: ${giris}\nGeçici şifre: ${sifre}\n\nİlk girişte şifrenizi değiştirmeniz istenecek.`),
+  };
 }

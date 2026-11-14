@@ -3,7 +3,8 @@ import { jsonAyikla, TOPLULUK_COZUM_V1, TOPLULUK_DEGERLENDIRME_V1, TOPLULUK_IPUC
 import { destekGerekli, metniDenetle, SIKAYET_SEBEPLERI, SIKLAR } from "@kmy/shared";
 import { aiAyarlari } from "./ayarlar";
 import { IstemciHatasi } from "./http";
-import { sosyalGerekli, type Kullanici } from "./kimlik";
+import { sosyalGerekli, yazmaGerekli, type Kullanici } from "./kimlik";
+import { ekKelimeDenetle } from "./moderasyon";
 import { kmyai, kmyaiErisilebilir } from "./kmyai";
 import { servisIstemcisi } from "./supabase";
 
@@ -29,9 +30,10 @@ async function ozellikAcik(dershaneId: string): Promise<boolean> {
   return data !== false;
 }
 
-function metinDenetle(metin: string, k: Kullanici): void {
+async function metinDenetle(metin: string, k: Kullanici): Promise<void> {
   const d = metniDenetle(metin);
   if (!d.temiz) throw new IstemciHatasi(`klan.filtre_${d.sebep}`, 422);
+  await ekKelimeDenetle(metin, k.dershaneId);
   if (destekGerekli(metin)) {
     void servisIstemcisi().rpc("sistem_rehberlik_bildir", {
       p_kullanici: k.id, p_kaynak: "topluluk", p_ozet: "Toplulukta yazdığı metinde destek gerektirebilecek ifadeler tespit edildi. Lütfen öğrenciyle görüşün.",
@@ -82,12 +84,13 @@ async function imzala<T extends { gorsel_yol?: string | null }>(x: T): Promise<T
 
 export async function sor(k: Kullanici, g: { dersId?: unknown; kazanimId?: unknown; metin?: unknown; gorsel?: unknown; gorunurluk?: unknown }): Promise<{ id: string }> {
   sosyalGerekli(k);
+  yazmaGerekli(k);
   if (!(await ozellikAcik(k.dershaneId))) throw new IstemciHatasi("topluluk.kapali", 403);
   const metin = typeof g.metin === "string" ? g.metin.trim() : "";
   if (metin.length < 5 || metin.length > 2000) throw new IstemciHatasi("topluluk.metinGecersiz");
   if (typeof g.dersId !== "string" || !/^[0-9a-f-]{36}$/i.test(g.dersId)) throw new IstemciHatasi("topluluk.dersGecersiz");
   const kazanimId = typeof g.kazanimId === "string" && /^[0-9a-f-]{36}$/i.test(g.kazanimId) ? g.kazanimId : null;
-  metinDenetle(metin, k);
+  await metinDenetle(metin, k);
   const gorunurluk = g.gorunurluk === "sinif" || g.gorunurluk === "sube" ? g.gorunurluk : "dershane";
   const gorsel = typeof g.gorsel === "string" && g.gorsel.length > 0 ? await gorselYukle(k, g.gorsel) : null;
   const id = await rpc<string>("sistem_topluluk_sor", {
@@ -116,10 +119,11 @@ export async function detay(k: Kullanici, soruId: string) {
 /** Cevap: kaydedilir, AI ön değerlendirmesi arka planda (after) yapılır. */
 export async function cevapla(k: Kullanici, g: { soruId?: unknown; sik?: unknown; aciklama?: unknown; gorsel?: unknown }): Promise<{ id: string }> {
   sosyalGerekli(k);
+  yazmaGerekli(k);
   if (typeof g.soruId !== "string" || !/^[0-9a-f-]{36}$/i.test(g.soruId)) throw new IstemciHatasi("topluluk.bulunamadi", 404);
   const aciklama = typeof g.aciklama === "string" ? g.aciklama.trim() : "";
   if (aciklama.length < 10 || aciklama.length > 2000) throw new IstemciHatasi("topluluk.aciklamaKisa");
-  metinDenetle(aciklama, k);
+  await metinDenetle(aciklama, k);
   const sik = SIKLAR.includes(g.sik as never) ? (g.sik as string) : null;
   const gorsel = typeof g.gorsel === "string" && g.gorsel.length > 0 ? await gorselYukle(k, g.gorsel) : null;
   const id = await rpc<string>("sistem_topluluk_cevapla", { p_kullanici: k.id, p_soru: g.soruId, p_sik: sik, p_aciklama: aciklama, p_gorsel_yol: gorsel?.yol ?? null });

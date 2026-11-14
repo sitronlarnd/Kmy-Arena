@@ -1,6 +1,6 @@
 import * as AS from "@/lib/asistan-servisi";
 import { govdeOku, guvenli, IstemciHatasi, json, onUcus } from "@/lib/http";
-import { ogrenciGetir } from "@/lib/kimlik";
+import { ogrenciGetir, yazmaGerekli } from "@/lib/kimlik";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 90;
@@ -19,6 +19,7 @@ export async function POST(istek: Request, baglam: { params: Promise<{ islem: st
   return guvenli(async () => {
     const { islem } = await baglam.params;
     const k = await ogrenciGetir(istek);
+    yazmaGerekli(k);
     if (k.tur !== "ogrenci") throw new IstemciHatasi("soru.yalnizcaOgrenci", 403);
     const g = await govdeOku(istek);
     switch (islem) {

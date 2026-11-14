@@ -1,6 +1,6 @@
 import * as D from "@/lib/duello-servisi";
 import { govdeOku, guvenli, IstemciHatasi, json, onUcus } from "@/lib/http";
-import { ogrenciGetir } from "@/lib/kimlik";
+import { ogrenciGetir, yazmaGerekli } from "@/lib/kimlik";
 import { rozetleriKontrolEt } from "@/lib/oyun-servisi";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +23,7 @@ export async function POST(istek: Request, baglam: { params: Promise<{ islem: st
   return guvenli(async () => {
     const { islem } = await baglam.params;
     const k = await ogrenciGetir(istek);
+    if (!["durum", "gecmis"].includes(islem)) yazmaGerekli(k);
     if (k.tur !== "ogrenci") throw new IstemciHatasi("soru.yalnizcaOgrenci", 403);
     const g = await govdeOku(istek);
     switch (islem) {

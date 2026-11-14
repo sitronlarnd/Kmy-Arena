@@ -71,7 +71,8 @@ export async function dershaneOlustur(_o: KayitSonucu, f: FormData): Promise<Kay
       await s.from("dershane").delete().eq("id", d.id);
       throw e;
     }
-    const gitti = await eposta(kEposta, "KMY Arena dershane hesabınız hazır", hosGeldinMetni(kAd, kEposta, h.sifre, "kurucu", ad));
+    const hg = await hosGeldinMetni(kAd, kEposta, h.sifre, "kurucu", ad);
+    const gitti = await eposta(kEposta, hg.konu, hg.govde);
     const teklif = m("teklif");
     if (teklif) await s.from("teklif").update({ durum: durum === "pilot" ? "pilot" : "kazanildi" }).eq("id", teklif);
     await denetle(k, "dershane.olustur", d.id as string, { ad, durum, kurucu: kEposta });

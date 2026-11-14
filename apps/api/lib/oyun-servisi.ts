@@ -241,8 +241,12 @@ export async function karakterSec(k: Kullanici, tur: string): Promise<void> {
 }
 
 export async function satinAl(k: Kullanici, kod: string): Promise<{ altin: number; yeniRozetler: string[] }> {
-  const e = esyaBul(kod);
-  if (!e || e.rozetle) throw new IstemciHatasi("magaza.satilmaz");
+  const e0 = esyaBul(kod);
+  if (!e0 || e0.rozetle) throw new IstemciHatasi("magaza.satilmaz");
+  // Merkez mağaza ayarı: fiyat, satıştan kaldırma, yayın tarihi
+  const { data: ay } = await servisIstemcisi().from("esya_ayari").select("fiyat, aktif, yayin_tarihi").eq("kod", kod).maybeSingle();
+  if (ay && (!ay.aktif || (ay.yayin_tarihi && Date.parse(ay.yayin_tarihi as string) > Date.now()))) throw new IstemciHatasi("magaza.satilmaz");
+  const e = { ...e0, fiyat: (ay?.fiyat as number | null) ?? e0.fiyat };
   const i = await ilerlemeSatiri(k);
   if (e.minSeviye && i.seviye < e.minSeviye) throw new IstemciHatasi("magaza.seviyeYetersiz");
   const { data, error } = await servisIstemcisi().rpc("sistem_satin_al", {

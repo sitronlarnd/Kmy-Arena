@@ -240,7 +240,8 @@ export async function personelEkle(_o: KayitSonucu, f: FormData): Promise<KayitS
     if (!ad || !soyad || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(ep)) return { hata: "Ad, soyad ve geçerli e-posta gerekli." };
     const h = await hesapAc({ ad, soyad, rol, dershaneId: k.dershaneId, subeId: sube, sinifId: null, eposta: ep });
     const { data: d } = await servis().from("dershane").select("ad").eq("id", k.dershaneId).single();
-    const gitti = await eposta(ep, "KMY Arena hesabınız açıldı", hosGeldinMetni(ad, ep, h.sifre, PERSONEL_ROLLERI[rol] ?? rol, (d?.ad as string) ?? ""));
+    const hg = await hosGeldinMetni(ad, ep, h.sifre, PERSONEL_ROLLERI[rol] ?? rol, (d?.ad as string) ?? "");
+    const gitti = await eposta(ep, hg.konu, hg.govde);
     revalidatePath("/dershane/ekip");
     return { tamam: `${PERSONEL_ROLLERI[rol]} hesabı açıldı${gitti ? " ve giriş bilgileri e-postayla gönderildi" : ""}.`, hesaplar: [h] };
   } catch (e) { return { hata: hataMetni(e) }; }

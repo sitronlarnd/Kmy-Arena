@@ -1,5 +1,7 @@
 import { t } from "@kmy/shared/i18n";
 import type { ReactNode } from "react";
+import { Hareketsizlik } from "./Hareketsizlik";
+import { PanelBantlari } from "./PanelBantlari";
 
 type PanelAdi = "ogretmen" | "dershane" | "merkez";
 
@@ -30,6 +32,7 @@ const MENU: Record<PanelAdi, Array<{ yol: string; ad: string; ikon: string } | {
     { yol: "/dershane/deneme", ad: "Deneme sınavları", ikon: "✓" },
     { yol: "/dershane/etki", ad: "Etki raporu", ikon: "↗" },
     { yol: "/dershane/odul", ad: "Etkinlik ve ödüller", ikon: "★" },
+    { yol: "/dershane/destek", ad: "Destek ve faturalar", ikon: "?" },
     { yol: "/dershane/rehberlik", ad: "Rehberlik", ikon: "♡" },
     { yol: "/dershane/ayarlar", ad: "Ayarlar ve duyuru", ikon: "⚙" },
     { bolum: "Sınıflar" },
@@ -41,9 +44,23 @@ const MENU: Record<PanelAdi, Array<{ yol: string; ad: string; ikon: string } | {
     { yol: "/merkez", ad: "Genel bakış", ikon: "◎" },
     { yol: "/merkez/ai", ad: "AI Merkezi", ikon: "✦" },
     { yol: "/merkez/bayraklar", ad: "Özellik bayrakları", ikon: "⚑" },
-    { bolum: "Satış" },
+    { yol: "/merkez/sistem", ad: "Sistem ve sürüm", ikon: "⚙" },
+    { bolum: "Dershaneler" },
     { yol: "/merkez/dershaneler", ad: "Dershaneler", ikon: "▦" },
-    { yol: "/merkez/teklifler", ad: "Teklifler ve pilotlar", ikon: "✉" },
+    { yol: "/merkez/paketler", ad: "Paketler", ikon: "◫" },
+    { yol: "/merkez/destek", ad: "Destek talepleri", ikon: "?" },
+    { yol: "/merkez/duyuru", ad: "Duyuru ve e-posta", ikon: "✉" },
+    { bolum: "İçerik" },
+    { yol: "/merkez/mufredat", ad: "Müfredat", ikon: "▤" },
+    { yol: "/merkez/ekonomi", ad: "Oyun ekonomisi", ikon: "◈" },
+    { yol: "/merkez/takvim", ad: "Etkinlik takvimi", ikon: "◷" },
+    { yol: "/merkez/moderasyon", ad: "Moderasyon", ikon: "⚐" },
+    { bolum: "Satış ve finans" },
+    { yol: "/merkez/teklifler", ad: "Teklifler ve pilotlar", ikon: "✆" },
+    { yol: "/merkez/finans", ad: "Faturalar", ikon: "₺" },
+    { bolum: "Yönetim" },
+    { yol: "/merkez/ekip", ad: "Merkez ekibi", ikon: "⚇" },
+    { yol: "/merkez/denetim", ad: "Denetim kayıtları", ikon: "☰" },
   ],
 };
 
@@ -70,6 +87,8 @@ export function PanelKabugu({ baslik, children, panel, aktif, yol, sag }: { basl
           </div>
           {sag}
         </header>
+        {p !== "merkez" && <PanelBantlari />}
+        {p === "merkez" && <Hareketsizlik />}
         <main className="icerik">{children}</main>
       </div>
     </div>

@@ -7,6 +7,8 @@ import { aiBekleyenleriIsle } from "@/lib/topluluk-servisi";
 import { servisIstemcisi } from "@/lib/supabase";
 import { bildirimleriGonder, veliHaftalikGonder } from "@/lib/bildirim";
 import { turnuvaMaclariniHazirla } from "@/lib/duello-servisi";
+import { epostaGonder } from "@/lib/eposta";
+import { sablon } from "@/lib/sablon";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -28,6 +30,33 @@ const ISLER: Record<string, Is> = {
     return { kuyruga: data, ...(await bildirimleriGonder()) };
   },
   "veli-haftalik": async () => veliHaftalikGonder(),
+  "lisans-takip": async () => {
+    const s = servisIstemcisi();
+    const { data, error } = await s.rpc("sistem_lisans_takip");
+    if (error) throw error;
+    // Kuruculara: vadesi 15 günü geçen fatura ve 14 gün içinde biten lisans uyarısı
+    let gonderilen = 0;
+    const bugun = new Date().toISOString().slice(0, 10);
+    const on4 = new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10);
+    const on5 = new Date(Date.now() - 15 * 86400000).toISOString().slice(0, 10);
+    const { data: gec } = await s.from("fatura").select("dershane_id, donem, tutar, vade, dershane:dershane_id(ad)").eq("durum", "bekliyor").eq("vade", on5);
+    const { data: biten } = await s.from("dershane").select("id, ad, lisans_bitis").eq("lisans_bitis", on4).in("lisans_durumu", ["aktif", "pilot"]);
+    const kurucular = async (d: string) => {
+      const { data: r } = await s.from("kullanici_rol").select("kullanici_id").eq("dershane_id", d).eq("rol_kod", "kurucu");
+      const l: string[] = [];
+      for (const x of r ?? []) { const { data: u } = await s.auth.admin.getUserById(x.kullanici_id as string); if (u.user?.email) l.push(u.user.email); }
+      return l;
+    };
+    for (const f of (gec ?? []) as unknown as { dershane_id: string; donem: string; tutar: number; vade: string; dershane: { ad: string } | null }[]) {
+      const t = await sablon("odeme_gecikti", { dershane: f.dershane?.ad ?? "", donem: f.donem, tutar: f.tutar, vade: f.vade }, { konu: "KMY Arena ödemesi gecikti", govde: "Faturanızın vadesi geçti." });
+      for (const e of await kurucular(f.dershane_id)) if (await epostaGonder(e, t.konu, t.govde)) gonderilen++;
+    }
+    for (const d of biten ?? []) {
+      const t = await sablon("lisans_bitiyor", { dershane: d.ad as string, gun: 14, tarih: d.lisans_bitis as string }, { konu: "KMY Arena lisansınız bitiyor", govde: "Lisansınız 14 gün sonra bitiyor." });
+      for (const e of await kurucular(d.id as string)) if (await epostaGonder(e, t.konu, t.govde)) gonderilen++;
+    }
+    return { ...(data as object), eposta: gonderilen, bugun };
+  },
   "cevap-bolumu": async () => {
     const { data, error } = await servisIstemcisi().rpc("sistem_cevap_bolumu_olustur");
     if (error) throw error;

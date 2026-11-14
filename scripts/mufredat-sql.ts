@@ -46,7 +46,7 @@ for (const ad of dosyalar) {
         const onKosul = k.on_kosullar.length ? `array[${k.on_kosullar.map((o) => id("kazanim", o)).join(", ")}]` : "'{}'::uuid[]";
         satirlar.push(
           `insert into public.kazanim (id, unite_id, kod, aciklama, sinif_duzeyi, sinav_turu, on_kosullar, sira) values (${id("kazanim", k.kod)}, ${id("unite", u.kod)}, ${q(k.kod)}, ${q(k.aciklama)}, ${u.sinif_duzeyi}, ${q(d.sinav_turu)}, ${onKosul}, ${ki})`,
-          "  on conflict (kod) do update set aciklama = excluded.aciklama, on_kosullar = excluded.on_kosullar, sira = excluded.sira, unite_id = excluded.unite_id;",
+          "  on conflict (kod) do update set aciklama = excluded.aciklama, on_kosullar = excluded.on_kosullar, sira = excluded.sira, unite_id = excluded.unite_id where not kazanim.panel_duzenleme;",
         );
       });
     });

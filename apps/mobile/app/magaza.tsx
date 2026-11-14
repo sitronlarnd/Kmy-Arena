@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { ESYALAR, ROZETLER, type EsyaTuru } from "@kmy/shared";
 import { t, type MetinAnahtari } from "@kmy/shared/i18n";
 import { Stack, router } from "expo-router";
@@ -10,6 +11,7 @@ import { Dugme } from "@/bilesenler/Dugme";
 import { Ekran } from "@/bilesenler/Ekran";
 import { Kart } from "@/bilesenler/Kart";
 import { api, ApiHatasi } from "@/lib/api";
+import { supabase } from "@/lib/supabase";
 import { useOyun, useOyunYenile } from "@/lib/oyun";
 import { BOYUT, useTema, OYUN } from "@/lib/tema";
 
@@ -28,6 +30,17 @@ export default function Magaza() {
   const [mesgul, setMesgul] = useState<string | null>(null);
   const [mesaj, setMesaj] = useState<string | null>(null);
   const sahip = new Set(oyun?.envanter ?? []);
+  // Merkezin mağaza ayarları: fiyat, satıştan kaldırma, yayın tarihi
+  const ayar = useQuery({
+    queryKey: ["esya_ayari"],
+    queryFn: async () => ((await supabase.from("esya_ayari").select("kod, fiyat, aktif, yayin_tarihi")).data ?? []) as Array<{ kod: string; fiyat: number | null; aktif: boolean; yayin_tarihi: string | null }>,
+    staleTime: 300_000,
+  }).data ?? [];
+  const ayarHaritasi = new Map(ayar.map((x) => [x.kod, x]));
+  const esyalar = ESYALAR.map((e) => ({ ...e, fiyat: ayarHaritasi.get(e.kod)?.fiyat ?? e.fiyat })).filter((e) => {
+    const a = ayarHaritasi.get(e.kod);
+    return !a || sahip.has(e.kod) || (a.aktif && (!a.yayin_tarihi || Date.parse(a.yayin_tarihi) <= Date.now()));
+  });
   const kar = oyun?.karakter;
 
   const islem = async (anahtar: string, yol: string, govde: unknown) => {
@@ -62,7 +75,7 @@ export default function Magaza() {
       {mesaj && <Text style={{ color: tema.yanlis }}>{mesaj}</Text>}
 
       {(() => {
-        const d = ESYALAR.find((e) => e.tur === "seri_dondurucu");
+        const d = esyalar.find((e) => e.tur === "seri_dondurucu");
         if (!d) return null;
         return (
           <Kart>
@@ -76,7 +89,7 @@ export default function Magaza() {
         <View key={g.tur} style={{ gap: 8 }}>
           <Text accessibilityRole="header" style={{ color: tema.metin, fontSize: 18, fontWeight: "800" }}>{t(g.anahtar)}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
-            {ESYALAR.filter((e) => e.tur === g.tur).map((e) => {
+            {esyalar.filter((e) => e.tur === g.tur).map((e) => {
               const var_ = sahip.has(e.kod);
               const kusanili = kar?.[g.tur as "kostum" | "cerceve" | "arka_plan" | "duello_efekti"] === e.kod;
               const kilitli = Boolean(e.minSeviye && (oyun?.seviye ?? 1) < e.minSeviye);

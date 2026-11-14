@@ -1,6 +1,7 @@
 import "server-only";
 import { amblemGecerli, hazirMesaj, metniDenetle, OYUN_AYARLARI, SIKAYET_SEBEPLERI, type Amblem } from "@kmy/shared";
 import { IstemciHatasi } from "./http";
+import { ekKelimeDenetle } from "./moderasyon";
 import type { Kullanici } from "./kimlik";
 import { servisIstemcisi } from "./supabase";
 
@@ -77,6 +78,7 @@ export async function mesaj(k: Kullanici, g: { tur?: unknown; kod?: unknown; met
     if (metin.length < 1 || metin.length > 300) throw new IstemciHatasi("klan.mesajGecersiz");
     const d = metniDenetle(metin);
     if (!d.temiz) throw new IstemciHatasi(`klan.filtre_${d.sebep}`, 422);
+    await ekKelimeDenetle(metin, k.dershaneId);
     return { id: await rpc<number>("sistem_klan_mesaj", { p_kullanici: k.id, p_tur: "serbest", p_kod: null, p_metin: metin, p_soru: null }) };
   }
   throw new IstemciHatasi("klan.mesajGecersiz");

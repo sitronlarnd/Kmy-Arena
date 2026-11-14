@@ -488,6 +488,13 @@ export const tr = {
     filtre_kisisel_bilgi: "Telefon, adres veya sosyal medya bilgisi paylaşılamaz.",
     filtre_baglanti: "Bağlantı paylaşılamaz.",
   },
+  kapi: {
+    bakim: "Kısa bir bakımdayız",
+    bakimMetni: "KMY Arena birazdan geri dönecek. Serin bu sürede bozulmaz.",
+    guncelle: "Yeni sürüm hazır",
+    guncelleMetni: "Devam etmek için KMY Arena'yı güncelle. Yeni özellikler seni bekliyor!",
+    guncelleDugme: "Güncelle",
+  },
   sifre: {
     baslik: "Hoş geldin!",
     aciklama: "Başlamadan önce kendi şifreni belirle.",
@@ -533,6 +540,7 @@ export const tr = {
     bekliyor: "Rakibin belli olunca maçın açılacak.",
   },
   sosyal: {
+    kisitli: "Sosyal özelliklerin bir süreliğine kapatıldı. Soru çözmeye devam edebilirsin.",
     veliOnayiGerekli: "Topluluk ve klan sohbeti için velinin onayı gerekiyor. Onay gelince açılır.",
   },
   sikayet: {

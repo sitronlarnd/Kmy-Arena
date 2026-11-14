@@ -10,6 +10,10 @@ export interface Kullanici {
   yasakliDegerler: string[];
   /** Sosyal özellikler (topluluk, klan sohbeti) açık mı? 18 yaş altında veli onayı gerekir. */
   sosyalAcik: boolean;
+  /** Lisans askıda / bitmiş: öğrenci uygulaması salt okunur (veriler silinmez). */
+  saltOkunur?: boolean;
+  /** Merkez kararıyla sosyal özellikleri geçici kapalı */
+  sosyalKisitli?: boolean;
 }
 
 /** Doğum yılı bilinmiyorsa reşit değil sayılır (temkinli varsayılan). */
@@ -19,7 +23,12 @@ export function sosyalAcikMi(dogumYili: number | null, veliOnayi: boolean, tur: 
 }
 
 export function sosyalGerekli(k: Kullanici): void {
-  if (!k.sosyalAcik) throw new IstemciHatasi("sosyal.veliOnayiGerekli", 403);
+  if (!k.sosyalAcik) throw new IstemciHatasi(k.sosyalKisitli ? "sosyal.kisitli" : "sosyal.veliOnayiGerekli", 403);
+}
+
+/** Soru çözme, düello, mesaj gibi yazma işlemleri lisans pasifken yapılamaz. */
+export function yazmaGerekli(k: Kullanici): void {
+  if (k.saltOkunur) throw new IstemciHatasi("giris.lisansPasif", 403);
 }
 
 /** Bearer JWT'yi doğrular (Supabase imza anahtarları) ve kullanıcı kaydını getirir. */
@@ -38,18 +47,21 @@ export async function ogrenciGetir(istek: Request): Promise<Kullanici> {
   const k = await kimlikDogrula(istek);
   const { data, error } = await servisIstemcisi()
     .from("kullanici")
-    .select("id, dershane_id, tur, ad, soyad, takma_ad, silinme_talebi, dogum_yili, veli_onayi")
+    .select("id, dershane_id, tur, ad, soyad, takma_ad, silinme_talebi, dogum_yili, veli_onayi, sosyal_kisit_bitis, dershane:dershane_id(lisans_durumu)")
     .eq("id", k.id)
     .maybeSingle();
   if (error) throw error;
   if (!data?.dershane_id) throw new IstemciHatasi("giris.oturumYok", 403);
   if (data.silinme_talebi) throw new IstemciHatasi("giris.oturumYok", 403);
+  const kisitli = Boolean(data.sosyal_kisit_bitis && Date.parse(data.sosyal_kisit_bitis as string) > Date.now());
   return {
     id: data.id,
     dershaneId: data.dershane_id,
     tur: data.tur,
     yasakliDegerler: [data.ad, data.soyad, data.takma_ad, k.eposta].filter((x): x is string => typeof x === "string" && x.length >= 3),
-    sosyalAcik: sosyalAcikMi(data.dogum_yili as number | null, Boolean(data.veli_onayi), data.tur as string),
+    sosyalAcik: sosyalAcikMi(data.dogum_yili as number | null, Boolean(data.veli_onayi), data.tur as string) && !kisitli,
+    sosyalKisitli: kisitli,
+    saltOkunur: ["askida", "bitti"].includes((data.dershane as unknown as { lisans_durumu: string } | null)?.lisans_durumu ?? ""),
   };
 }
 

@@ -230,3 +230,6 @@ pre.rapor { background: var(--yuzey2); padding: 12px; border-radius: 12px; overf
   body:has(.veli-rapor) .yan, body:has(.veli-rapor) .ust, body:has(.veli-rapor) .yazdirma-yok { display: none !important; }
   body:has(.veli-rapor) .kabuk, body:has(.veli-rapor) main { display: block !important; padding: 0 !important; background: #fff !important; }
 }
+.bantlar { display: grid; gap: 6px; padding: 0 28px; }
+.bant { background: #7c5cfa1a; border: 1px solid #7c5cfa44; border-radius: 12px; padding: 9px 14px; font-size: 13px; }
+.bant.uyari { background: #f5a4001f; border-color: #f5a40066; font-weight: 800; }
